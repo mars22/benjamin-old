@@ -1,0 +1,6 @@
+<div class="jumbotron">
+  <h2><%= gettext "Welcome to %{name}!", name: "Benjamin" %> Home finanse app.</h2>
+  <p class="lead">Beware of little expenses. A small leak will sink a great ship.</p>
+  <span class="subtitle">Benjamin Franklin</span>
+</div>
+

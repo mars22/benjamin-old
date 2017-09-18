@@ -1,0 +1,18 @@
+<h2>Show Balance</h2>
+
+<ul>
+
+  <li>
+    <strong>Month:</strong>
+    <%= @balance.month %>
+  </li>
+
+  <li>
+    <strong>Description:</strong>
+    <%= @balance.description %>
+  </li>
+
+</ul>
+
+<span><%= link "Edit", to: balance_path(@conn, :edit, @balance) %></span>
+<span><%= link "Back", to: balance_path(@conn, :index) %></span>

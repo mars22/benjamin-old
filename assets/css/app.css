@@ -1,0 +1,16 @@
+/* This file is for your main application css. */
+
+.subtitle {
+  font-style: italic;
+}
+
+/* Phoenix flash messages */
+.alert:empty { display: none; }
+
+main {
+  margin-top: 2rem;
+}
+
+.lead {
+  margin-top: 20px;
+}
