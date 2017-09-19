@@ -13,9 +13,14 @@ defmodule BenjaminWeb.BalanceControllerTest do
   end
 
   describe "index" do
-    test "lists all balances", %{conn: conn} do
+    setup [:create_balance]
+
+    test "lists all balances", %{conn: conn, balance: balance} do
       conn = get conn, balance_path(conn, :index)
-      assert html_response(conn, 200) =~ "Listing Balances"
+      response = html_response(conn, 200)
+      assert response =~ "Listing Balances"
+      refute response =~ "/balances/#{balance.id}/edit"
+      refute response =~ "/balances/#{balance.id}/delete"
     end
   end
 
@@ -34,12 +39,23 @@ defmodule BenjaminWeb.BalanceControllerTest do
       assert redirected_to(conn) == balance_path(conn, :show, id)
 
       conn = get conn, balance_path(conn, :show, id)
-      assert html_response(conn, 200) =~ "Show Balance"
+      assert html_response(conn, 200) =~ "Balance"
     end
 
     test "renders errors when data is invalid", %{conn: conn} do
       conn = post conn, balance_path(conn, :create), balance: @invalid_attrs
       assert html_response(conn, 200) =~ "New Balance"
+    end
+  end
+
+  describe "show balance" do
+    setup [:create_balance]
+
+    test "renders balance details and list of assotiatets incomes ", %{conn: conn, balance: balance} do
+      conn = get conn, balance_path(conn, :show, balance)
+      response = html_response(conn, 200)
+      assert response =~ "Balance"
+      assert response =~ "Incomes"
     end
   end
 
@@ -55,7 +71,7 @@ defmodule BenjaminWeb.BalanceControllerTest do
   describe "update balance" do
     setup [:create_balance]
 
-    test "redirects when data is valid", %{conn: conn, balance: balance} do
+    test "redirects to show when data is valid", %{conn: conn, balance: balance} do
       conn = put conn, balance_path(conn, :update, balance), balance: @update_attrs
       assert redirected_to(conn) == balance_path(conn, :show, balance)
 

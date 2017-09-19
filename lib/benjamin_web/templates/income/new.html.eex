@@ -1,0 +1,5 @@
+<h2>New Income</h2>
+
+<%= render "form.html", Map.put(assigns, :action, balance_income_path(@conn, :create, @balance_id)) %>
+
+<span><%= link "Back", to: balance_path(@conn, :index) %></span>

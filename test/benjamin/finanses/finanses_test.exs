@@ -29,6 +29,14 @@ defmodule Benjamin.FinansesTest do
       assert Finanses.get_balance!(balance.id) == balance
     end
 
+    test "get_balance_with_related!/1 returns the balance with given id and all realated data" do
+      balance = balance_fixture()
+      {:ok, income} = create_income(balance)
+      result_balance = Finanses.get_balance_with_related!(balance.id)
+      assert result_balance.id == balance.id
+      assert result_balance.incomes == [income]
+    end
+
     test "create_balance/1 with valid data creates a balance" do
       assert {:ok, %Balance{} = balance} = Finanses.create_balance(@valid_attrs)
       assert balance.description == "some description"
@@ -85,13 +93,7 @@ defmodule Benjamin.FinansesTest do
 
     def income_fixture(attrs \\ %{}) do
       {:ok, balance} = Finanses.create_balance(@valid_balance_attrs)
-
-      {:ok, income} =
-        attrs
-        |> Enum.into(%{:balance_id => balance.id})
-        |> Enum.into(@valid_attrs)
-        |> Finanses.create_income()
-
+      {:ok, income} = create_income(balance)
       income
     end
 
@@ -145,5 +147,11 @@ defmodule Benjamin.FinansesTest do
       income = income_fixture()
       assert %Ecto.Changeset{} = Finanses.change_income(income)
     end
+  end
+
+  defp create_income(balance) do
+    {:ok, income} =
+    %{balance_id: balance.id, amount: "120.5", description: "some description"}
+    |> Finanses.create_income()
   end
 end

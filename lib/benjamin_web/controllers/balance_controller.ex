@@ -26,7 +26,7 @@ defmodule BenjaminWeb.BalanceController do
   end
 
   def show(conn, %{"id" => id}) do
-    balance = Finanses.get_balance!(id)
+    balance = Finanses.get_balance_with_related!(id)
     render(conn, "show.html", balance: balance)
   end
 

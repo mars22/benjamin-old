@@ -38,6 +38,26 @@ defmodule Benjamin.Finanses do
   def get_balance!(id), do: Repo.get!(Balance, id)
 
   @doc """
+  Gets a single balance with related data .
+
+  Raises `Ecto.NoResultsError` if the Balance does not exist.
+
+  ## Examples
+
+      iex> get_balance_with_related!(123)
+      %Balance{}
+
+      iex> get_balance_with_related!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_balance_with_related!(id) do
+    Balance
+    |> Repo.get!(id)
+    |> Repo.preload(:incomes)
+  end
+
+  @doc """
   Creates a balance.
 
   ## Examples

@@ -17,7 +17,9 @@ defmodule BenjaminWeb.Router do
     pipe_through :browser # Use the default browser stack
 
     get "/", PageController, :index
-    resources "/balances", BalanceController
+    resources "/balances", BalanceController do
+      resources "/incomes", IncomeController
+    end
   end
 
   # Other scopes may use custom stacks.
