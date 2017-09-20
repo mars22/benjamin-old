@@ -214,7 +214,7 @@ defmodule Benjamin.Finanses do
       %Ecto.Changeset{source: %Income{}}
 
   """
-  def change_income(%Income{} = income) do
-    Income.changeset(income, %{})
+  def change_income(%Income{} = income, attrs \\ %{}) do
+    Income.changeset(income, attrs)
   end
 end

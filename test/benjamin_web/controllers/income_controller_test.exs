@@ -3,8 +3,9 @@ defmodule BenjaminWeb.IncomeControllerTest do
 
   alias Benjamin.Finanses
 
-  # @create_attrs %{description: "some description", month: 12}
+  @create_attrs %{amount: "120.5", description: "my income"}
   # @update_attrs %{description: "some updated description", month: 12}
+  @invalid_attrs %{amount: "", description: "some description"}
   @valid_attrs %{amount: "120.5", description: "some description"}
 
   setup do
@@ -22,35 +23,37 @@ defmodule BenjaminWeb.IncomeControllerTest do
   end
 
   describe "index" do
-    test "lists all balances", %{conn: conn, balance: balance} do
+    test "lists all incomes", %{conn: conn, balance: balance} do
       conn = get conn, balance_income_path(conn, :index, balance.id)
       assert html_response(conn, 200) =~ "Listing Incomes"
     end
   end
 
-  describe "new balance" do
+  describe "new income" do
     test "renders form", %{conn: conn, balance: balance} do
       conn = get conn, balance_income_path(conn, :new, balance.id)
       assert html_response(conn, 200) =~ "New Income"
     end
   end
 
-  # describe "create balance" do
-  #   test "redirects to show when data is valid", %{conn: conn} do
-  #     conn = post conn, balance_path(conn, :create), balance: @create_attrs
+  describe "create income" do
+    test "redirects to balance show when data is valid", %{conn: conn, balance: balance} do
+      conn = post conn, balance_income_path(conn, :create, balance.id), income: @create_attrs
 
-  #     assert %{id: id} = redirected_params(conn)
-  #     assert redirected_to(conn) == balance_path(conn, :show, id)
+      assert %{id: id} = redirected_params(conn)
+      assert redirected_to(conn) == balance_path(conn, :show, id)
 
-  #     conn = get conn, balance_path(conn, :show, id)
-  #     assert html_response(conn, 200) =~ "Show Balance"
-  #   end
+      conn = get conn, balance_path(conn, :show, id)
+      balance_response = html_response(conn, 200)
+      assert balance_response =~ "Balance"
+      assert balance_response =~ @create_attrs.description
+    end
 
-  #   test "renders errors when data is invalid", %{conn: conn} do
-  #     conn = post conn, balance_path(conn, :create), balance: @invalid_attrs
-  #     assert html_response(conn, 200) =~ "New Balance"
-  #   end
-  # end
+    test "renders errors when data is invalid", %{conn: conn, balance: balance} do
+      conn = post conn, balance_income_path(conn, :create, balance.id), income: @invalid_attrs
+      assert html_response(conn, 200) =~ "New Income"
+    end
+  end
 
   # describe "edit balance" do
   #   setup [:create_balance]
