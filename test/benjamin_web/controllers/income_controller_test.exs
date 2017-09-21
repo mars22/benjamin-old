@@ -4,13 +4,13 @@ defmodule BenjaminWeb.IncomeControllerTest do
   alias Benjamin.Finanses
 
   @create_attrs %{amount: "120.5", description: "my income"}
-  # @update_attrs %{description: "some updated description", month: 12}
+  @update_attrs %{amount: "130", description: "new income"}
   @invalid_attrs %{amount: "", description: "some description"}
   @valid_attrs %{amount: "120.5", description: "some description"}
 
   setup do
     {:ok, balance} = Finanses.create_balance(%{description: "some description", month: 12})
-    %{balance: balance}
+    [balance: balance]
   end
 
   def fixture(attrs \\ %{}) do
@@ -55,31 +55,35 @@ defmodule BenjaminWeb.IncomeControllerTest do
     end
   end
 
-  # describe "edit balance" do
-  #   setup [:create_balance]
+  describe "edit income" do
+    test "renders form for editing chosen income", %{conn: conn, balance: balance} do
+      income = fixture(%{balance_id: balance.id})
+      conn = get conn, balance_income_path(conn, :edit, balance.id, income.id)
+      assert html_response(conn, 200) =~ "Edit Income"
+    end
+  end
 
-  #   test "renders form for editing chosen balance", %{conn: conn, balance: balance} do
-  #     conn = get conn, balance_path(conn, :edit, balance)
-  #     assert html_response(conn, 200) =~ "Edit Balance"
-  #   end
-  # end
+  describe "update income" do
+    setup %{balance: balance} do
+      income = fixture(%{balance_id: balance.id})
+      {:ok, income: income}
+    end
 
-  # describe "update balance" do
-  #   setup [:create_balance]
+    test "redirects when data is valid", %{conn: conn, balance: balance, income: income} do
+      conn = put conn, balance_income_path(conn, :update, balance, income), income: @update_attrs
+      assert redirected_to(conn) == balance_path(conn, :show, balance)
 
-  #   test "redirects when data is valid", %{conn: conn, balance: balance} do
-  #     conn = put conn, balance_path(conn, :update, balance), balance: @update_attrs
-  #     assert redirected_to(conn) == balance_path(conn, :show, balance)
+      conn = get conn, balance_path(conn, :show, balance)
+      balance_response = html_response(conn, 200)
+      assert balance_response =~ @update_attrs.description
+      assert balance_response =~ @update_attrs.amount
+    end
 
-  #     conn = get conn, balance_path(conn, :show, balance)
-  #     assert html_response(conn, 200) =~ "some updated description"
-  #   end
-
-  #   test "renders errors when data is invalid", %{conn: conn, balance: balance} do
-  #     conn = put conn, balance_path(conn, :update, balance), balance: @invalid_attrs
-  #     assert html_response(conn, 200) =~ "Edit Balance"
-  #   end
-  # end
+    # test "renders errors when data is invalid", %{conn: conn, balance: balance} do
+    #   conn = put conn, balance_path(conn, :update, balance), balance: @invalid_attrs
+    #   assert html_response(conn, 200) =~ "Edit Balance"
+    # end
+  end
 
   # describe "delete balance" do
   #   setup [:create_balance]
@@ -93,8 +97,4 @@ defmodule BenjaminWeb.IncomeControllerTest do
   #   end
   # end
 
-  # defp create_balance(_) do
-  #   balance = fixture(:balance)
-  #   {:ok, balance: balance}
-  # end
 end

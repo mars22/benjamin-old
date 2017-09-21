@@ -91,7 +91,7 @@ defmodule Benjamin.FinansesTest do
     @valid_balance_attrs %{description: "some description", month: 12}
 
 
-    def income_fixture(attrs \\ %{}) do
+    def income_fixture() do
       {:ok, balance} = Finanses.create_balance(@valid_balance_attrs)
       {:ok, income} = create_income(balance)
       income
@@ -150,7 +150,7 @@ defmodule Benjamin.FinansesTest do
   end
 
   defp create_income(balance) do
-    {:ok, income} =
+    {:ok, _} =
     %{balance_id: balance.id, amount: "120.5", description: "some description"}
     |> Finanses.create_income()
   end
