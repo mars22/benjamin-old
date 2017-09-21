@@ -79,10 +79,10 @@ defmodule BenjaminWeb.IncomeControllerTest do
       assert balance_response =~ @update_attrs.amount
     end
 
-    # test "renders errors when data is invalid", %{conn: conn, balance: balance} do
-    #   conn = put conn, balance_path(conn, :update, balance), balance: @invalid_attrs
-    #   assert html_response(conn, 200) =~ "Edit Balance"
-    # end
+    test "renders errors when data is invalid", %{conn: conn, balance: balance, income: income} do
+      conn = put conn, balance_income_path(conn, :update, balance, income), income: @invalid_attrs
+      assert html_response(conn, 200) =~ "Edit Income"
+    end
   end
 
   # describe "delete balance" do
