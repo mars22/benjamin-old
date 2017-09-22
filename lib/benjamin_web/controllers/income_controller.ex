@@ -6,10 +6,6 @@ defmodule BenjaminWeb.IncomeController do
 
   plug :assign_balance
 
-  def index(conn, _params) do
-    incomes = Finanses.list_incomes()
-    render(conn, "index.html", incomes: incomes)
-  end
 
   def new(conn, _params) do
     changeset = Finanses.change_income(%Income{})

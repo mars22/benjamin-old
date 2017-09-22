@@ -22,13 +22,6 @@ defmodule BenjaminWeb.IncomeControllerTest do
     income
   end
 
-  describe "index" do
-    test "lists all incomes", %{conn: conn, balance: balance} do
-      conn = get conn, balance_income_path(conn, :index, balance.id)
-      assert html_response(conn, 200) =~ "Listing Incomes"
-    end
-  end
-
   describe "new income" do
     test "renders form", %{conn: conn, balance: balance} do
       conn = get conn, balance_income_path(conn, :new, balance.id)
