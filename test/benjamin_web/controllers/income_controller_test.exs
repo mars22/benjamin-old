@@ -64,10 +64,7 @@ defmodule BenjaminWeb.IncomeControllerTest do
   end
 
   describe "update income" do
-    setup %{balance: balance} do
-      income = fixture(%{balance_id: balance.id})
-      {:ok, income: income}
-    end
+    setup [:create_fixtures]
 
     test "redirects when data is valid", %{conn: conn, balance: balance, income: income} do
       conn = put conn, balance_income_path(conn, :update, balance, income), income: @update_attrs
@@ -85,16 +82,21 @@ defmodule BenjaminWeb.IncomeControllerTest do
     end
   end
 
-  # describe "delete balance" do
-  #   setup [:create_balance]
+  describe "delete balance" do
+    setup [:create_fixtures]
 
-  #   test "deletes chosen balance", %{conn: conn, balance: balance} do
-  #     conn = delete conn, balance_path(conn, :delete, balance)
-  #     assert redirected_to(conn) == balance_path(conn, :index)
-  #     assert_error_sent 404, fn ->
-  #       get conn, balance_path(conn, :show, balance)
-  #     end
-  #   end
-  # end
+    test "deletes chosen income", %{conn: conn, balance: balance, income: income} do
+      conn = delete conn, balance_income_path(conn, :delete, balance, income)
+      assert redirected_to(conn) == balance_path(conn, :show, balance)
+      assert_error_sent 404, fn ->
+        get conn, balance_income_path(conn, :edit, balance, income)
+      end
 
+    end
+  end
+
+  defp create_fixtures(%{balance: balance}) do
+    income = fixture(%{balance_id: balance.id})
+    {:ok, income: income}
+  end
 end

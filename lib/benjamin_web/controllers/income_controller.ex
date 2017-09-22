@@ -46,6 +46,14 @@ defmodule BenjaminWeb.IncomeController do
     end
   end
 
+  def delete(conn, %{"id" => id}) do
+    income = Finanses.get_income!(id)
+    {:ok, _income} = Finanses.delete_income(income)
+    conn
+    |> put_flash(:info, "Income deleted successfully.")
+    |> redirect(to: balance_path(conn, :show, income.balance_id))
+  end
+
   defp assign_balance(conn, _opts) do
     case conn.params do
       %{"balance_id" => balance_id} ->
