@@ -47,3 +47,35 @@
 
 <span><%= link "New Income", to: balance_income_path(@conn, :new, @balance) %></span>
 
+<h3>Bills</h3>
+
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>Amount</th>
+      <th>Paid</th>
+      <th>Description</th>
+      <th>Paid at</th>
+
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+<%= for bill <- @balance.bills do %>
+    <tr>
+      <td><%= bill.amount %></td>
+      <td><%= bill.paid %></td>
+      <td><%= bill.description %></td>
+      <td><%= bill.paid_at %></td>
+
+      <td class="text-right">
+        <span><%= link "Edit", to: balance_bill_path(@conn, :edit, @balance, bill), class: "btn btn-default btn-xs" %></span>
+        <span><%= link "Delete", to: balance_bill_path(@conn, :delete, @balance, bill), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger btn-xs" %></span>
+      </td>
+    </tr>
+<% end %>
+  </tbody>
+</table>
+
+<span><%= link "New Bill", to: balance_bill_path(@conn, :new, @balance) %></span>

@@ -1,8 +1,10 @@
 defmodule BenjaminWeb.IncomeController do
   use BenjaminWeb, :controller
+  import BenjaminWeb.FinansesPlug
 
   alias Benjamin.Finanses
   alias Benjamin.Finanses.Income
+
 
   plug :assign_balance
 
@@ -48,15 +50,5 @@ defmodule BenjaminWeb.IncomeController do
     conn
     |> put_flash(:info, "Income deleted successfully.")
     |> redirect(to: balance_path(conn, :show, income.balance_id))
-  end
-
-  defp assign_balance(conn, _opts) do
-    case conn.params do
-      %{"balance_id" => balance_id} ->
-        balance = Finanses.get_balance!(balance_id)
-        assign(conn, :balance, balance)
-      _ ->
-        conn
-    end
   end
 end

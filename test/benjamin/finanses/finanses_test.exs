@@ -3,6 +3,8 @@ defmodule Benjamin.FinansesTest do
 
   alias Benjamin.Finanses
 
+  @valid_balance_attrs %{description: "some description", month: 12}
+
   describe "balances" do
     alias Benjamin.Finanses.Balance
 
@@ -32,9 +34,11 @@ defmodule Benjamin.FinansesTest do
     test "get_balance_with_related!/1 returns the balance with given id and all realated data" do
       balance = balance_fixture()
       {:ok, income} = create_income(balance)
+      {:ok, bill} = create_bill(balance)
       result_balance = Finanses.get_balance_with_related!(balance.id)
       assert result_balance.id == balance.id
       assert result_balance.incomes == [income]
+      assert result_balance.bills == [bill]
     end
 
     test "create_balance/1 with valid data creates a balance" do
@@ -81,36 +85,50 @@ defmodule Benjamin.FinansesTest do
     end
   end
 
+  defp create_balance(_) do
+    {:ok, balance} = Finanses.create_balance(@valid_balance_attrs)
+    [balance: balance]
+  end
+
+  defp create_income(balance) do
+    {:ok, _} =
+      %{balance_id: balance.id, amount: "120.5", description: "some description"}
+      |> Finanses.create_income()
+  end
+
+  defp create_bill(balance) do
+    {:ok, _} =
+      %{balance_id: balance.id, amount: "120.5", description: "electricity"}
+      |> Finanses.create_bill()
+  end
+
   describe "incomes" do
     alias Benjamin.Finanses.Income
 
-    @valid_attrs %{balance_id: 1, amount: "120.5", description: "some description"}
+    setup [:create_balance]
+
+    @valid_attrs %{amount: "120.5", description: "some description"}
     @update_attrs %{amount: "456.7", description: "some updated description"}
     @invalid_data [%{amount: nil}, %{amount: -12}]
 
-    @valid_balance_attrs %{description: "some description", month: 12}
-
-
-    def income_fixture() do
-      {:ok, balance} = Finanses.create_balance(@valid_balance_attrs)
+    defp income_fixture(%{} = balance) do
       {:ok, income} = create_income(balance)
       income
     end
 
-    test "list_incomes/0 returns all incomes" do
-      income = income_fixture()
+    test "list_incomes/0 returns all incomes", %{balance: balance} do
+      income = income_fixture(balance)
       assert Finanses.list_incomes() == [income]
     end
 
-    test "get_income!/1 returns the income with given id" do
-      income = income_fixture()
+    test "get_income!/1 returns the income with given id", %{balance: balance} do
+      income = income_fixture(balance)
       assert Finanses.get_income!(income.id) == income
     end
 
-    test "create_income/1 with valid data creates a income" do
-      {:ok, balance} = Finanses.create_balance(@valid_balance_attrs)
-
-      assert {:ok, %Income{} = income} = Finanses.create_income(%{@valid_attrs | balance_id: balance.id})
+    test "create_income/1 with valid data creates a income", %{balance: balance} do
+      attrs = Map.put(@valid_attrs, :balance_id, balance.id)
+      assert {:ok, %Income{} = income} = Finanses.create_income(attrs)
       assert income.amount == Decimal.new("120.5")
       assert income.description == "some description"
     end
@@ -121,37 +139,95 @@ defmodule Benjamin.FinansesTest do
       end
     end
 
-    test "update_income/2 with valid data updates the income" do
-      income = income_fixture()
+    test "update_income/2 with valid data updates the income", %{balance: balance} do
+      income = income_fixture(balance)
       assert {:ok, income} = Finanses.update_income(income, @update_attrs)
       assert %Income{} = income
       assert income.amount == Decimal.new("456.7")
       assert income.description == "some updated description"
     end
 
-    test "update_income/2 with invalid data returns error changeset" do
+    test "update_income/2 with invalid data returns error changeset", %{balance: balance} do
       for invalid_attrs <- @invalid_data do
-        income = income_fixture()
+        income = income_fixture(balance)
         assert {:error, %Ecto.Changeset{}} = Finanses.update_income(income, invalid_attrs)
         assert income == Finanses.get_income!(income.id)
       end
     end
 
-    test "delete_income/1 deletes the income" do
-      income = income_fixture()
+    test "delete_income/1 deletes the income", %{balance: balance} do
+      income = income_fixture(balance)
       assert {:ok, %Income{}} = Finanses.delete_income(income)
       assert_raise Ecto.NoResultsError, fn -> Finanses.get_income!(income.id) end
     end
 
-    test "change_income/1 returns a income changeset" do
-      income = income_fixture()
+    test "change_income/1 returns a income changeset", %{balance: balance} do
+      income = income_fixture(balance)
       assert %Ecto.Changeset{} = Finanses.change_income(income)
     end
   end
 
-  defp create_income(balance) do
-    {:ok, _} =
-    %{balance_id: balance.id, amount: "120.5", description: "some description"}
-    |> Finanses.create_income()
+  describe "bills" do
+    alias Benjamin.Finanses.Bill
+    setup [:create_balance]
+
+    @valid_attrs %{amount: "120.5", description: "some description", paid: true, paid_at: ~D[2010-04-17]}
+    @update_attrs %{amount: "456.7", description: "some updated description", paid: false, paid_at: ~D[2011-05-18]}
+    @invalid_attrs %{amount: nil, description: nil, paid: nil, paid_at: nil}
+
+    def bill_fixture(balance) do
+      {:ok, bill} = create_bill(balance)
+      bill
+    end
+
+    test "list_bills/0 returns all bills", %{balance: balance} do
+      bill = bill_fixture(balance)
+      assert Finanses.list_bills() == [bill]
+    end
+
+    test "get_bill!/1 returns the bill with given id", %{balance: balance} do
+      bill = bill_fixture(balance)
+      assert Finanses.get_bill!(bill.id) == bill
+    end
+
+    test "create_bill/1 with valid data creates a bill", %{balance: balance} do
+      attrs = Map.put(@valid_attrs, :balance_id, balance.id)
+      assert {:ok, %Bill{} = bill} = Finanses.create_bill(attrs)
+      assert bill.amount == Decimal.new("120.5")
+      assert bill.description == "some description"
+      assert bill.paid == true
+      assert bill.paid_at == ~D[2010-04-17]
+    end
+
+    test "create_bill/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Finanses.create_bill(@invalid_attrs)
+    end
+
+    test "update_bill/2 with valid data updates the bill", %{balance: balance} do
+      bill = bill_fixture(balance)
+      assert {:ok, bill} = Finanses.update_bill(bill, @update_attrs)
+      assert %Bill{} = bill
+      assert bill.amount == Decimal.new("456.7")
+      assert bill.description == "some updated description"
+      assert bill.paid == false
+      assert bill.paid_at == ~D[2011-05-18]
+    end
+
+    test "update_bill/2 with invalid data returns error changeset", %{balance: balance} do
+      bill = bill_fixture(balance)
+      assert {:error, %Ecto.Changeset{}} = Finanses.update_bill(bill, @invalid_attrs)
+      assert bill == Finanses.get_bill!(bill.id)
+    end
+
+    test "delete_bill/1 deletes the bill", %{balance: balance} do
+      bill = bill_fixture(balance)
+      assert {:ok, %Bill{}} = Finanses.delete_bill(bill)
+      assert_raise Ecto.NoResultsError, fn -> Finanses.get_bill!(bill.id) end
+    end
+
+    test "change_bill/1 returns a bill changeset", %{balance: balance} do
+      bill = bill_fixture(balance)
+      assert %Ecto.Changeset{} = Finanses.change_bill(bill)
+    end
   end
 end

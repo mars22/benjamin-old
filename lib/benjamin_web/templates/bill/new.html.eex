@@ -1,0 +1,5 @@
+<h2>New Bill</h2>
+
+<%= render "form.html", Map.put(assigns, :action, balance_bill_path(@conn, :create, @balance)) %>
+
+<span><%= link "Back", to: balance_path(@conn, :show, @balance) %></span>

@@ -19,6 +19,7 @@ defmodule BenjaminWeb.Router do
     get "/", PageController, :index
     resources "/balances", BalanceController do
       resources "/incomes", IncomeController, except: [:index, :show]
+      resources "/bills", BillController, except: [:index, :show]
     end
   end
 
