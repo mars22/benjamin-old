@@ -21,6 +21,12 @@ defmodule BenjaminWeb.Router do
       resources "/incomes", IncomeController, except: [:index, :show]
       resources "/bills", BillController, except: [:index, :show]
     end
+    resources "/bill_categories", BillCategoryController
+  end
+
+  scope "/settings", BenjaminWeb do
+    pipe_through :browser # Use the default browser stack
+    resources "/bill_categories", BillCategoryController
   end
 
   # Other scopes may use custom stacks.

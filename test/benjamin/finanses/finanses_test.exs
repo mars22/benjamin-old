@@ -35,10 +35,11 @@ defmodule Benjamin.FinansesTest do
       balance = balance_fixture()
       {:ok, income} = create_income(balance)
       {:ok, bill} = create_bill(balance)
+      bill_from_db = Finanses.get_bill_with_cagtegory!(bill.id)
       result_balance = Finanses.get_balance_with_related!(balance.id)
       assert result_balance.id == balance.id
       assert result_balance.incomes == [income]
-      assert result_balance.bills == [bill]
+      assert result_balance.bills == [bill_from_db]
     end
 
     test "create_balance/1 with valid data creates a balance" do
@@ -87,7 +88,8 @@ defmodule Benjamin.FinansesTest do
 
   defp create_balance(_) do
     {:ok, balance} = Finanses.create_balance(@valid_balance_attrs)
-    [balance: balance]
+    bill_category = bill_category_fixture()
+    [balance: balance, bill_category: bill_category]
   end
 
   defp create_income(balance) do
@@ -97,8 +99,12 @@ defmodule Benjamin.FinansesTest do
   end
 
   defp create_bill(balance) do
+    create_bill balance, bill_category_fixture()
+  end
+
+  defp create_bill(balance, bill_category) do
     {:ok, _} =
-      %{balance_id: balance.id, amount: "120.5", description: "electricity"}
+      %{category_id: bill_category.id, balance_id: balance.id, amount: "120.5", description: "electricity"}
       |> Finanses.create_bill()
   end
 
@@ -116,7 +122,7 @@ defmodule Benjamin.FinansesTest do
       income
     end
 
-    test "list_incomes/0 returns all incomes", %{balance: balance} do
+    test "list_incomes/0 returns all incomes", %{balance: balance, bill_category: bill_category} do
       income = income_fixture(balance)
       assert Finanses.list_incomes() == [income]
     end
@@ -175,59 +181,140 @@ defmodule Benjamin.FinansesTest do
     @update_attrs %{amount: "456.7", description: "some updated description", paid: false, paid_at: ~D[2011-05-18]}
     @invalid_attrs %{amount: nil, description: nil, paid: nil, paid_at: nil}
 
-    def bill_fixture(balance) do
-      {:ok, bill} = create_bill(balance)
+    def bill_fixture(balance, bill_category) do
+      {:ok, bill} = create_bill(balance, bill_category)
       bill
     end
 
-    test "list_bills/0 returns all bills", %{balance: balance} do
-      bill = bill_fixture(balance)
+    test "list_bills/0 returns all bills", %{balance: balance, bill_category: bill_category} do
+      bill = bill_fixture(balance, bill_category)
       assert Finanses.list_bills() == [bill]
     end
 
-    test "get_bill!/1 returns the bill with given id", %{balance: balance} do
-      bill = bill_fixture(balance)
+    test "get_bill!/1 returns the bill with given id", %{balance: balance, bill_category: bill_category} do
+      bill = bill_fixture(balance, bill_category)
       assert Finanses.get_bill!(bill.id) == bill
     end
 
-    test "create_bill/1 with valid data creates a bill", %{balance: balance} do
+    test "get_bill_with_cagtegory!/1 returns the bill with given id with category", %{balance: balance, bill_category: bill_category} do
+      bill = bill_fixture(balance, bill_category)
+      bill_from_db = Finanses.get_bill_with_cagtegory!(bill.id)
+      assert bill_from_db.id == bill.id
+      assert bill_from_db.category == bill_category
+    end
+
+    test "create_bill/1 with valid data creates a bill", %{balance: balance, bill_category: bill_category} do
       attrs = Map.put(@valid_attrs, :balance_id, balance.id)
+      attrs = Map.put(attrs, :category_id, bill_category.id)
+      assert {:ok, %Bill{} = bill} = Finanses.create_bill(attrs)
+      assert bill.amount == Decimal.new("120.5")
+      assert bill.description == "some description"
+      assert bill.paid == true
+    end
+
+    test "create_bill/1 can't create the same bill twice", %{balance: balance, bill_category: bill_category} do
+      attrs = Map.put(@valid_attrs, :balance_id, balance.id)
+      attrs = Map.put(attrs, :category_id, bill_category.id)
       assert {:ok, %Bill{} = bill} = Finanses.create_bill(attrs)
       assert bill.amount == Decimal.new("120.5")
       assert bill.description == "some description"
       assert bill.paid == true
       assert bill.paid_at == ~D[2010-04-17]
+
+      assert {:error, %Ecto.Changeset{} = changeset} = Finanses.create_bill(attrs)
+
     end
 
     test "create_bill/1 with invalid data returns error changeset" do
       assert {:error, %Ecto.Changeset{}} = Finanses.create_bill(@invalid_attrs)
     end
 
-    test "update_bill/2 with valid data updates the bill", %{balance: balance} do
-      bill = bill_fixture(balance)
+    test "update_bill/2 with valid data updates the bill", %{balance: balance, bill_category: bill_category} do
+      bill = bill_fixture(balance, bill_category)
       assert {:ok, bill} = Finanses.update_bill(bill, @update_attrs)
       assert %Bill{} = bill
       assert bill.amount == Decimal.new("456.7")
       assert bill.description == "some updated description"
       assert bill.paid == false
-      assert bill.paid_at == ~D[2011-05-18]
     end
 
-    test "update_bill/2 with invalid data returns error changeset", %{balance: balance} do
-      bill = bill_fixture(balance)
+    test "update_bill/2 with invalid data returns error changeset", %{balance: balance, bill_category: bill_category} do
+      bill = bill_fixture(balance, bill_category)
       assert {:error, %Ecto.Changeset{}} = Finanses.update_bill(bill, @invalid_attrs)
       assert bill == Finanses.get_bill!(bill.id)
     end
 
-    test "delete_bill/1 deletes the bill", %{balance: balance} do
-      bill = bill_fixture(balance)
+    test "delete_bill/1 deletes the bill", %{balance: balance, bill_category: bill_category} do
+      bill = bill_fixture(balance, bill_category)
       assert {:ok, %Bill{}} = Finanses.delete_bill(bill)
       assert_raise Ecto.NoResultsError, fn -> Finanses.get_bill!(bill.id) end
     end
 
-    test "change_bill/1 returns a bill changeset", %{balance: balance} do
-      bill = bill_fixture(balance)
+    test "change_bill/1 returns a bill changeset", %{balance: balance, bill_category: bill_category} do
+      bill = bill_fixture(balance, bill_category)
       assert %Ecto.Changeset{} = Finanses.change_bill(bill)
+    end
+  end
+
+  describe "bill_categories" do
+    alias Benjamin.Finanses.BillCategory
+
+    @valid_attrs %{deleted: true, name: "some name"}
+    @update_attrs %{deleted: false, name: "some updated name"}
+    @invalid_attrs %{deleted: nil, name: nil}
+
+    def bill_category_fixture(attrs \\ %{}) do
+      {:ok, bill_category} =
+        attrs
+        |> Enum.into(@valid_attrs)
+        |> Finanses.create_bill_category()
+
+      bill_category
+    end
+
+    test "list_bill_categories/0 returns all bill_categories" do
+      bill_category = bill_category_fixture()
+      assert Finanses.list_bill_categories() == [bill_category]
+    end
+
+    test "get_bill_category!/1 returns the bill_category with given id" do
+      bill_category = bill_category_fixture()
+      assert Finanses.get_bill_category!(bill_category.id) == bill_category
+    end
+
+    test "create_bill_category/1 with valid data creates a bill_category" do
+      assert {:ok, %BillCategory{} = bill_category} = Finanses.create_bill_category(@valid_attrs)
+      assert bill_category.deleted == true
+      assert bill_category.name == "some name"
+    end
+
+    test "create_bill_category/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Finanses.create_bill_category(@invalid_attrs)
+    end
+
+    test "update_bill_category/2 with valid data updates the bill_category" do
+      bill_category = bill_category_fixture()
+      assert {:ok, bill_category} = Finanses.update_bill_category(bill_category, @update_attrs)
+      assert %BillCategory{} = bill_category
+      assert bill_category.deleted == false
+      assert bill_category.name == "some updated name"
+    end
+
+    test "update_bill_category/2 with invalid data returns error changeset" do
+      bill_category = bill_category_fixture()
+      assert {:error, %Ecto.Changeset{}} = Finanses.update_bill_category(bill_category, @invalid_attrs)
+      assert bill_category == Finanses.get_bill_category!(bill_category.id)
+    end
+
+    test "delete_bill_category/1 deletes the bill_category" do
+      bill_category = bill_category_fixture()
+      assert {:ok, %BillCategory{}} = Finanses.delete_bill_category(bill_category)
+      assert_raise Ecto.NoResultsError, fn -> Finanses.get_bill_category!(bill_category.id) end
+    end
+
+    test "change_bill_category/1 returns a bill_category changeset" do
+      bill_category = bill_category_fixture()
+      assert %Ecto.Changeset{} = Finanses.change_bill_category(bill_category)
     end
   end
 end

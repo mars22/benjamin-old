@@ -55,7 +55,7 @@ defmodule Benjamin.Finanses do
     Balance
     |> Repo.get!(id)
     |> Repo.preload(:incomes)
-    |> Repo.preload(:bills)
+    |> Repo.preload([bills: [:category]])
   end
 
   @doc """
@@ -251,6 +251,26 @@ defmodule Benjamin.Finanses do
   def get_bill!(id), do: Repo.get!(Bill, id)
 
   @doc """
+  Gets a single bill with related category.
+
+  Raises `Ecto.NoResultsError` if the Bill does not exist.
+
+  ## Examples
+
+      iex> get_bill!(123)
+      %Bill{}
+
+      iex> get_bill!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_bill_with_cagtegory!(id) do
+    Repo.get!(Bill, id)
+    |> Repo.preload(:category)
+  end
+
+
+  @doc """
   Creates a bill.
 
   ## Examples
@@ -313,5 +333,101 @@ defmodule Benjamin.Finanses do
   """
   def change_bill(%Bill{} = bill) do
     Bill.changeset(bill, %{})
+  end
+
+  alias Benjamin.Finanses.BillCategory
+
+  @doc """
+  Returns the list of bill_categories.
+
+  ## Examples
+
+      iex> list_bill_categories()
+      [%BillCategory{}, ...]
+
+  """
+  def list_bill_categories do
+    Repo.all(BillCategory)
+  end
+
+  @doc """
+  Gets a single bill_category.
+
+  Raises `Ecto.NoResultsError` if the Bill category does not exist.
+
+  ## Examples
+
+      iex> get_bill_category!(123)
+      %BillCategory{}
+
+      iex> get_bill_category!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_bill_category!(id), do: Repo.get!(BillCategory, id)
+
+  @doc """
+  Creates a bill_category.
+
+  ## Examples
+
+      iex> create_bill_category(%{field: value})
+      {:ok, %BillCategory{}}
+
+      iex> create_bill_category(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_bill_category(attrs \\ %{}) do
+    %BillCategory{}
+    |> BillCategory.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  @doc """
+  Updates a bill_category.
+
+  ## Examples
+
+      iex> update_bill_category(bill_category, %{field: new_value})
+      {:ok, %BillCategory{}}
+
+      iex> update_bill_category(bill_category, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_bill_category(%BillCategory{} = bill_category, attrs) do
+    bill_category
+    |> BillCategory.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Deletes a BillCategory.
+
+  ## Examples
+
+      iex> delete_bill_category(bill_category)
+      {:ok, %BillCategory{}}
+
+      iex> delete_bill_category(bill_category)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_bill_category(%BillCategory{} = bill_category) do
+    Repo.delete(bill_category)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking bill_category changes.
+
+  ## Examples
+
+      iex> change_bill_category(bill_category)
+      %Ecto.Changeset{source: %BillCategory{}}
+
+  """
+  def change_bill_category(%BillCategory{} = bill_category) do
+    BillCategory.changeset(bill_category, %{})
   end
 end

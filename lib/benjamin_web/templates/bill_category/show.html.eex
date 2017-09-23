@@ -1,0 +1,18 @@
+<h2>Show Bill category</h2>
+
+<ul>
+
+  <li>
+    <strong>Name:</strong>
+    <%= @bill_category.name %>
+  </li>
+
+  <li>
+    <strong>Deleted:</strong>
+    <%= @bill_category.deleted %>
+  </li>
+
+</ul>
+
+<span><%= link "Edit", to: bill_category_path(@conn, :edit, @bill_category) %></span>
+<span><%= link "Back", to: bill_category_path(@conn, :index) %></span>

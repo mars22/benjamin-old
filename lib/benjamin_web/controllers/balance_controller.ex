@@ -27,7 +27,6 @@ defmodule BenjaminWeb.BalanceController do
 
   def show(conn, %{"id" => id}) do
     balance = Finanses.get_balance_with_related!(id)
-    IO.inspect balance
     render(conn, "show.html", balance: balance)
   end
 

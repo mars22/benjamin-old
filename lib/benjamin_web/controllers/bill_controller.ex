@@ -7,6 +7,7 @@ defmodule BenjaminWeb.BillController do
   import BenjaminWeb.FinansesPlug
 
   plug :assign_balance
+  plug :assign_categories
 
   def new(conn, _params) do
     changeset = Finanses.change_bill(%Bill{})
@@ -52,4 +53,10 @@ defmodule BenjaminWeb.BillController do
     |> put_flash(:info, "Bill deleted successfully.")
     |> redirect(to: balance_path(conn, :show, bill.balance_id))
   end
+
+  defp assign_categories(conn, _) do
+    categories = Finanses.list_bill_categories
+    assign(conn, :categories, categories)
+  end
+
 end

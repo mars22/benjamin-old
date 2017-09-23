@@ -56,6 +56,7 @@ defmodule BenjaminWeb.BalanceControllerTest do
       response = html_response(conn, 200)
       assert response =~ "Balance"
       assert response =~ "Incomes"
+      assert response =~ "Bills"
     end
   end
 

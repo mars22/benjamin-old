@@ -1,0 +1,5 @@
+<h2>Edit Bill category</h2>
+
+<%= render "form.html", Map.put(assigns, :action, bill_category_path(@conn, :update, @bill_category)) %>
+
+<span><%= link "Back", to: bill_category_path(@conn, :index) %></span>
