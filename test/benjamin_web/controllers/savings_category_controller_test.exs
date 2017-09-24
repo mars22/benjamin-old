@@ -75,7 +75,7 @@ defmodule BenjaminWeb.SavingsCategoryControllerTest do
       conn = delete conn, savings_category_path(conn, :delete, savings_category)
       assert redirected_to(conn) == savings_category_path(conn, :index)
       assert_error_sent 404, fn ->
-        get conn, savings_category_path(conn, :show, savings_category)
+        delete conn, savings_category_path(conn, :delete, savings_category)
       end
     end
   end

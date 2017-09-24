@@ -81,7 +81,7 @@ defmodule BenjaminWeb.BillCategoryControllerTest do
       conn = delete conn, bill_category_path(conn, :delete, bill_category)
       assert redirected_to(conn) == bill_category_path(conn, :index)
       assert_error_sent 404, fn ->
-        get conn, bill_category_path(conn, :show, bill_category)
+        delete conn, bill_category_path(conn, :delete, bill_category)
       end
     end
   end

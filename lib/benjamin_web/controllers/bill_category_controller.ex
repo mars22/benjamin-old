@@ -25,11 +25,6 @@ defmodule BenjaminWeb.BillCategoryController do
     end
   end
 
-  def show(conn, %{"id" => id}) do
-    bill_category = Finanses.get_bill_category!(id)
-    render(conn, "show.html", bill_category: bill_category)
-  end
-
   def edit(conn, %{"id" => id}) do
     bill_category = Finanses.get_bill_category!(id)
     changeset = Finanses.change_bill_category(bill_category)

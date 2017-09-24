@@ -25,11 +25,6 @@ defmodule BenjaminWeb.SavingsCategoryController do
     end
   end
 
-  def show(conn, %{"id" => id}) do
-    savings_category = Finanses.get_savings_category!(id)
-    render(conn, "show.html", savings_category: savings_category)
-  end
-
   def edit(conn, %{"id" => id}) do
     savings_category = Finanses.get_savings_category!(id)
     changeset = Finanses.change_savings_category(savings_category)
