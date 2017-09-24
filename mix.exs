@@ -42,6 +42,7 @@ defmodule Benjamin.Mixfile do
       {:gettext, "~> 0.11"},
       {:cowboy, "~> 1.0"},
       {:credo, "~> 0.8", only: [:dev, :test], runtime: false},
+      {:number, "~> 0.5.4"},
     ]
   end
 

@@ -7,7 +7,7 @@ defmodule Benjamin.Repo.Migrations.CreateBills do
       add :paid, :boolean, default: false, null: false
       add :description, :string, default: "", null: false
       add :paid_at, :date, null: true
-      add :balance_id, references(:balances, on_delete: :nothing), null: false
+      add :balance_id, references(:balances, on_delete: :delete_all), null: false
 
       timestamps()
     end

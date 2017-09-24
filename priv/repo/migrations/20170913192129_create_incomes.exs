@@ -5,7 +5,7 @@ defmodule Benjamin.Repo.Migrations.CreateIncomes do
     create table(:incomes) do
       add :amount, :decimal
       add :description, :string
-      add :balance_id, references(:balances, on_delete: :nothing)
+      add :balance_id, references(:balances, on_delete: :delete_all), null: false
 
       timestamps()
     end

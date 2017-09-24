@@ -1,26 +1,42 @@
-<div class="card" style="max-width: 20rem;">
-  <div class="card-header">Balance</div>
-  <div class="card-body">
-    <strong>Month: </strong><%= @balance.month %>
-    </br>
-    <strong>Description: </strong><%= @balance.description %>
+<div class="card-deck">
+  <div class="card">
+    <div class="card-body">
+      <h2>Balance </h2>
+      <p><strong>Month: </strong><%= month_nrb_to_name @balance.month %></p>
+      <p><strong>Description: </strong><%= @balance.description %></p>
+
+      <%= link "Edit", to: balance_path(@conn, :edit, @balance), class: "btn btn-primary" %>
+      <%= link "Delete", to: balance_path(@conn, :delete, @balance), method: :delete, data: [confirm: "Are you sure? All data connected with balace will be deleted as well!"], class: "btn btn-danger btn-xs" %>
+    </div>
   </div>
-  <div class="card-footer">
-    <span><%= link "Edit", to: balance_path(@conn, :edit, @balance) %></span>
-    <span><%= link "Back", to: balance_path(@conn, :index) %></span>
+
+  <div class="card">
+    <div class="card-header">
+      <strong>Summary</strong>
+    </div>
+    <div class="card-body">
+      <strong>Total income: </strong><%= BenjaminWeb.IncomeView.total_income @balance %>
+      </br>
+      <strong>Total outcome: </strong><%= BenjaminWeb.IncomeView.total_outcome @balance %>
+      </br>
+      <%# <strong>To save/Saved: </strong>50 zł / 40 zł %>
+    </div>
   </div>
 </div>
 
 <div class="card border border-success">
   <div class="card-header">
-    Incomes <span style="float:right"><%= link "New Income", to: balance_income_path(@conn, :new, @balance) %></span>
+    <strong>Incomes</strong> <%= link "New Income", to: balance_income_path(@conn, :new, @balance), class: "btn btn-primary float-right"  %>
   </div>
   <div class="card-body">
 
       <table class="table">
         <thead>
           <tr>
+            <th>Type</th>
             <th>Amount</th>
+            <th>VAT</th>
+            <th>TAX</th>
             <th>Description</th>
 
             <th></th>
@@ -29,7 +45,10 @@
         <tbody>
       <%= for income <- @balance.incomes do %>
           <tr>
-            <td><%= income.amount %></td>
+            <td><%= BenjaminWeb.IncomeView.income_type income %></td>
+            <td><%= BenjaminWeb.IncomeView.format_amount income.amount %></td>
+            <td><%= BenjaminWeb.IncomeView.display_vat income %></td>
+            <td><%= BenjaminWeb.IncomeView.display_tax income %></td>
             <td><%= income.description %></td>
 
             <td class="text-right">
@@ -46,7 +65,7 @@
 
 <div class="card border border-secondary">
   <div class="card-header">
-    Bills <span style="float:right"><%= link "New Bill", to: balance_bill_path(@conn, :new, @balance) %></span>
+    <strong>Bills</strong> <%= link "New Bill", to: balance_bill_path(@conn, :new, @balance), class: "btn btn-primary float-right"  %>
   </div>
   <div class="card-body">
     <table class="table">
@@ -63,7 +82,7 @@
     <%= for bill <- @balance.bills do %>
         <tr>
           <td><%= bill.category.name %></td>
-          <td><%= bill.amount %></td>
+          <td><%= BenjaminWeb.IncomeView.format_amount bill.amount %></td>
           <td><%= bill.paid %></td>
           <td><%= bill.description %></td>
           <td class="text-right">

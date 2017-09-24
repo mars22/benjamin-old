@@ -12,6 +12,12 @@
   </div>
 
   <div class="form-group">
+    <%= label f, :is_invoice, class: "control-label" %>
+    <%= checkbox f, :is_invoice, class: "checkbox" %>
+    <%= error_tag f, :is_invoice %>
+  </div>
+
+  <div class="form-group">
     <%= label f, :description, class: "control-label" %>
     <%= text_input f, :description, class: "form-control" %>
     <%= error_tag f, :description %>

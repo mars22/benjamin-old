@@ -17,5 +17,6 @@ defmodule Benjamin.Finanses.BillCategory do
     bill_category
     |> cast(attrs, [:name, :deleted])
     |> validate_required([:name, :deleted])
+    |> unique_constraint(:name)
   end
 end

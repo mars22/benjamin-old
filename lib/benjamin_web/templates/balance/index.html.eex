@@ -1,7 +1,7 @@
 <h2>Listing Balances</h2>
 
-<table class="table table-striped">
-  <thead>
+<table class="table">
+  <thead class="thead-inverse">
     <tr>
       <th>Month</th>
       <th>Description</th>
@@ -12,7 +12,7 @@
   <tbody>
 <%= for balance <- @balances do %>
     <tr>
-      <td><%= balance.month %></td>
+      <td><%= month_nrb_to_name balance.month %></td>
       <td><%= balance.description %></td>
 
       <td class="text-right">

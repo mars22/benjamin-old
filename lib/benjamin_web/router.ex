@@ -21,7 +21,6 @@ defmodule BenjaminWeb.Router do
       resources "/incomes", IncomeController, except: [:index, :show]
       resources "/bills", BillController, except: [:index, :show]
     end
-    resources "/bill_categories", BillCategoryController
   end
 
   scope "/settings", BenjaminWeb do

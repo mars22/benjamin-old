@@ -14,36 +14,39 @@
   </head>
 
   <body>
-    <div class="container">
-      <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #e3f2fd;">
-        <a class="navbar-brand" href="/">BENJAMIN</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <a class="navbar-brand" href="/">BENJAMIN</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
 
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-          <ul class="navbar-nav mr-auto">
-            <li class="nav-item <%= is_active(@conn, :page_path, :index) %>">
-              <a class="nav-link" href="<%= page_path @conn, :index %>">Home <span class="sr-only">(current)</span></a>
-            </li>
-            <li class="nav-item <%= is_active(@conn, :balance_path, :index) %>">
-              <a class="nav-link" href="<%= balance_path @conn, :index %>">Balances</a>
-            </li>
-          </ul>
-          <form class="form-inline my-2 my-lg-0">
-            <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
-            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-          </form>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item <%= is_active(@conn, :page_path, :index) %>">
+            <a class="nav-link" href="<%= page_path @conn, :index %>">Home <span class="sr-only">(current)</span></a>
+          </li>
+          <li class="nav-item <%= is_active(@conn, :balance_path, :index) %>">
+            <a class="nav-link" href="<%= balance_path @conn, :index %>">Balances</a>
+          </li>
+          <li class="nav-item dropdown <%= is_active(@conn, :bill_category_path, :index) %>">
+            <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Settings</a>
+            <div class="dropdown-menu">
+              <a class="dropdown-item" href="<%= bill_category_path @conn, :index %>">Bill Categories</a>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </nav>
+    <div class="container-fluid">
+      <div class="row flex-xl-nowrap">
+        <div class="col-12 col-md-3 col-xl-2 bd-sidebar">
         </div>
-      </nav>
-
-      <p class="alert alert-info" role="alert"><%= get_flash(@conn, :info) %></p>
-      <p class="alert alert-danger" role="alert"><%= get_flash(@conn, :error) %></p>
-
-      <main role="main">
-        <%= render @view_module, @view_template, assigns %>
-      </main>
-
+        <main class="col-12 col-md-9 col-xl-8 py-md-3 pl-md-5 bd-content" role="main">
+          <p class="alert alert-info" role="alert"><%= get_flash(@conn, :info) %></p>
+          <p class="alert alert-danger" role="alert"><%= get_flash(@conn, :error) %></p>
+          <%= render @view_module, @view_template, assigns %>
+        </main>
+      </div>
     </div> <!-- /container -->
 
     <!-- Optional JavaScript -->

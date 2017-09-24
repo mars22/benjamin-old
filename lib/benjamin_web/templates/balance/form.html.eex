@@ -7,7 +7,8 @@
 
   <div class="form-group">
     <%= label f, :month, class: "control-label" %>
-    <%= number_input f, :month, class: "form-control" %>
+    <%= select f, :month, month_to_select(), step: "any", class: "form-control" %>
+
     <%= error_tag f, :month %>
   </div>
 

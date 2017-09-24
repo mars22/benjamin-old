@@ -92,9 +92,10 @@ defmodule Benjamin.FinansesTest do
     [balance: balance, bill_category: bill_category]
   end
 
-  defp create_income(balance) do
+  defp create_income(balance, attrs \\ %{}) do
     {:ok, _} =
-      %{balance_id: balance.id, amount: "120.5", description: "some description"}
+      attrs
+      |> Enum.into(%{balance_id: balance.id, amount: "123", description: "some description", vat: "23", tax: "18"})
       |> Finanses.create_income()
   end
 
@@ -104,7 +105,7 @@ defmodule Benjamin.FinansesTest do
 
   defp create_bill(balance, bill_category) do
     {:ok, _} =
-      %{category_id: bill_category.id, balance_id: balance.id, amount: "120.5", description: "electricity"}
+      %{category_id: bill_category.id, balance_id: balance.id, amount: "123", description: "electricity"}
       |> Finanses.create_bill()
   end
 
@@ -118,7 +119,7 @@ defmodule Benjamin.FinansesTest do
     @invalid_data [%{amount: nil}, %{amount: -12}]
 
     defp income_fixture(%{} = balance) do
-      {:ok, income} = create_income(balance)
+      {:ok, income} = create_income(balance, %{vat: 23, tax: 18})
       income
     end
 
@@ -170,6 +171,18 @@ defmodule Benjamin.FinansesTest do
     test "change_income/1 returns a income changeset", %{balance: balance} do
       income = income_fixture(balance)
       assert %Ecto.Changeset{} = Finanses.change_income(income)
+    end
+
+    test "calculate_vat/1 returns a vat value", %{balance: balance} do
+      income = income_fixture(balance)
+      vat = Decimal.round(Decimal.new(23.00), 2)
+      assert vat == Income.calculate_vat(income)
+    end
+
+    test "calculate_tax/1 returns a tax value", %{balance: balance} do
+      income = %Income{amount: Decimal.new(123), tax: Decimal.new(18)}
+      tax = Decimal.round(Decimal.new(18), 2)
+      assert tax == Income.calculate_tax(income)
     end
   end
 

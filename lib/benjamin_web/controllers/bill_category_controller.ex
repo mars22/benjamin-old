@@ -19,7 +19,7 @@ defmodule BenjaminWeb.BillCategoryController do
       {:ok, bill_category} ->
         conn
         |> put_flash(:info, "Bill category created successfully.")
-        |> redirect(to: bill_category_path(conn, :show, bill_category))
+        |> redirect(to: bill_category_path(conn, :index))
       {:error, %Ecto.Changeset{} = changeset} ->
         render(conn, "new.html", changeset: changeset)
     end

@@ -8,5 +8,6 @@ defmodule Benjamin.Repo.Migrations.AddCategoryToBill do
     end
 
     create index(:bills, [:category_id])
+    create unique_index(:bills, [:balance_id, :category_id])
   end
 end

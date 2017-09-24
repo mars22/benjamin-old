@@ -10,7 +10,7 @@ defmodule Benjamin.Finanses.Bill do
     field :paid, :boolean, default: false
     field :paid_at, :date, default: nil
     belongs_to :balance, Balance
-    belongs_to :category, BillCategory
+    belongs_to :category, BillCategory, source: :category_id
 
     timestamps()
   end

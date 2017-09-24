@@ -27,14 +27,19 @@ defmodule BenjaminWeb.BillCategoryControllerTest do
   end
 
   describe "create bill_category" do
-    test "redirects to show when data is valid", %{conn: conn} do
+    test "redirects to index when data is valid", %{conn: conn} do
       conn = post conn, bill_category_path(conn, :create), bill_category: @create_attrs
 
-      assert %{id: id} = redirected_params(conn)
-      assert redirected_to(conn) == bill_category_path(conn, :show, id)
+      assert redirected_to(conn) == bill_category_path(conn, :index)
 
-      conn = get conn, bill_category_path(conn, :show, id)
-      assert html_response(conn, 200) =~ "Show Bill category"
+      conn = get conn, bill_category_path(conn, :index)
+      assert html_response(conn, 200) =~ @create_attrs.name
+    end
+
+    test "renders errors when name is no unique", %{conn: conn} do
+      fixture(:bill_category)
+      conn = post conn, bill_category_path(conn, :create), bill_category: @create_attrs
+      assert html_response(conn, 200) =~ "has already been taken"
     end
 
     test "renders errors when data is invalid", %{conn: conn} do
