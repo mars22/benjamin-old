@@ -1,0 +1,18 @@
+<h2>Show Savings category</h2>
+
+<ul>
+
+  <li>
+    <strong>Name:</strong>
+    <%= @savings_category.name %>
+  </li>
+
+  <li>
+    <strong>Deleted:</strong>
+    <%= @savings_category.deleted %>
+  </li>
+
+</ul>
+
+<span><%= link "Edit", to: savings_category_path(@conn, :edit, @savings_category) %></span>
+<span><%= link "Back", to: savings_category_path(@conn, :index) %></span>

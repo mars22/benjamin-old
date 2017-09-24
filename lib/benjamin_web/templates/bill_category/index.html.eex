@@ -13,10 +13,7 @@
 <%= for bill_category <- @bill_categories do %>
     <tr>
       <td><%= bill_category.name %></td>
-      <td><%= bill_category.deleted %></td>
-
       <td class="text-right">
-        <span><%= link "Show", to: bill_category_path(@conn, :show, bill_category), class: "btn btn-default btn-xs" %></span>
         <span><%= link "Edit", to: bill_category_path(@conn, :edit, bill_category), class: "btn btn-default btn-xs" %></span>
         <span><%= link "Delete", to: bill_category_path(@conn, :delete, bill_category), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger btn-xs" %></span>
       </td>
@@ -25,4 +22,4 @@
   </tbody>
 </table>
 
-<span><%= link "New Bill category", to: bill_category_path(@conn, :new) %></span>
+<span><%= link "New category", to: bill_category_path(@conn, :new) %></span>

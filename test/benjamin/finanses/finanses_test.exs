@@ -330,4 +330,66 @@ defmodule Benjamin.FinansesTest do
       assert %Ecto.Changeset{} = Finanses.change_bill_category(bill_category)
     end
   end
+
+  describe "savings_categories" do
+    alias Benjamin.Finanses.SavingsCategory
+
+    @valid_attrs %{deleted: true, name: "some name"}
+    @update_attrs %{deleted: false, name: "some updated name"}
+    @invalid_attrs %{deleted: nil, name: nil}
+
+    def savings_category_fixture(attrs \\ %{}) do
+      {:ok, savings_category} =
+        attrs
+        |> Enum.into(@valid_attrs)
+        |> Finanses.create_savings_category()
+
+      savings_category
+    end
+
+    test "list_savings_categories/0 returns all savings_categories" do
+      savings_category = savings_category_fixture()
+      assert Finanses.list_savings_categories() == [savings_category]
+    end
+
+    test "get_savings_category!/1 returns the savings_category with given id" do
+      savings_category = savings_category_fixture()
+      assert Finanses.get_savings_category!(savings_category.id) == savings_category
+    end
+
+    test "create_savings_category/1 with valid data creates a savings_category" do
+      assert {:ok, %SavingsCategory{} = savings_category} = Finanses.create_savings_category(@valid_attrs)
+      assert savings_category.deleted == true
+      assert savings_category.name == "some name"
+    end
+
+    test "create_savings_category/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Finanses.create_savings_category(@invalid_attrs)
+    end
+
+    test "update_savings_category/2 with valid data updates the savings_category" do
+      savings_category = savings_category_fixture()
+      assert {:ok, savings_category} = Finanses.update_savings_category(savings_category, @update_attrs)
+      assert %SavingsCategory{} = savings_category
+      assert savings_category.deleted == false
+      assert savings_category.name == "some updated name"
+    end
+
+    test "update_savings_category/2 with invalid data returns error changeset" do
+      savings_category = savings_category_fixture()
+      assert {:error, %Ecto.Changeset{}} = Finanses.update_savings_category(savings_category, @invalid_attrs)
+      assert savings_category == Finanses.get_savings_category!(savings_category.id)
+    end
+
+    test "delete_savings_category/1 deletes the savings_category" do
+      savings_category = savings_category_fixture()
+      assert {:ok, %SavingsCategory{}} = Finanses.delete_savings_category(savings_category)
+      assert_raise Ecto.NoResultsError, fn -> Finanses.get_savings_category!(savings_category.id) end
+    end
+
+    test "change_savings_category/1 returns a savings_category changeset" do
+      savings_category = savings_category_fixture()
+      assert %Ecto.Changeset{} = Finanses.change_savings_category(savings_category)
+    end
+  end
 end

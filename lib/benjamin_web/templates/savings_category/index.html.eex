@@ -1,0 +1,26 @@
+<h2>Listing Savings categories</h2>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Deleted</th>
+
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+<%= for savings_category <- @savings_categories do %>
+    <tr>
+      <td><%= savings_category.name %></td>
+
+      <td class="text-right">
+        <span><%= link "Edit", to: savings_category_path(@conn, :edit, savings_category), class: "btn btn-default btn-xs" %></span>
+        <span><%= link "Delete", to: savings_category_path(@conn, :delete, savings_category), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger btn-xs" %></span>
+      </td>
+    </tr>
+<% end %>
+  </tbody>
+</table>
+
+<span><%= link "New category", to: savings_category_path(@conn, :new) %></span>

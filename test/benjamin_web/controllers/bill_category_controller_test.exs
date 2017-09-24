@@ -62,10 +62,10 @@ defmodule BenjaminWeb.BillCategoryControllerTest do
 
     test "redirects when data is valid", %{conn: conn, bill_category: bill_category} do
       conn = put conn, bill_category_path(conn, :update, bill_category), bill_category: @update_attrs
-      assert redirected_to(conn) == bill_category_path(conn, :show, bill_category)
+      assert redirected_to(conn) == bill_category_path(conn, :index)
 
-      conn = get conn, bill_category_path(conn, :show, bill_category)
-      assert html_response(conn, 200) =~ "some updated name"
+      conn = get conn, bill_category_path(conn, :index)
+      assert html_response(conn, 200) =~ @update_attrs.name
     end
 
     test "renders errors when data is invalid", %{conn: conn, bill_category: bill_category} do

@@ -45,7 +45,7 @@ defmodule BenjaminWeb.BillControllerTest do
 
       conn = get conn, balance_path(conn, :show, balance)
       response = html_response(conn, 200)
-      assert  response =~ create_attrs.amount
+      assert  response =~ "120,5"
       assert  response =~ "category 1"
 
     end
@@ -74,7 +74,7 @@ defmodule BenjaminWeb.BillControllerTest do
 
       conn = get conn, balance_path(conn, :show, balance)
       response = html_response(conn, 200)
-      assert  response =~ @update_attrs.amount
+      assert  response =~ "456,7"
       assert  response =~ "category 1"
     end
 

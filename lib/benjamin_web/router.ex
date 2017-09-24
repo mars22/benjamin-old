@@ -26,6 +26,7 @@ defmodule BenjaminWeb.Router do
   scope "/settings", BenjaminWeb do
     pipe_through :browser # Use the default browser stack
     resources "/bill_categories", BillCategoryController
+    resources "/savings_categories", SavingsCategoryController
   end
 
   # Other scopes may use custom stacks.

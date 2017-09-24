@@ -430,4 +430,100 @@ defmodule Benjamin.Finanses do
   def change_bill_category(%BillCategory{} = bill_category) do
     BillCategory.changeset(bill_category, %{})
   end
+
+  alias Benjamin.Finanses.SavingsCategory
+
+  @doc """
+  Returns the list of savings_categories.
+
+  ## Examples
+
+      iex> list_savings_categories()
+      [%SavingsCategory{}, ...]
+
+  """
+  def list_savings_categories do
+    Repo.all(SavingsCategory)
+  end
+
+  @doc """
+  Gets a single savings_category.
+
+  Raises `Ecto.NoResultsError` if the Savings category does not exist.
+
+  ## Examples
+
+      iex> get_savings_category!(123)
+      %SavingsCategory{}
+
+      iex> get_savings_category!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_savings_category!(id), do: Repo.get!(SavingsCategory, id)
+
+  @doc """
+  Creates a savings_category.
+
+  ## Examples
+
+      iex> create_savings_category(%{field: value})
+      {:ok, %SavingsCategory{}}
+
+      iex> create_savings_category(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_savings_category(attrs \\ %{}) do
+    %SavingsCategory{}
+    |> SavingsCategory.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  @doc """
+  Updates a savings_category.
+
+  ## Examples
+
+      iex> update_savings_category(savings_category, %{field: new_value})
+      {:ok, %SavingsCategory{}}
+
+      iex> update_savings_category(savings_category, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_savings_category(%SavingsCategory{} = savings_category, attrs) do
+    savings_category
+    |> SavingsCategory.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Deletes a SavingsCategory.
+
+  ## Examples
+
+      iex> delete_savings_category(savings_category)
+      {:ok, %SavingsCategory{}}
+
+      iex> delete_savings_category(savings_category)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_savings_category(%SavingsCategory{} = savings_category) do
+    Repo.delete(savings_category)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking savings_category changes.
+
+  ## Examples
+
+      iex> change_savings_category(savings_category)
+      %Ecto.Changeset{source: %SavingsCategory{}}
+
+  """
+  def change_savings_category(%SavingsCategory{} = savings_category) do
+    SavingsCategory.changeset(savings_category, %{})
+  end
 end

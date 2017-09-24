@@ -1,20 +1,19 @@
-defmodule Benjamin.Finanses.BillCategory do
+defmodule Benjamin.Finanses.SavingsCategory do
   use Ecto.Schema
   import Ecto.Changeset
-  alias Benjamin.Finanses.{Bill, BillCategory}
+  alias Benjamin.Finanses.SavingsCategory
 
 
-  schema "bill_categories" do
+  schema "savings_categories" do
     field :deleted, :boolean, default: false
     field :name, :string
-    has_many :bills, Bill
 
     timestamps()
   end
 
   @doc false
-  def changeset(%BillCategory{} = bill_category, attrs) do
-    bill_category
+  def changeset(%SavingsCategory{} = savings_category, attrs) do
+    savings_category
     |> cast(attrs, [:name, :deleted])
     |> validate_required([:name])
     |> unique_constraint(:name)
