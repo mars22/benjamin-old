@@ -28,7 +28,7 @@ defmodule Benjamin.Finanses.Balance do
   def changeset(%Balance{} = balance, attrs) do
     balance
     |> cast(attrs, [:month, :description])
-    |> validate_required([:month,])
+    |> validate_required([:month])
     |> validate_inclusion(:month, 1..12)
   end
 end

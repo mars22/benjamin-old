@@ -21,6 +21,6 @@ defmodule BenjaminWeb.BalanceView do
   end
 
   def month_to_select do
-    Enum.map(@months, &{ elem(&1, 1), elem(&1, 0) })
+    Enum.map(@months, &{elem(&1, 1), elem(&1, 0)})
   end
 end

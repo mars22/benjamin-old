@@ -248,7 +248,11 @@ defmodule Benjamin.Finanses do
       ** (Ecto.NoResultsError)
 
   """
-  def get_bill!(id), do: Repo.get!(Bill, id) |> Repo.preload(:category)
+  def get_bill!(id)  do
+    Bill
+    |> Repo.get!(id)
+    |> Repo.preload(:category)
+  end
 
   @doc """
   Creates a bill.

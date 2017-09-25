@@ -19,12 +19,14 @@ defmodule BenjaminWeb.IncomeView do
   def format_amount(amount), do: number_to_currency amount, unit: "zl"
 
   def total_income(%{incomes: incomes}) do
-    Enum.reduce(incomes, Decimal.new(0), &(Decimal.add(&1.amount, &2)))
+    incomes
+    |> Enum.reduce(Decimal.new(0), &(Decimal.add(&1.amount, &2)))
     |> format_amount
   end
 
   def total_outcome(%{bills: bills}) do
-    Enum.reduce(bills, Decimal.new(0), &(Decimal.add(&1.amount, &2)))
+    bills
+    |> Enum.reduce(Decimal.new(0), &(Decimal.add(&1.amount, &2)))
     |> format_amount
   end
 
