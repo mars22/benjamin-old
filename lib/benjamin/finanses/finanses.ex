@@ -235,22 +235,6 @@ defmodule Benjamin.Finanses do
   end
 
   @doc """
-  Gets a single bill.
-
-  Raises `Ecto.NoResultsError` if the Bill does not exist.
-
-  ## Examples
-
-      iex> get_bill!(123)
-      %Bill{}
-
-      iex> get_bill!(456)
-      ** (Ecto.NoResultsError)
-
-  """
-  def get_bill!(id), do: Repo.get!(Bill, id)
-
-  @doc """
   Gets a single bill with related category.
 
   Raises `Ecto.NoResultsError` if the Bill does not exist.
@@ -264,11 +248,7 @@ defmodule Benjamin.Finanses do
       ** (Ecto.NoResultsError)
 
   """
-  def get_bill_with_cagtegory!(id) do
-    Repo.get!(Bill, id)
-    |> Repo.preload(:category)
-  end
-
+  def get_bill!(id), do: Repo.get!(Bill, id) |> Repo.preload(:category)
 
   @doc """
   Creates a bill.
