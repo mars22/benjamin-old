@@ -1,0 +1,18 @@
+<h2>Show Expense category</h2>
+
+<ul>
+
+  <li>
+    <strong>Name:</strong>
+    <%= @expense_category.name %>
+  </li>
+
+  <li>
+    <strong>Is deleted:</strong>
+    <%= @expense_category.is_deleted %>
+  </li>
+
+</ul>
+
+<span><%= link "Edit", to: expense_category_path(@conn, :edit, @expense_category) %></span>
+<span><%= link "Back", to: expense_category_path(@conn, :index) %></span>

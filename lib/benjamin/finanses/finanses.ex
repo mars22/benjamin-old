@@ -510,4 +510,100 @@ defmodule Benjamin.Finanses do
   def change_savings_category(%SavingsCategory{} = savings_category) do
     SavingsCategory.changeset(savings_category, %{})
   end
+
+  alias Benjamin.Finanses.ExpenseCategory
+
+  @doc """
+  Returns the list of expenses_categories.
+
+  ## Examples
+
+      iex> list_expenses_categories()
+      [%ExpenseCategory{}, ...]
+
+  """
+  def list_expenses_categories do
+    Repo.all(ExpenseCategory)
+  end
+
+  @doc """
+  Gets a single expense_category.
+
+  Raises `Ecto.NoResultsError` if the Expense category does not exist.
+
+  ## Examples
+
+      iex> get_expense_category!(123)
+      %ExpenseCategory{}
+
+      iex> get_expense_category!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_expense_category!(id), do: Repo.get!(ExpenseCategory, id)
+
+  @doc """
+  Creates a expense_category.
+
+  ## Examples
+
+      iex> create_expense_category(%{field: value})
+      {:ok, %ExpenseCategory{}}
+
+      iex> create_expense_category(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_expense_category(attrs \\ %{}) do
+    %ExpenseCategory{}
+    |> ExpenseCategory.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  @doc """
+  Updates a expense_category.
+
+  ## Examples
+
+      iex> update_expense_category(expense_category, %{field: new_value})
+      {:ok, %ExpenseCategory{}}
+
+      iex> update_expense_category(expense_category, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_expense_category(%ExpenseCategory{} = expense_category, attrs) do
+    expense_category
+    |> ExpenseCategory.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Deletes a ExpenseCategory.
+
+  ## Examples
+
+      iex> delete_expense_category(expense_category)
+      {:ok, %ExpenseCategory{}}
+
+      iex> delete_expense_category(expense_category)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_expense_category(%ExpenseCategory{} = expense_category) do
+    Repo.delete(expense_category)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking expense_category changes.
+
+  ## Examples
+
+      iex> change_expense_category(expense_category)
+      %Ecto.Changeset{source: %ExpenseCategory{}}
+
+  """
+  def change_expense_category(%ExpenseCategory{} = expense_category) do
+    ExpenseCategory.changeset(expense_category, %{})
+  end
 end

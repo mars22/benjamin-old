@@ -27,6 +27,7 @@ defmodule BenjaminWeb.Router do
     pipe_through :browser # Use the default browser stack
     resources "/bill_categories", BillCategoryController, except: [:show]
     resources "/savings_categories", SavingsCategoryController, except: [:show]
+    resources "/expenses_categories", ExpenseCategoryController, except: [:show]
   end
 
   # Other scopes may use custom stacks.

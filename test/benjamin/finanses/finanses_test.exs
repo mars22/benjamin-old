@@ -324,4 +324,57 @@ defmodule Benjamin.FinansesTest do
       assert %Ecto.Changeset{} = Finanses.change_savings_category(savings_category)
     end
   end
+
+  describe "expenses_categories" do
+    alias Benjamin.Finanses.ExpenseCategory
+
+    @valid_attrs %{is_deleted: true, name: "some name"}
+    @update_attrs %{is_deleted: false, name: "some updated name"}
+    @invalid_attrs %{is_deleted: nil, name: nil}
+
+    test "list_expenses_categories/0 returns all expenses_categories" do
+      expense_category = Factory.insert!(:expense_category)
+      assert Finanses.list_expenses_categories() == [expense_category]
+    end
+
+    test "get_expense_category!/1 returns the expense_category with given id" do
+      expense_category = Factory.insert!(:expense_category)
+      assert Finanses.get_expense_category!(expense_category.id) == expense_category
+    end
+
+    test "create_expense_category/1 with valid data creates a expense_category" do
+      assert {:ok, %ExpenseCategory{} = expense_category} = Finanses.create_expense_category(@valid_attrs)
+      assert expense_category.is_deleted == true
+      assert expense_category.name == "some name"
+    end
+
+    test "create_expense_category/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Finanses.create_expense_category(@invalid_attrs)
+    end
+
+    test "update_expense_category/2 with valid data updates the expense_category" do
+      expense_category = Factory.insert!(:expense_category)
+      assert {:ok, expense_category} = Finanses.update_expense_category(expense_category, @update_attrs)
+      assert %ExpenseCategory{} = expense_category
+      assert expense_category.is_deleted == false
+      assert expense_category.name == "some updated name"
+    end
+
+    test "update_expense_category/2 with invalid data returns error changeset" do
+      expense_category = Factory.insert!(:expense_category)
+      assert {:error, %Ecto.Changeset{}} = Finanses.update_expense_category(expense_category, @invalid_attrs)
+      assert expense_category == Finanses.get_expense_category!(expense_category.id)
+    end
+
+    test "delete_expense_category/1 deletes the expense_category" do
+      expense_category = Factory.insert!(:expense_category)
+      assert {:ok, %ExpenseCategory{}} = Finanses.delete_expense_category(expense_category)
+      assert_raise Ecto.NoResultsError, fn -> Finanses.get_expense_category!(expense_category.id) end
+    end
+
+    test "change_expense_category/1 returns a expense_category changeset" do
+      expense_category = Factory.insert!(:expense_category)
+      assert %Ecto.Changeset{} = Finanses.change_expense_category(expense_category)
+    end
+  end
 end

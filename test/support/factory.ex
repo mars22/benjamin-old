@@ -1,6 +1,8 @@
 defmodule Benjamin.Finanses.Factory do
   alias Benjamin.Repo
-  alias Benjamin.Finanses.{Balance, Income, Bill, BillCategory, SavingsCategory}
+  alias Benjamin.Finanses.{
+    Balance, Income, Bill, BillCategory, ExpenseCategory, SavingsCategory
+  }
 
   # Factories
 
@@ -61,6 +63,10 @@ defmodule Benjamin.Finanses.Factory do
 
   def build(:savings_category) do
     %SavingsCategory{name: "Savings category 1"}
+  end
+
+  def build(:expense_category) do
+    %ExpenseCategory{name: "expense 1"}
   end
 
 

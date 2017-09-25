@@ -33,6 +33,7 @@
             <div class="dropdown-menu">
               <a class="dropdown-item" href="<%= bill_category_path @conn, :index %>">Bill Categories</a>
               <a class="dropdown-item" href="<%= savings_category_path @conn, :index %>">Savings Categories</a>
+              <a class="dropdown-item" href="<%= expense_category_path @conn, :index %>">Expense Categories</a>
             </div>
           </li>
         </ul>
