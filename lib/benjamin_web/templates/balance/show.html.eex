@@ -46,7 +46,7 @@
       <%= for income <- @balance.incomes do %>
           <tr>
             <td><%= BenjaminWeb.IncomeView.income_type income %></td>
-            <td><%= BenjaminWeb.IncomeView.format_amount income.amount %></td>
+            <td><%= format_amount income.amount %></td>
             <td><%= BenjaminWeb.IncomeView.display_vat income %></td>
             <td><%= BenjaminWeb.IncomeView.display_tax income %></td>
             <td><%= income.description %></td>
@@ -82,7 +82,7 @@
     <%= for bill <- @balance.bills do %>
         <tr>
           <td><%= bill.category.name %></td>
-          <td><%= BenjaminWeb.IncomeView.format_amount bill.amount %></td>
+          <td><%= format_amount bill.amount %></td>
           <td><%= bill.paid %></td>
           <td><%= bill.description %></td>
           <td class="text-right">

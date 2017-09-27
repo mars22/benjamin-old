@@ -1,7 +1,8 @@
 defmodule Benjamin.Finanses.Factory do
   alias Benjamin.Repo
   alias Benjamin.Finanses.{
-    Balance, Income, Bill, BillCategory, ExpenseCategory, SavingsCategory
+    Balance, Income, Bill, BillCategory,
+    Expense, ExpenseCategory, SavingsCategory
   }
 
   # Factories
@@ -65,8 +66,27 @@ defmodule Benjamin.Finanses.Factory do
     %SavingsCategory{name: "Savings category 1"}
   end
 
+  def build(:expense) do
+    %Expense{
+      amount: Decimal.new(123),
+      date: Date.utc_today,
+      category: build(:expense_category)
+    }
+  end
+
+  def build(:expense_with_parts) do
+    %Expense{
+      amount: Decimal.new(123),
+      date: Date.utc_today,
+      category: build(:expense_category, name: "expense #{System.unique_integer()}"),
+      parts: [
+        build(:expense)
+      ]
+    }
+  end
+
   def build(:expense_category) do
-    %ExpenseCategory{name: "expense 1"}
+    %ExpenseCategory{name: "expense #{System.unique_integer()}"}
   end
 
 

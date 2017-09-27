@@ -377,4 +377,59 @@ defmodule Benjamin.FinansesTest do
       assert %Ecto.Changeset{} = Finanses.change_expense_category(expense_category)
     end
   end
+
+  describe "expenses" do
+    alias Benjamin.Finanses.Expense
+
+    @update_attrs %{amount: "456.7", date: Date.utc_today}
+    @invalid_attrs %{amount: nil}
+
+    test "list_expenses/0 returns all parent expenses" do
+      expense = Factory.insert!(:expense)
+      expense_with_parts = Factory.insert!(:expense_with_parts)
+      [expense1, expense2] = Finanses.list_expenses()
+      assert expense2.id == expense.id
+      assert expense1.id == expense_with_parts.id
+    end
+
+    test "get_expense!/1 returns the expense with given id" do
+      expense = Factory.insert!(:expense)
+      assert Finanses.get_expense!(expense.id) == expense
+    end
+
+    test "create_expense/1 with valid data creates a expense" do
+      category = Factory.insert!(:expense_category)
+      attrs = %{amount: "120.5", date: Date.utc_today, category_id: category.id}
+      assert {:ok, %Expense{} = expense} = Finanses.create_expense(attrs)
+      assert expense.amount == Decimal.new("120.5")
+    end
+
+    test "create_expense/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Finanses.create_expense(@invalid_attrs)
+    end
+
+    test "update_expense/2 with valid data updates the expense" do
+      expense = Factory.insert!(:expense)
+      assert {:ok, expense} = Finanses.update_expense(expense, @update_attrs)
+      assert %Expense{} = expense
+      assert expense.amount == Decimal.new("456.7")
+    end
+
+    test "update_expense/2 with invalid data returns error changeset" do
+      expense = Factory.insert!(:expense)
+      assert {:error, %Ecto.Changeset{}} = Finanses.update_expense(expense, @invalid_attrs)
+      assert expense == Finanses.get_expense!(expense.id)
+    end
+
+    test "delete_expense/1 deletes the expense" do
+      expense = Factory.insert!(:expense)
+      assert {:ok, %Expense{}} = Finanses.delete_expense(expense)
+      assert_raise Ecto.NoResultsError, fn -> Finanses.get_expense!(expense.id) end
+    end
+
+    test "change_expense/1 returns a expense changeset" do
+      expense = Factory.insert!(:expense)
+      assert %Ecto.Changeset{} = Finanses.change_expense(expense)
+    end
+  end
 end

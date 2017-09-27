@@ -1,0 +1,5 @@
+<h2>New Expense</h2>
+
+<%= render "form.html", Map.put(assigns, :action, expense_path(@conn, :create)) %>
+
+<span><%= link "Back", to: expense_path(@conn, :index) %></span>
