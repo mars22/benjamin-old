@@ -11,4 +11,14 @@ defmodule BenjaminWeb.ViewHelpers do
 
   def format_amount(amount), do: number_to_currency amount, unit: "zl"
 
+  def selected_value(nil, _id), do: ""
+  def selected_value([], _id), do: ""
+  def selected_value([_|_] = coll, id, key \\ :name) do
+    coll
+    |> Enum.find(&(&1.id == id))
+    |> case do
+      %{} = res -> Map.get(res, key)
+      _ -> ""
+    end
+  end
 end
