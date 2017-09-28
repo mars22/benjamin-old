@@ -23,4 +23,9 @@ defmodule BenjaminWeb.BalanceView do
   def month_to_select do
     Enum.map(@months, &{elem(&1, 1), elem(&1, 0)})
   end
+
+  def year_to_select() do
+    current_year = Date.utc_today.year
+    (current_year - 10)..current_year
+  end
 end

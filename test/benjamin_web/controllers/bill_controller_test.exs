@@ -2,6 +2,7 @@ defmodule BenjaminWeb.BillControllerTest do
   use BenjaminWeb.ConnCase
 
   alias Benjamin.Finanses
+  alias Benjamin.Finanses.Factory
 
   @create_attrs %{amount: "120.5", description: "some description", paid: false}
   @update_attrs %{amount: "456.7", description: "some updated description", paid: true, paid_at: Date.utc_today}
@@ -9,8 +10,8 @@ defmodule BenjaminWeb.BillControllerTest do
 
 
   setup do
-    {:ok, balance} = Finanses.create_balance(%{description: "some description", month: 12})
-    {:ok, bill_category} = Finanses.create_bill_category(%{name: "category 1"})
+    balance = Factory.insert!(:balance)
+    bill_category = Factory.insert!(:bill_category)
     [balance: balance, bill_category: bill_category]
   end
 

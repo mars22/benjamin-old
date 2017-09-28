@@ -8,12 +8,13 @@ defmodule Benjamin.Finanses.Factory do
   # Factories
 
   def build(:balance) do
-    %Balance{month: 1}
+    %Balance{month: 1, year: 2017}
   end
 
   def build(:balance_with_related) do
     %Balance{
       month: 1,
+      year: 2017,
       bills: [
         build(:bill)
       ],
@@ -26,6 +27,7 @@ defmodule Benjamin.Finanses.Factory do
   def build(:balance_with_income) do
     %Balance{
       month: 1,
+      year: 2017,
       incomes: [
         build(:income)
       ]
@@ -35,6 +37,7 @@ defmodule Benjamin.Finanses.Factory do
   def build(:balance_with_bill) do
     %Balance{
       month: 1,
+      year: 2017,
       bills: [
         build(:bill)
       ],

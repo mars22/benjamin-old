@@ -18,6 +18,7 @@ defmodule Benjamin.Finanses.Balance do
   schema "balances" do
     field :description, :string
     field :month, :integer
+    field :year, :integer
     has_many :incomes, Income
     has_many :bills, Bill
 
@@ -27,8 +28,16 @@ defmodule Benjamin.Finanses.Balance do
   @doc false
   def changeset(%Balance{} = balance, attrs) do
     balance
-    |> cast(attrs, [:month, :description])
-    |> validate_required([:month])
+    |> cast(attrs, [:month, :year, :description])
+    |> validate_required([:month, :year])
     |> validate_inclusion(:month, 1..12)
+    |> validate_inclusion(:year, year_range())
   end
+
+  defp year_range() do
+    current_year = Date.utc_today.year
+
+    (current_year - 10)..current_year
+  end
+
 end

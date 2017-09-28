@@ -6,9 +6,14 @@
   <% end %>
 
   <div class="form-group">
+    <%= label f, :year, class: "control-label" %>
+    <%= select f, :year, year_to_select(), step: "any", class: "form-control" %>
+    <%= error_tag f, :year %>
+  </div>
+
+  <div class="form-group">
     <%= label f, :month, class: "control-label" %>
     <%= select f, :month, month_to_select(), step: "any", class: "form-control" %>
-
     <%= error_tag f, :month %>
   </div>
 

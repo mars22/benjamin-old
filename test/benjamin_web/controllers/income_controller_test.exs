@@ -2,6 +2,7 @@ defmodule BenjaminWeb.IncomeControllerTest do
   use BenjaminWeb.ConnCase
 
   alias Benjamin.Finanses
+  alias Benjamin.Finanses.Factory
 
   @create_attrs %{amount: "120.5", description: "my income", is_invoice: true}
   @update_attrs %{amount: "130", description: "new income"}
@@ -9,7 +10,7 @@ defmodule BenjaminWeb.IncomeControllerTest do
   @valid_attrs %{amount: "120.5", description: "some description"}
 
   setup do
-    {:ok, balance} = Finanses.create_balance(%{description: "some description", month: 12})
+    balance = Factory.insert!(:balance)
     [balance: balance]
   end
 

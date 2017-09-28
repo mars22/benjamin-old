@@ -3,6 +3,7 @@
 <table class="table">
   <thead class="thead-inverse">
     <tr>
+      <th>Year</th>
       <th>Month</th>
       <th>Description</th>
 
@@ -12,6 +13,7 @@
   <tbody>
 <%= for balance <- @balances do %>
     <tr>
+      <td><%= balance.year %></td>
       <td><%= month_nrb_to_name balance.month %></td>
       <td><%= balance.description %></td>
 

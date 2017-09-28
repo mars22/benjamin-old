@@ -7,8 +7,8 @@ defmodule Benjamin.FinansesTest do
   describe "balances" do
     alias Benjamin.Finanses.Balance
 
-    @valid_attrs %{description: "some description", month: 12}
-    @update_attrs %{description: "some updated description", month: 12}
+    @valid_attrs %{description: "some description", month: 12, year: 2017}
+    @update_attrs %{description: "some updated description", month: 12, year: 2017}
     @invalid_attrs %{description: nil, month: nil}
 
     test "list_balances/0 returns all balances" do
@@ -39,9 +39,18 @@ defmodule Benjamin.FinansesTest do
 
     test "create_balance/1 with invalid month returns error changeset" do
       for invalid_month <- [-1,0,13] do
-        invalid_attrs = %{description: "Description", month: invalid_month}
+        invalid_attrs = %{description: "Description", month: invalid_month, year: 2017}
         assert {:error, %Ecto.Changeset{}=changeset} = Finanses.create_balance(invalid_attrs)
         assert [month: {"is invalid", [validation: :inclusion]}] = changeset.errors
+      end
+    end
+
+    test "create_balance/1 with invalid year returns error changeset" do
+      next_year = Date.utc_today.year + 1
+      for invalid_year <- [-1, 0, next_year] do
+        invalid_attrs = %{description: "Description", month: 1, year: invalid_year}
+        assert {:error, %Ecto.Changeset{}=changeset} = Finanses.create_balance(invalid_attrs)
+        assert [year: {"is invalid", [validation: :inclusion]}] = changeset.errors
       end
     end
 

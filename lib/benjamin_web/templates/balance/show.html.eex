@@ -2,6 +2,7 @@
   <div class="card">
     <div class="card-body">
       <h2>Balance </h2>
+      <p><strong>Year: </strong><%= @balance.year %></p>
       <p><strong>Month: </strong><%= month_nrb_to_name @balance.month %></p>
       <p><strong>Description: </strong><%= @balance.description %></p>
 
@@ -19,7 +20,6 @@
       </br>
       <strong>Total outcome: </strong><%= BenjaminWeb.IncomeView.total_outcome @balance %>
       </br>
-      <%# <strong>To save/Saved: </strong>50 zł / 40 zł %>
     </div>
   </div>
 </div>
