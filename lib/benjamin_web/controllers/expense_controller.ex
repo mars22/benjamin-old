@@ -23,7 +23,8 @@ defmodule BenjaminWeb.ExpenseController do
   end
 
   def show(conn, %{"id" => id}) do
+    categories = Finanses.list_expenses_categories()
     expense = Finanses.get_expense!(id)
-    render(conn, "show.html", expense: expense)
+    render(conn, "show.html", expense: expense, categories: categories)
   end
 end

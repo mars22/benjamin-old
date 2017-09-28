@@ -11,6 +11,8 @@ defmodule BenjaminWeb.ViewHelpersTest do
     test "selected_value/2 return selected name" do
       coll = [%{id: 1, name: "test1"}, %{id: 2, name: "test3"}]
       assert ViewHelpers.selected_value(coll, 1) == "test1"
+      coll = [%{id: 1, name: "test1"}]
+      assert ViewHelpers.selected_value(coll, 1) == "test1"
     end
 
     test "selected_value/2 return empty string if coll is empty or nil" do

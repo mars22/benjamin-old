@@ -3,8 +3,6 @@ defmodule BenjaminWeb.ExpenseControllerTest do
 
   alias Benjamin.Finanses.Factory
 
-
-
   setup do
     category = Factory.insert!(:expense_category)
     [category: category]
@@ -34,15 +32,13 @@ defmodule BenjaminWeb.ExpenseControllerTest do
       assert html =~ "Expense"
       assert html =~ "12,50 zl"
       assert html =~ "2017-09-09"
+      assert html =~ category.name
     end
 
     test "render form when data are invalid", %{conn: conn, category: category} do
       attrs = %{amount: "12.5", category_id: category.id}
       conn = post conn, expense_path(conn, :create), expense: attrs
-
       assert html_response(conn, 200) =~ "Oops, something went wrong! Please check the errors below."
-
-
     end
   end
 end
