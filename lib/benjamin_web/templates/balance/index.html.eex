@@ -1,6 +1,6 @@
-<h2>Listing Balances</h2>
-
+<span><%= link "New Balance", to: balance_path(@conn, :new) , class: "btn btn-primary btn-xs float-right"%></span>
 <table class="table">
+  <h2>Listing Balances</h2>
   <thead class="thead-inverse">
     <tr>
       <th>Year</th>
@@ -24,5 +24,3 @@
 <% end %>
   </tbody>
 </table>
-
-<span><%= link "New Balance", to: balance_path(@conn, :new) %></span>

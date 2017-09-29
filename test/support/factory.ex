@@ -8,40 +8,36 @@ defmodule Benjamin.Finanses.Factory do
   # Factories
 
   def build(:balance) do
-    %Balance{month: 1, year: 2017}
+    current_date = Date.utc_today()
+    %Balance{month: current_date.month, year: current_date.year}
   end
 
   def build(:balance_with_related) do
-    %Balance{
-      month: 1,
-      year: 2017,
+    build(:balance,
       bills: [
         build(:bill)
       ],
       incomes: [
         build(:income)
       ]
-    }
+    )
+
   end
 
   def build(:balance_with_income) do
-    %Balance{
-      month: 1,
-      year: 2017,
+    build(:balance,
       incomes: [
         build(:income)
       ]
-    }
+    )
   end
 
   def build(:balance_with_bill) do
-    %Balance{
-      month: 1,
-      year: 2017,
+    build(:balance,
       bills: [
         build(:bill)
-      ],
-    }
+      ]
+    )
   end
 
 
