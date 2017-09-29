@@ -17,7 +17,7 @@ defmodule BenjaminWeb.BalanceControllerTest do
     test "lists all balances", %{conn: conn, balance: balance} do
       conn = get conn, balance_path(conn, :index)
       response = html_response(conn, 200)
-      assert response =~ "Listing Balances"
+      assert response =~ "Balances"
       refute response =~ "/balances/#{balance.id}/edit"
       refute response =~ "/balances/#{balance.id}/delete"
     end

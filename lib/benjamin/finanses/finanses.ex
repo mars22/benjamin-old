@@ -72,7 +72,7 @@ defmodule Benjamin.Finanses do
   """
   def create_balance(attrs \\ %{}) do
     %Balance{}
-    |> Balance.changeset(attrs)
+    |> Balance.create_changeset(attrs)
     |> Repo.insert()
   end
 
@@ -645,6 +645,24 @@ defmodule Benjamin.Finanses do
     Expense
     |> Repo.get!(id)
     |> Repo.preload(:category)
+  end
+
+  @doc """
+  Returns the list of expenses that belong to balance.
+
+  ## Examples
+
+      iex> glist_expenses_for_balance(balance)
+      [%Expense{},..]
+  """
+  def list_expenses_for_balance(%Balance{} = balance) do
+
+    query = from e in Expense,
+      where: is_nil(e.parent_id),
+      where: e.date >= ^balance.begin_at,
+      where: e.date <= ^balance.end_at,
+      preload: [:category]
+    Repo.all(query)
   end
 
   @doc """

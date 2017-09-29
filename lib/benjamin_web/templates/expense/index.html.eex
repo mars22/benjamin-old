@@ -1,6 +1,6 @@
 <span><%= link "New expense", to: expense_path(@conn, :new) , class: "btn btn-primary btn-xs float-right"%></span>
-<table class="table">
-  <h2>Listing Expenses</h2>
+<table class="table table-responsive">
+  <h2>Expenses</h2>
   <thead class="thead-inverse">
     <tr>
       <th>Contractor</th>
@@ -22,8 +22,8 @@
       <td><%= expense.description %></td>
 
       <td class="text-right">
-        <span><%= link "Edit", to: expense_path(@conn, :edit, expense), class: "btn btn-primary btn-xs" %></span>
-        <span><%= link "Delete", to: expense_path(@conn, :delete, expense), method: :delete, data: [confirm: "Are you sure? All data connected with this expense will be deleted as well!"], class: "btn btn-danger btn-xs" %></span>
+        <%= link "Edit", to: expense_path(@conn, :edit, expense), class: "btn btn-primary btn-sm", role: "button" %>
+        <%= link "Delete", to: expense_path(@conn, :delete, expense), method: :delete, data: [confirm: "Are you sure? All data connected with this expense will be deleted as well!"], class: "btn btn-danger btn-sm", role: "button" %>
       </td>
     </tr>
 <% end %>

@@ -1,6 +1,6 @@
 <span><%= link "New Balance", to: balance_path(@conn, :new) , class: "btn btn-primary btn-xs float-right"%></span>
-<table class="table">
-  <h2>Listing Balances</h2>
+<table class="table table-responsive">
+  <h2>Balances</h2>
   <thead class="thead-inverse">
     <tr>
       <th>Year</th>

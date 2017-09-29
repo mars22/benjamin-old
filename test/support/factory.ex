@@ -9,7 +9,13 @@ defmodule Benjamin.Finanses.Factory do
 
   def build(:balance) do
     current_date = Date.utc_today()
-    %Balance{month: current_date.month, year: current_date.year}
+    {begin_at, end_at} = Balance.date_range(current_date.year, current_date.month)
+    %Balance{
+      month: current_date.month,
+      year: current_date.year,
+      begin_at: begin_at,
+      end_at: end_at
+    }
   end
 
   def build(:balance_with_related) do

@@ -15,7 +15,7 @@ defmodule BenjaminWeb.ExpenseControllerTest do
       expense3 = Factory.insert!(:expense)
       conn = get conn, expense_path(conn, :index)
       html = html_response(conn, 200)
-      assert html =~ "Listing Expenses"
+      assert html =~ "Expenses"
       assert html =~ expense1.category.name
       assert html =~ expense2.category.name
       assert html =~ expense3.category.name

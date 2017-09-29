@@ -7,7 +7,7 @@ defmodule Benjamin.FinansesTest do
   describe "balances" do
     alias Benjamin.Finanses.Balance
 
-    @valid_attrs %{description: "some description", month: 12, year: 2017}
+    @valid_attrs %{description: "some description", month: 12, year: 2017, begin_at: ~D[2017-12-01], end_at: ~D[2017-12-31]}
     @update_attrs %{description: "some updated description", month: 12, year: 2017}
     @invalid_attrs %{description: nil, month: nil}
 
@@ -31,6 +31,8 @@ defmodule Benjamin.FinansesTest do
       assert {:ok, %Balance{} = balance} = Finanses.create_balance(@valid_attrs)
       assert balance.description == "some description"
       assert balance.month == 12
+      assert balance.begin_at == ~D[2017-12-01]
+      assert balance.end_at == ~D[2017-12-31]
     end
 
     test "create_balance/1 with invalid data returns error changeset" do
@@ -39,7 +41,7 @@ defmodule Benjamin.FinansesTest do
 
     test "create_balance/1 with invalid month returns error changeset" do
       for invalid_month <- [-1,0,13] do
-        invalid_attrs = %{description: "Description", month: invalid_month, year: 2017}
+        invalid_attrs = %{ @valid_attrs | month: invalid_month}
         assert {:error, %Ecto.Changeset{}=changeset} = Finanses.create_balance(invalid_attrs)
         assert [month: {"is invalid", [validation: :inclusion]}] = changeset.errors
       end
@@ -48,7 +50,7 @@ defmodule Benjamin.FinansesTest do
     test "create_balance/1 with invalid year returns error changeset" do
       next_year = Date.utc_today.year + 1
       for invalid_year <- [-1, 0, next_year] do
-        invalid_attrs = %{description: "Description", month: 1, year: invalid_year}
+        invalid_attrs = %{ @valid_attrs | year: invalid_year}
         assert {:error, %Ecto.Changeset{}=changeset} = Finanses.create_balance(invalid_attrs)
         assert [year: {"is invalid", [validation: :inclusion]}] = changeset.errors
       end
@@ -56,10 +58,25 @@ defmodule Benjamin.FinansesTest do
 
     test "update_balance/2 with valid data updates the balance" do
       balance = Factory.insert!(:balance)
-      assert {:ok, balance} = Finanses.update_balance(balance, @update_attrs)
-      assert %Balance{} = balance
-      assert balance.description == "some updated description"
+      attrs = %{@valid_attrs | description: "New", begin_at: ~D[2016-12-01], end_at: ~D[2016-12-31]}
+      assert {:ok, balance} = Finanses.update_balance(balance, attrs)
+      assert balance.description == "New"
       assert balance.month == 12
+      assert balance.begin_at == ~D[2016-12-01]
+      assert balance.end_at == ~D[2016-12-31]
+    end
+
+    test "update_balance/2 with new month or year updates the balance date range" do
+      org_balance = Factory.insert!(:balance, @valid_attrs)
+      attrs = %{@valid_attrs | year: 2008}
+      assert {:ok, balance} = Finanses.update_balance(org_balance, attrs)
+      assert balance.begin_at.year == 2008
+      assert balance.end_at.year == 2008
+
+      attrs = %{@valid_attrs | month: 1}
+      assert {:ok, balance} = Finanses.update_balance(org_balance, attrs)
+      assert balance.begin_at.month == 1
+      assert balance.end_at.month == 1
     end
 
     test "update_balance/2 with invalid data returns error changeset" do
@@ -440,5 +457,16 @@ defmodule Benjamin.FinansesTest do
       expense = Factory.insert!(:expense)
       assert %Ecto.Changeset{} = Finanses.change_expense(expense)
     end
+
+    test "list_expenses_for_balance/1 returns all expenses that should belong to balance" do
+      Factory.insert!(:expense, date: ~D[1900-12-12])
+      expense = Factory.insert!(:expense)
+      balance = Factory.insert!(:balance)
+
+      expenses = Finanses.list_expenses_for_balance(balance)
+
+      assert expenses == [expense]
+    end
+
   end
 end
