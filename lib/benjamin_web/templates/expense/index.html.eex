@@ -1,6 +1,8 @@
-<span><%= link "New expense", to: expense_path(@conn, :new) , class: "btn btn-primary btn-xs float-right"%></span>
+<h2>Expenses</h2>
+<%= link "New expense", to: expense_path(@conn, :new) , class: "btn btn-primary btn-xs"%>
+
 <table class="table table-responsive">
-  <h2>Expenses</h2>
+
   <thead class="thead-inverse">
     <tr>
       <th>Contractor</th>

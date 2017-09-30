@@ -10,7 +10,9 @@ defmodule BenjaminWeb.BalanceController do
   end
 
   def new(conn, _params) do
-    changeset = Finanses.change_balance(%Balance{})
+    current_date = Date.utc_today()
+    balance = %Balance{year: current_date.year, month: current_date.month}
+    changeset = Finanses.change_balance(balance)
     render(conn, "new.html", changeset: changeset)
   end
 

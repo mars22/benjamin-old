@@ -7,7 +7,7 @@
       <p><strong>Description: </strong><%= @balance.description %></p>
 
       <%= link "Edit", to: balance_path(@conn, :edit, @balance), class: "btn btn-primary" %>
-      <%= link "Delete", to: balance_path(@conn, :delete, @balance), method: :delete, data: [confirm: "Are you sure? All data connected with balace will be deleted as well!"], class: "btn btn-danger btn-xs" %>
+      <%= link "Delete", to: balance_path(@conn, :delete, @balance), method: :delete, data: [confirm: "Are you sure? All data connected with balace will be deleted as well!"], class: "btn btn-danger btn-sm" %>
     </div>
   </div>
 
@@ -30,7 +30,7 @@
   </div>
   <div class="card-body">
 
-      <table class="table">
+      <table class="table table-responsive">
         <thead>
           <tr>
             <th>Type</th>
@@ -52,8 +52,8 @@
             <td><%= income.description %></td>
 
             <td class="text-right">
-              <span><%= link "Edit", to: balance_income_path(@conn, :edit, @balance, income), class: "btn btn-default btn-xs" %></span>
-              <span><%= link "Delete", to: balance_income_path(@conn, :delete, @balance, income), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger btn-xs" %></span>
+              <span><%= link "Edit", to: balance_income_path(@conn, :edit, @balance, income), class: "btn btn-default btn-sm" %></span>
+              <span><%= link "Delete", to: balance_income_path(@conn, :delete, @balance, income), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger btn-sm" %></span>
             </td>
           </tr>
       <% end %>
@@ -68,7 +68,7 @@
     <strong>Bills</strong> <%= link "New Bill", to: balance_bill_path(@conn, :new, @balance), class: "btn btn-primary float-right"  %>
   </div>
   <div class="card-body">
-    <table class="table">
+    <table class="table table-responsive">
       <thead>
         <tr>
           <th>Name</th>
@@ -86,8 +86,8 @@
           <td><%= bill.paid %></td>
           <td><%= bill.description %></td>
           <td class="text-right">
-            <span><%= link "Edit", to: balance_bill_path(@conn, :edit, @balance, bill), class: "btn btn-default btn-xs" %></span>
-            <span><%= link "Delete", to: balance_bill_path(@conn, :delete, @balance, bill), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger btn-xs" %></span>
+            <span><%= link "Edit", to: balance_bill_path(@conn, :edit, @balance, bill), class: "btn btn-default btn-sm" %></span>
+            <span><%= link "Delete", to: balance_bill_path(@conn, :delete, @balance, bill), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger btn-sm" %></span>
           </td>
         </tr>
     <% end %>
@@ -101,7 +101,7 @@
     <strong>Expenses</strong>
   </div>
   <div class="card-body">
-    <table class="table">
+    <table class="table table-responsive">
       <thead>
         <tr>
           <th>Contractor</th>

@@ -13,7 +13,7 @@
 
   <div class="form-group">
     <%= label f, :amount, class: "control-label" %>
-    <%= text_input f, :amount, step: "any", class: "form-control" %>
+    <%= number_input f, :amount, step: "any", class: "form-control" %>
     <%= error_tag f, :amount %>
   </div>
 

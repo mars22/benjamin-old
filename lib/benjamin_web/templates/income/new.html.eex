@@ -2,4 +2,4 @@
 
 <%= render "form.html", Map.put(assigns, :action, balance_income_path(@conn, :create, @balance)) %>
 
-<span><%= link "Back", to: balance_path(@conn, :index) %></span>
+<%= link "Back", to: balance_path(@conn, :index), class: "btn btn-secondary btn-sm" %>
