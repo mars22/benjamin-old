@@ -354,7 +354,7 @@ defmodule Benjamin.FinansesTest do
   describe "expenses_categories" do
     alias Benjamin.Finanses.ExpenseCategory
 
-    @valid_attrs %{is_deleted: true, name: "some name"}
+    @valid_attrs %{is_deleted: true, name: "some name", required_description: true}
     @update_attrs %{is_deleted: false, name: "some updated name"}
     @invalid_attrs %{is_deleted: nil, name: nil}
 
@@ -371,6 +371,7 @@ defmodule Benjamin.FinansesTest do
     test "create_expense_category/1 with valid data creates a expense_category" do
       assert {:ok, %ExpenseCategory{} = expense_category} = Finanses.create_expense_category(@valid_attrs)
       assert expense_category.is_deleted == true
+      assert expense_category.required_description == true
       assert expense_category.name == "some name"
     end
 
@@ -428,6 +429,12 @@ defmodule Benjamin.FinansesTest do
       attrs = %{amount: "120.5", date: Date.utc_today, category_id: category.id}
       assert {:ok, %Expense{} = expense} = Finanses.create_expense(attrs)
       assert expense.amount == Decimal.new("120.5")
+    end
+
+    test "create_expense/1 description is required when category force it." do
+      category = Factory.insert!(:expense_category, required_description: true)
+      attrs = %{amount: "120.5", date: Date.utc_today, category_id: category.id}
+      assert {:error, %Ecto.Changeset{}} = Finanses.create_expense(attrs)
     end
 
     test "create_expense/1 with invalid data returns error changeset" do

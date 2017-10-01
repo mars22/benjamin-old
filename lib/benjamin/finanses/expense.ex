@@ -1,6 +1,7 @@
 defmodule Benjamin.Finanses.Expense do
   use Ecto.Schema
   import Ecto.Changeset
+  alias Benjamin.Finanses
   alias Benjamin.Finanses.{Expense, ExpenseCategory}
 
 
@@ -18,7 +19,21 @@ defmodule Benjamin.Finanses.Expense do
   @doc false
   def changeset(%Expense{} = expense, attrs) do
     expense
-    |> cast(attrs, [:amount, :date, :category_id, :parent_id, :contractor, :description])
+    |> cast(attrs, [:amount, :date, :parent_id, :category_id, :contractor, :description])
     |> validate_required([:amount, :date, :category_id])
+    |> validatate_description
+  end
+
+  defp validatate_description(changeset) do
+    category_id = get_field(changeset, :category_id)
+    if category_id do
+      category = Finanses.get_expense_category!(category_id)
+      case category.required_description do
+        true -> validate_required(changeset, [:description], message: "Categoty #{category.name} require description!")
+        false -> changeset
+      end
+    else
+      changeset
+    end
   end
 end
