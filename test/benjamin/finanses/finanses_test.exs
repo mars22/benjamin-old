@@ -478,7 +478,7 @@ defmodule Benjamin.FinansesTest do
   end
 
   describe "expense_categories_budgets" do
-    alias Benjamin.Finanses.ExpenseCategoryBudget
+    alias Benjamin.Finanses.ExpenseBudget
 
     @valid_attrs %{planned_expenses: "120.5", real_expenses: "120.5"}
     @update_attrs %{planned_expenses: "456.7", real_expenses: "456.7"}
@@ -486,65 +486,65 @@ defmodule Benjamin.FinansesTest do
 
 
 
-    def expense_category_budget_fixture(attrs \\ %{}) do
+    def expense_budget_fixture(attrs \\ %{}) do
       balance = Factory.insert!(:balance)
-      Factory.insert!(:expense_category_budget, [balance_id: balance.id])
+      Factory.insert!(:expense_budget, [balance_id: balance.id])
     end
 
     test "list_expense_categories_budgets/0 returns all expense_categories_budgets" do
-      expense_category_budget = expense_category_budget_fixture()
+      expense_budget = expense_budget_fixture()
       from_db = Finanses.list_expense_categories_budgets()
-      assert List.first(from_db).id == expense_category_budget.id
+      assert List.first(from_db).id == expense_budget.id
     end
 
-    test "get_expense_category_budget!/1 returns the expense_category_budget with given id" do
-      expense_category_budget = expense_category_budget_fixture()
-      from_db = Finanses.get_expense_category_budget!(expense_category_budget.id)
-      assert from_db.id == expense_category_budget.id
+    test "get_expense_budget!/1 returns the expense_budget with given id" do
+      expense_budget = expense_budget_fixture()
+      from_db = Finanses.get_expense_budget!(expense_budget.id)
+      assert from_db.id == expense_budget.id
     end
 
-    test "create_expense_category_budget/1 with valid data creates a expense_category_budget" do
+    test "create_expense_budget/1 with valid data creates a expense_budget" do
       balance = Factory.insert!(:balance)
       expenses_category = Factory.insert!(:expense_category)
       attr = %{
         planned_expenses: "120.5", real_expenses: "120.5",
         balance_id: balance.id, expense_category_id: expenses_category.id
       }
-      assert {:ok, %ExpenseCategoryBudget{} = expense_category_budget} = Finanses.create_expense_category_budget(attr)
-      assert expense_category_budget.planned_expenses == Decimal.new("120.5")
-      assert expense_category_budget.real_expenses == nil
-      assert expense_category_budget.balance_id == balance.id
-      assert expense_category_budget.expense_category_id == expenses_category.id
+      assert {:ok, %ExpenseBudget{} = expense_budget} = Finanses.create_expense_budget(attr)
+      assert expense_budget.planned_expenses == Decimal.new("120.5")
+      assert expense_budget.real_expenses == nil
+      assert expense_budget.balance_id == balance.id
+      assert expense_budget.expense_category_id == expenses_category.id
     end
 
-    test "create_expense_category_budget/1 with invalid data returns error changeset" do
-      assert {:error, %Ecto.Changeset{}} = Finanses.create_expense_category_budget(@invalid_attrs)
+    test "create_expense_budget/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Finanses.create_expense_budget(@invalid_attrs)
     end
 
-    test "update_expense_category_budget/2 with valid data updates the expense_category_budget" do
-      expense_category_budget = expense_category_budget_fixture()
-      assert {:ok, expense_category_budget} = Finanses.update_expense_category_budget(expense_category_budget, @update_attrs)
-      assert %ExpenseCategoryBudget{} = expense_category_budget
-      assert expense_category_budget.planned_expenses == Decimal.new("456.7")
+    test "update_expense_budget/2 with valid data updates the expense_budget" do
+      expense_budget = expense_budget_fixture()
+      assert {:ok, expense_budget} = Finanses.update_expense_budget(expense_budget, @update_attrs)
+      assert %ExpenseBudget{} = expense_budget
+      assert expense_budget.planned_expenses == Decimal.new("456.7")
     end
 
-    test "update_expense_category_budget/2 with invalid data returns error changeset" do
-      expense_category_budget = expense_category_budget_fixture()
-      assert {:error, %Ecto.Changeset{}} = Finanses.update_expense_category_budget(expense_category_budget, @invalid_attrs)
-      from_db = Finanses.get_expense_category_budget!(expense_category_budget.id)
-      assert expense_category_budget.planned_expenses == from_db.planned_expenses
-      assert expense_category_budget.expense_category_id == from_db.expense_category_id
+    test "update_expense_budget/2 with invalid data returns error changeset" do
+      expense_budget = expense_budget_fixture()
+      assert {:error, %Ecto.Changeset{}} = Finanses.update_expense_budget(expense_budget, @invalid_attrs)
+      from_db = Finanses.get_expense_budget!(expense_budget.id)
+      assert expense_budget.planned_expenses == from_db.planned_expenses
+      assert expense_budget.expense_category_id == from_db.expense_category_id
     end
 
-    test "delete_expense_category_budget/1 deletes the expense_category_budget" do
-      expense_category_budget = expense_category_budget_fixture()
-      assert {:ok, %ExpenseCategoryBudget{}} = Finanses.delete_expense_category_budget(expense_category_budget)
-      assert_raise Ecto.NoResultsError, fn -> Finanses.get_expense_category_budget!(expense_category_budget.id) end
+    test "delete_expense_budget/1 deletes the expense_budget" do
+      expense_budget = expense_budget_fixture()
+      assert {:ok, %ExpenseBudget{}} = Finanses.delete_expense_budget(expense_budget)
+      assert_raise Ecto.NoResultsError, fn -> Finanses.get_expense_budget!(expense_budget.id) end
     end
 
-    test "change_expense_category_budget/1 returns a expense_category_budget changeset" do
-      expense_category_budget = expense_category_budget_fixture()
-      assert %Ecto.Changeset{} = Finanses.change_expense_category_budget(expense_category_budget)
+    test "change_expense_budget/1 returns a expense_budget changeset" do
+      expense_budget = expense_budget_fixture()
+      assert %Ecto.Changeset{} = Finanses.change_expense_budget(expense_budget)
     end
   end
 end

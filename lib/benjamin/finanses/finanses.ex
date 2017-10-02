@@ -731,7 +731,7 @@ defmodule Benjamin.Finanses do
     Expense.changeset(expense, %{})
   end
 
-  alias Benjamin.Finanses.ExpenseCategoryBudget
+  alias Benjamin.Finanses.ExpenseBudget
 
   @doc """
   Returns the list of expense_categories_budgets.
@@ -739,91 +739,91 @@ defmodule Benjamin.Finanses do
   ## Examples
 
       iex> list_expense_categories_budgets()
-      [%ExpenseCategoryBudget{}, ...]
+      [%ExpenseBudget{}, ...]
 
   """
   def list_expense_categories_budgets do
-    Repo.all(ExpenseCategoryBudget)
+    Repo.all(ExpenseBudget)
   end
 
   @doc """
-  Gets a single expense_category_budget.
+  Gets a single expense_budget.
 
   Raises `Ecto.NoResultsError` if the Expense category budget does not exist.
 
   ## Examples
 
-      iex> get_expense_category_budget!(123)
-      %ExpenseCategoryBudget{}
+      iex> get_expense_budget!(123)
+      %ExpenseBudget{}
 
-      iex> get_expense_category_budget!(456)
+      iex> get_expense_budget!(456)
       ** (Ecto.NoResultsError)
 
   """
-  def get_expense_category_budget!(id), do: Repo.get!(ExpenseCategoryBudget, id)
+  def get_expense_budget!(id), do: Repo.get!(ExpenseBudget, id)
 
   @doc """
-  Creates a expense_category_budget.
+  Creates a expense_budget.
 
   ## Examples
 
-      iex> create_expense_category_budget(%{field: value})
-      {:ok, %ExpenseCategoryBudget{}}
+      iex> create_expense_budget(%{field: value})
+      {:ok, %ExpenseBudget{}}
 
-      iex> create_expense_category_budget(%{field: bad_value})
+      iex> create_expense_budget(%{field: bad_value})
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_expense_category_budget(attrs \\ %{}) do
-    %ExpenseCategoryBudget{}
-    |> ExpenseCategoryBudget.changeset(attrs)
+  def create_expense_budget(attrs \\ %{}) do
+    %ExpenseBudget{}
+    |> ExpenseBudget.changeset(attrs)
     |> Repo.insert()
   end
 
   @doc """
-  Updates a expense_category_budget.
+  Updates a expense_budget.
 
   ## Examples
 
-      iex> update_expense_category_budget(expense_category_budget, %{field: new_value})
-      {:ok, %ExpenseCategoryBudget{}}
+      iex> update_expense_budget(expense_budget, %{field: new_value})
+      {:ok, %ExpenseBudget{}}
 
-      iex> update_expense_category_budget(expense_category_budget, %{field: bad_value})
+      iex> update_expense_budget(expense_budget, %{field: bad_value})
       {:error, %Ecto.Changeset{}}
 
   """
-  def update_expense_category_budget(%ExpenseCategoryBudget{} = expense_category_budget, attrs) do
-    expense_category_budget
-    |> ExpenseCategoryBudget.changeset(attrs)
+  def update_expense_budget(%ExpenseBudget{} = expense_budget, attrs) do
+    expense_budget
+    |> ExpenseBudget.changeset(attrs)
     |> Repo.update()
   end
 
   @doc """
-  Deletes a ExpenseCategoryBudget.
+  Deletes a ExpenseBudget.
 
   ## Examples
 
-      iex> delete_expense_category_budget(expense_category_budget)
-      {:ok, %ExpenseCategoryBudget{}}
+      iex> delete_expense_budget(expense_budget)
+      {:ok, %ExpenseBudget{}}
 
-      iex> delete_expense_category_budget(expense_category_budget)
+      iex> delete_expense_budget(expense_budget)
       {:error, %Ecto.Changeset{}}
 
   """
-  def delete_expense_category_budget(%ExpenseCategoryBudget{} = expense_category_budget) do
-    Repo.delete(expense_category_budget)
+  def delete_expense_budget(%ExpenseBudget{} = expense_budget) do
+    Repo.delete(expense_budget)
   end
 
   @doc """
-  Returns an `%Ecto.Changeset{}` for tracking expense_category_budget changes.
+  Returns an `%Ecto.Changeset{}` for tracking expense_budget changes.
 
   ## Examples
 
-      iex> change_expense_category_budget(expense_category_budget)
-      %Ecto.Changeset{source: %ExpenseCategoryBudget{}}
+      iex> change_expense_budget(expense_budget)
+      %Ecto.Changeset{source: %ExpenseBudget{}}
 
   """
-  def change_expense_category_budget(%ExpenseCategoryBudget{} = expense_category_budget) do
-    ExpenseCategoryBudget.changeset(expense_category_budget, %{})
+  def change_expense_budget(%ExpenseBudget{} = expense_budget) do
+    ExpenseBudget.changeset(expense_budget, %{})
   end
 end

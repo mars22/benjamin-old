@@ -98,7 +98,7 @@
 
 <div class="card border border-secondary">
   <div class="card-header">
-    <strong>Expenses budgets</strong> <%= link "New Budget", to: balance_expense_category_budget_path(@conn, :new, @balance), class: "btn btn-primary float-right"  %>
+    <strong>Expenses budgets</strong> <%= link "New Budget", to: balance_expense_budget_path(@conn, :new, @balance), class: "btn btn-primary float-right"  %>
   </div>
   <div class="card-body">
     <table class="table table-responsive">
@@ -117,8 +117,8 @@
           <td><%= format_amount budget.planned_expenses %></td>
           <td><%= format_amount budget.real_expenses %></td>
           <td class="text-right">
-            <span><%= link "Edit", to: balance_expense_category_budget_path(@conn, :edit, @balance, budget), class: "btn btn-default btn-sm" %></span>
-            <span><%= link "Delete", to: balance_expense_category_budget_path(@conn, :delete, @balance, budget), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger btn-sm" %></span>
+            <span><%= link "Edit", to: balance_expense_budget_path(@conn, :edit, @balance, budget), class: "btn btn-default btn-sm" %></span>
+            <span><%= link "Delete", to: balance_expense_budget_path(@conn, :delete, @balance, budget), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger btn-sm" %></span>
           </td>
         </tr>
     <% end %>

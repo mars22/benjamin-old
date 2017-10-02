@@ -1,3 +1,3 @@
-defmodule BenjaminWeb.ExpenseCategoryBudgetView do
+defmodule BenjaminWeb.ExpenseBudgetView do
   use BenjaminWeb, :view
 end
