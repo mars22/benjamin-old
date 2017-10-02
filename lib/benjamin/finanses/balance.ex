@@ -12,7 +12,7 @@ defmodule Benjamin.Finanses.Balance do
   """
   use Ecto.Schema
   import Ecto.Changeset
-  alias Benjamin.Finanses.{Balance, Bill, Income}
+  alias Benjamin.Finanses.{Balance, Bill, Income, ExpenseCategoryBudget}
 
 
   schema "balances" do
@@ -23,6 +23,7 @@ defmodule Benjamin.Finanses.Balance do
     field :end_at, :date
     has_many :incomes, Income
     has_many :bills, Bill
+    has_many :expenses_budgets, ExpenseCategoryBudget
 
     timestamps()
   end

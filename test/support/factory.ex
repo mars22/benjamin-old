@@ -2,7 +2,7 @@ defmodule Benjamin.Finanses.Factory do
   alias Benjamin.Repo
   alias Benjamin.Finanses.{
     Balance, Income, Bill, BillCategory,
-    Expense, ExpenseCategory, SavingsCategory
+    Expense, ExpenseCategory, ExpenseCategoryBudget, SavingsCategory
   }
 
   # Factories
@@ -25,6 +25,9 @@ defmodule Benjamin.Finanses.Factory do
       ],
       incomes: [
         build(:income)
+      ],
+      expenses_budgets: [
+        build(:expense_category_budget)
       ]
     )
 
@@ -94,6 +97,13 @@ defmodule Benjamin.Finanses.Factory do
     %ExpenseCategory{name: "expense #{System.unique_integer()}"}
   end
 
+  def build(:expense_category_budget) do
+    %ExpenseCategoryBudget {
+      expense_category: build(:expense_category),
+      planned_expenses: Decimal.new(12.5),
+      real_expenses: Decimal.new(12.5)
+    }
+  end
 
 
   # Convenience API

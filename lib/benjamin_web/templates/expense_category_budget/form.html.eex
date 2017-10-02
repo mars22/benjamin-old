@@ -1,0 +1,23 @@
+<%= form_for @changeset, @action, fn f -> %>
+  <%= if @changeset.action do %>
+    <div class="alert alert-danger">
+      <p>Oops, something went wrong! Please check the errors below.</p>
+    </div>
+  <% end %>
+
+  <div class="form-group">
+    <%= label f, :expense_category_id, class: "control-label" %>
+    <%= select f, :expense_category_id, Enum.map(@categories, &{&1.name, &1.id}), step: "any", class: "form-control" %>
+    <%= error_tag f, :expense_category_id %>
+  </div>
+
+  <div class="form-group">
+    <%= label f, :planned_expenses, class: "control-label" %>
+    <%= number_input f, :planned_expenses, step: "any", class: "form-control" %>
+    <%= error_tag f, :planned_expenses %>
+  </div>
+
+  <div class="form-group">
+    <%= submit "Submit", class: "btn btn-primary" %>
+  </div>
+<% end %>

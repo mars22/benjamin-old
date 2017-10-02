@@ -20,6 +20,7 @@ defmodule BenjaminWeb.Router do
     resources "/balances", BalanceController do
       resources "/incomes", IncomeController, except: [:index, :show]
       resources "/bills", BillController, except: [:index, :show]
+      resources "/expense_categories_budgets", ExpenseCategoryBudgetController, except: [:index, :show]
     end
     resources "/expneses", ExpenseController
   end

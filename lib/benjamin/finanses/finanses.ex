@@ -56,6 +56,7 @@ defmodule Benjamin.Finanses do
     |> Repo.get!(id)
     |> Repo.preload(:incomes)
     |> Repo.preload([bills: [:category]])
+    |> Repo.preload([expenses_budgets: [:expense_category]])
   end
 
   @doc """
@@ -728,5 +729,101 @@ defmodule Benjamin.Finanses do
   """
   def change_expense(%Expense{} = expense) do
     Expense.changeset(expense, %{})
+  end
+
+  alias Benjamin.Finanses.ExpenseCategoryBudget
+
+  @doc """
+  Returns the list of expense_categories_budgets.
+
+  ## Examples
+
+      iex> list_expense_categories_budgets()
+      [%ExpenseCategoryBudget{}, ...]
+
+  """
+  def list_expense_categories_budgets do
+    Repo.all(ExpenseCategoryBudget)
+  end
+
+  @doc """
+  Gets a single expense_category_budget.
+
+  Raises `Ecto.NoResultsError` if the Expense category budget does not exist.
+
+  ## Examples
+
+      iex> get_expense_category_budget!(123)
+      %ExpenseCategoryBudget{}
+
+      iex> get_expense_category_budget!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_expense_category_budget!(id), do: Repo.get!(ExpenseCategoryBudget, id)
+
+  @doc """
+  Creates a expense_category_budget.
+
+  ## Examples
+
+      iex> create_expense_category_budget(%{field: value})
+      {:ok, %ExpenseCategoryBudget{}}
+
+      iex> create_expense_category_budget(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_expense_category_budget(attrs \\ %{}) do
+    %ExpenseCategoryBudget{}
+    |> ExpenseCategoryBudget.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  @doc """
+  Updates a expense_category_budget.
+
+  ## Examples
+
+      iex> update_expense_category_budget(expense_category_budget, %{field: new_value})
+      {:ok, %ExpenseCategoryBudget{}}
+
+      iex> update_expense_category_budget(expense_category_budget, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_expense_category_budget(%ExpenseCategoryBudget{} = expense_category_budget, attrs) do
+    expense_category_budget
+    |> ExpenseCategoryBudget.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Deletes a ExpenseCategoryBudget.
+
+  ## Examples
+
+      iex> delete_expense_category_budget(expense_category_budget)
+      {:ok, %ExpenseCategoryBudget{}}
+
+      iex> delete_expense_category_budget(expense_category_budget)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_expense_category_budget(%ExpenseCategoryBudget{} = expense_category_budget) do
+    Repo.delete(expense_category_budget)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking expense_category_budget changes.
+
+  ## Examples
+
+      iex> change_expense_category_budget(expense_category_budget)
+      %Ecto.Changeset{source: %ExpenseCategoryBudget{}}
+
+  """
+  def change_expense_category_budget(%ExpenseCategoryBudget{} = expense_category_budget) do
+    ExpenseCategoryBudget.changeset(expense_category_budget, %{})
   end
 end
