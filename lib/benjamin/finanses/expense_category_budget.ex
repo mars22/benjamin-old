@@ -6,7 +6,7 @@ defmodule Benjamin.Finanses.ExpenseBudget do
 
   schema "expenses_budgets" do
     field :planned_expenses, :decimal
-    field :real_expenses, :decimal
+    field :real_expenses, :decimal, virtual: true
     belongs_to :expense_category, ExpenseCategory
     belongs_to :balance, Balance
 

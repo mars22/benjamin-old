@@ -16,9 +16,13 @@
       <strong>Summary</strong>
     </div>
     <div class="card-body">
-      <strong>Total income: </strong><%= BenjaminWeb.IncomeView.total_income @balance %>
+      <strong>Total income: </strong><%= total_income @balance %>
       </br>
-      <strong>Total outcome: </strong><%= BenjaminWeb.IncomeView.total_outcome @balance %>
+      <strong>Total bills: </strong><%= total_bills @balance %>
+      </br>
+      <strong>Planned expenses: </strong><%= total_planned_expenses @balance %>
+      </br>
+      <strong>Planned saves: </strong><%= planned_saves @balance %>
       </br>
     </div>
   </div>
@@ -136,20 +140,20 @@
     <table class="table table-responsive">
       <thead>
         <tr>
-          <th>Contractor</th>
-          <th>Date</th>
-          <th>Amount</th>
           <th>Category</th>
+          <th>Amount</th>
+          <th>Date</th>
+          <th>Contractor</th>
           <th>Description</th>
         </tr>
       </thead>
       <tbody>
       <%= for expense <- @expenses do %>
         <tr>
-          <td><%= expense.contractor %></td>
-          <td><%= expense.date %></td>
-          <td><%= format_amount expense.amount %></td>
           <td><%= expense.category.name %></td>
+          <td><%= format_amount expense.amount %></td>
+          <td><%= expense.date %></td>
+          <td><%= expense.contractor %></td>
           <td><%= expense.description %></td>
         </tr>
       <% end %>

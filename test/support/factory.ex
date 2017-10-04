@@ -25,9 +25,6 @@ defmodule Benjamin.Finanses.Factory do
       ],
       incomes: [
         build(:income)
-      ],
-      expenses_budgets: [
-        build(:expense_budget)
       ]
     )
 
@@ -100,8 +97,7 @@ defmodule Benjamin.Finanses.Factory do
   def build(:expense_budget) do
     %ExpenseBudget {
       expense_category: build(:expense_category),
-      planned_expenses: Decimal.new(12.5),
-      real_expenses: Decimal.new(12.5)
+      planned_expenses: Decimal.new(12.5)
     }
   end
 

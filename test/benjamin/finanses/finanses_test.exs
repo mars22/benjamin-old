@@ -491,10 +491,13 @@ defmodule Benjamin.FinansesTest do
       Factory.insert!(:expense_budget, [balance_id: balance.id])
     end
 
-    test "list_expense_categories_budgets/0 returns all expense_categories_budgets" do
-      expense_budget = expense_budget_fixture()
-      from_db = Finanses.list_expense_categories_budgets()
-      assert List.first(from_db).id == expense_budget.id
+    test "list_expenses_budgets/0 returns all expense_categories_budgets" do
+      balance = Factory.insert!(:balance)
+      Factory.insert!(:expense_budget, [balance_id: balance.id])
+
+      expenses_budgets = Finanses.list_expenses_budgets(balance)
+      [expense_budget] = expenses_budgets
+      assert expense_budget.real_expenses == nil
     end
 
     test "get_expense_budget!/1 returns the expense_budget with given id" do

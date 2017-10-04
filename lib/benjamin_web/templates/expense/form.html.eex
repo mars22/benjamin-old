@@ -6,15 +6,9 @@
   <% end %>
 
   <div class="form-group">
-    <%= label f, :contractor, class: "control-label" %>
-    <%= text_input f, :contractor, class: "form-control" %>
-    <%= error_tag f, :contractor %>
-  </div>
-
-  <div class="form-group">
-    <%= label f, :date, class: "control-label" %>
-    <%= text_input f, :date, class: "form-control", type: "date", tagindex: 1%>
-    <%= error_tag f, :date %>
+    <%= label f, :category_id, class: "control-label" %>
+    <%= select f, :category_id, Enum.map(@categories, &{&1.name, &1.id}), step: "any", class: "form-control", tagindex: 3 %>
+    <%= error_tag f, :category_id %>
   </div>
 
   <div class="form-group">
@@ -24,11 +18,16 @@
   </div>
 
   <div class="form-group">
-    <%= label f, :category_id, class: "control-label" %>
-    <%= select f, :category_id, Enum.map(@categories, &{&1.name, &1.id}), step: "any", class: "form-control", tagindex: 3 %>
-    <%= error_tag f, :category_id %>
+    <%= label f, :date, class: "control-label" %>
+    <%= text_input f, :date, class: "form-control", type: "date", tagindex: 1%>
+    <%= error_tag f, :date %>
   </div>
 
+  <div class="form-group">
+    <%= label f, :contractor, class: "control-label" %>
+    <%= text_input f, :contractor, class: "form-control" %>
+    <%= error_tag f, :contractor %>
+  </div>
 
   <div class="form-group">
     <%= label f, :description, class: "control-label" %>

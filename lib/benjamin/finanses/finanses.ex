@@ -56,7 +56,6 @@ defmodule Benjamin.Finanses do
     |> Repo.get!(id)
     |> Repo.preload(:incomes)
     |> Repo.preload([bills: [:category]])
-    |> Repo.preload([expenses_budgets: [:expense_category]])
   end
 
   @doc """
@@ -734,16 +733,27 @@ defmodule Benjamin.Finanses do
   alias Benjamin.Finanses.ExpenseBudget
 
   @doc """
-  Returns the list of expense_categories_budgets.
+  Returns the list of expense_budgets for given balance with filled real_expenses.
 
   ## Examples
 
-      iex> list_expense_categories_budgets()
+      iex> list_expense_budgets(%Balance{})
       [%ExpenseBudget{}, ...]
 
   """
-  def list_expense_categories_budgets do
-    Repo.all(ExpenseBudget)
+  def list_expenses_budgets(%Balance{}=balance) do
+    query = from budget in ExpenseBudget,
+            left_join: expense in Expense,
+            on: budget.expense_category_id == expense.category_id,
+            on: expense.date >= ^balance.begin_at,
+            on: expense.date <= ^balance.end_at,
+            where: budget.balance_id == ^balance.id,
+            group_by: budget.id,
+            select: %ExpenseBudget{budget | real_expenses: sum(expense.amount)}
+
+    Repo.all(query)
+    |> Repo.preload([:expense_category])
+
   end
 
   @doc """

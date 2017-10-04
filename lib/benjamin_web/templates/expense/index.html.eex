@@ -5,22 +5,21 @@
 
   <thead class="thead-inverse">
     <tr>
-      <th>Contractor</th>
-      <th>Date</th>
-      <th>Amount</th>
       <th>Category</th>
+      <th>Amount</th>
+      <th>Date</th>
+      <th>Contractor</th>
       <th>Description</th>
-
       <th></th>
     </tr>
   </thead>
   <tbody>
 <%= for expense <- @expenses do %>
     <tr>
-      <td><%= expense.contractor %></td>
-      <td><%= expense.date %></td>
-      <td><%= format_amount expense.amount %></td>
       <td><%= expense.category.name %></td>
+      <td><%= format_amount expense.amount %></td>
+      <td><%= expense.date %></td>
+      <td><%= expense.contractor %></td>
       <td><%= expense.description %></td>
 
       <td class="text-right">
