@@ -427,101 +427,6 @@ defmodule Benjamin.Finanses do
     BillCategory.changeset(bill_category, %{})
   end
 
-  alias Benjamin.Finanses.SavingsCategory
-
-  @doc """
-  Returns the list of savings_categories.
-
-  ## Examples
-
-      iex> list_savings_categories()
-      [%SavingsCategory{}, ...]
-
-  """
-  def list_savings_categories do
-    Repo.all(SavingsCategory)
-  end
-
-  @doc """
-  Gets a single savings_category.
-
-  Raises `Ecto.NoResultsError` if the Savings category does not exist.
-
-  ## Examples
-
-      iex> get_savings_category!(123)
-      %SavingsCategory{}
-
-      iex> get_savings_category!(456)
-      ** (Ecto.NoResultsError)
-
-  """
-  def get_savings_category!(id), do: Repo.get!(SavingsCategory, id)
-
-  @doc """
-  Creates a savings_category.
-
-  ## Examples
-
-      iex> create_savings_category(%{field: value})
-      {:ok, %SavingsCategory{}}
-
-      iex> create_savings_category(%{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def create_savings_category(attrs \\ %{}) do
-    %SavingsCategory{}
-    |> SavingsCategory.changeset(attrs)
-    |> Repo.insert()
-  end
-
-  @doc """
-  Updates a savings_category.
-
-  ## Examples
-
-      iex> update_savings_category(savings_category, %{field: new_value})
-      {:ok, %SavingsCategory{}}
-
-      iex> update_savings_category(savings_category, %{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def update_savings_category(%SavingsCategory{} = savings_category, attrs) do
-    savings_category
-    |> SavingsCategory.changeset(attrs)
-    |> Repo.update()
-  end
-
-  @doc """
-  Deletes a SavingsCategory.
-
-  ## Examples
-
-      iex> delete_savings_category(savings_category)
-      {:ok, %SavingsCategory{}}
-
-      iex> delete_savings_category(savings_category)
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def delete_savings_category(%SavingsCategory{} = savings_category) do
-    Repo.delete(savings_category)
-  end
-
-  @doc """
-  Returns an `%Ecto.Changeset{}` for tracking savings_category changes.
-
-  ## Examples
-
-      iex> change_savings_category(savings_category)
-      %Ecto.Changeset{source: %SavingsCategory{}}
-
-  """
-  def change_savings_category(%SavingsCategory{} = savings_category) do
-    SavingsCategory.changeset(savings_category, %{})
-  end
 
   alias Benjamin.Finanses.ExpenseCategory
 
@@ -847,5 +752,101 @@ defmodule Benjamin.Finanses do
   """
   def change_expense_budget(%ExpenseBudget{} = expense_budget) do
     ExpenseBudget.changeset(expense_budget, %{})
+  end
+
+  alias Benjamin.Finanses.Saving
+
+  @doc """
+  Returns the list of savings.
+
+  ## Examples
+
+      iex> list_savings()
+      [%Saving{}, ...]
+
+  """
+  def list_savings do
+    Repo.all(Saving)
+  end
+
+  @doc """
+  Gets a single saving.
+
+  Raises `Ecto.NoResultsError` if the Saving does not exist.
+
+  ## Examples
+
+      iex> get_saving!(123)
+      %Saving{}
+
+      iex> get_saving!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_saving!(id), do: Repo.get!(Saving, id)
+
+  @doc """
+  Creates a saving.
+
+  ## Examples
+
+      iex> create_saving(%{field: value})
+      {:ok, %Saving{}}
+
+      iex> create_saving(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_saving(attrs \\ %{}) do
+    %Saving{}
+    |> Saving.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  @doc """
+  Updates a saving.
+
+  ## Examples
+
+      iex> update_saving(saving, %{field: new_value})
+      {:ok, %Saving{}}
+
+      iex> update_saving(saving, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_saving(%Saving{} = saving, attrs) do
+    saving
+    |> Saving.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Deletes a Saving.
+
+  ## Examples
+
+      iex> delete_saving(saving)
+      {:ok, %Saving{}}
+
+      iex> delete_saving(saving)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_saving(%Saving{} = saving) do
+    Repo.delete(saving)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking saving changes.
+
+  ## Examples
+
+      iex> change_saving(saving)
+      %Ecto.Changeset{source: %Saving{}}
+
+  """
+  def change_saving(%Saving{} = saving) do
+    Saving.changeset(saving, %{})
   end
 end

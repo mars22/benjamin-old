@@ -31,11 +31,13 @@
           <li class="nav-item <%= is_active(@conn, :expense_path, :index) %>">
             <a class="nav-link" href="<%= expense_path @conn, :index %>">Expenses<span class="sr-only">(current)</span></a>
           </li>
+          <li class="nav-item <%= is_active(@conn, :saving_path, :index) %>">
+            <a class="nav-link" href="<%= saving_path @conn, :index %>">Savings<span class="sr-only">(current)</span></a>
+          </li>
           <li class="nav-item dropdown <%= is_active(@conn, :bill_category_path, :index) %>">
             <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Settings</a>
             <div class="dropdown-menu">
               <a class="dropdown-item" href="<%= bill_category_path @conn, :index %>">Bill Categories</a>
-              <a class="dropdown-item" href="<%= savings_category_path @conn, :index %>">Savings Categories</a>
               <a class="dropdown-item" href="<%= expense_category_path @conn, :index %>">Expense Categories</a>
             </div>
           </li>

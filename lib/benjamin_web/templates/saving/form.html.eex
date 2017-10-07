@@ -12,6 +12,18 @@
   </div>
 
   <div class="form-group">
+    <%= label f, :goal_amount, class: "control-label" %>
+    <%= number_input f, :goal_amount, step: "any", class: "form-control" %>
+    <%= error_tag f, :goal_amount %>
+  </div>
+
+  <div class="form-group">
+    <%= label f, :end_at, class: "control-label" %>
+    <%= text_input f, :end_at, class: "form-control", type: "date" %>
+    <%= error_tag f, :end_at %>
+  </div>
+
+  <div class="form-group">
     <%= submit "Submit", class: "btn btn-primary" %>
   </div>
 <% end %>

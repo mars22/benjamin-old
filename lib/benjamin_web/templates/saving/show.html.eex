@@ -1,0 +1,23 @@
+<h2>Show Saving</h2>
+
+<ul>
+
+  <li>
+    <strong>Name:</strong>
+    <%= @saving.name %>
+  </li>
+
+  <li>
+    <strong>Goal amount:</strong>
+    <%= @saving.goal_amount %>
+  </li>
+
+  <li>
+    <strong>End at:</strong>
+    <%= @saving.end_at %>
+  </li>
+
+</ul>
+
+<span><%= link "Edit", to: saving_path(@conn, :edit, @saving) %></span>
+<span><%= link "Back", to: saving_path(@conn, :index) %></span>

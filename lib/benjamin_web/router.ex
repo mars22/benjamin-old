@@ -23,6 +23,7 @@ defmodule BenjaminWeb.Router do
       resources "/expense_categories_budgets", ExpenseBudgetController, except: [:index, :show]
     end
     resources "/expneses", ExpenseController
+    resources "/savings", SavingController
   end
 
   scope "/settings", BenjaminWeb do

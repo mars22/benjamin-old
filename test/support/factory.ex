@@ -2,7 +2,7 @@ defmodule Benjamin.Finanses.Factory do
   alias Benjamin.Repo
   alias Benjamin.Finanses.{
     Balance, Income, Bill, BillCategory,
-    Expense, ExpenseCategory, ExpenseBudget, SavingsCategory
+    Expense, ExpenseCategory, ExpenseBudget, Saving
   }
 
   # Factories
@@ -67,10 +67,6 @@ defmodule Benjamin.Finanses.Factory do
       vat: Decimal.new(23),
       tax: Decimal.new(18)
     }
-  end
-
-  def build(:savings_category) do
-    %SavingsCategory{name: "Savings category 1"}
   end
 
   def build(:expense) do
