@@ -1,10 +1,9 @@
 defmodule BenjaminWeb.BalanceControllerTest do
   use BenjaminWeb.ConnCase
 
-  alias Benjamin.Finanses
   alias Benjamin.Finanses.Factory
 
-  @update_attrs %{description: "some updated description", month: 12}
+  @update_attrs %{description: "some updated description", month: 12, begin_at: ~D[2017-12-01], end_at: ~D[2017-12-31]}
   @invalid_attrs %{description: nil, month: nil}
 
   def fixture(:balance) do
@@ -34,7 +33,7 @@ defmodule BenjaminWeb.BalanceControllerTest do
 
   describe "create balance" do
     test "redirects to show when data is valid", %{conn: conn} do
-      attrs = %{description: "some description", month: 12, year: 2017}
+      attrs = %{description: "some description", month: 12, year: 2017, begin_at: ~D[2017-12-01], end_at: ~D[2017-12-31]}
       conn = post conn, balance_path(conn, :create), balance: attrs
 
       assert %{id: id} = redirected_params(conn)

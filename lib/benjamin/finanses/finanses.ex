@@ -72,7 +72,7 @@ defmodule Benjamin.Finanses do
   """
   def create_balance(attrs \\ %{}) do
     %Balance{}
-    |> Balance.create_changeset(attrs)
+    |> Balance.changeset(attrs)
     |> Repo.insert()
   end
 
@@ -120,6 +120,18 @@ defmodule Benjamin.Finanses do
 
   """
   def change_balance(%Balance{} = balance) do
+    Balance.changeset(balance, %{})
+  end
+
+  def balance_default_changese() do
+    current_date = Date.utc_today()
+    {begin_at, end_at} = Balance.date_range(current_date.year, current_date.month)
+    balance = %Balance{
+      year: current_date.year,
+      month: current_date.month,
+      begin_at: begin_at,
+      end_at: end_at,
+    }
     Balance.changeset(balance, %{})
   end
 
@@ -741,7 +753,7 @@ defmodule Benjamin.Finanses do
       [%ExpenseBudget{}, ...]
 
   """
-  def list_expenses_budgets(%Balance{}=balance) do
+  def list_expenses_budgets(%Balance{} = balance) do
     query = from budget in ExpenseBudget,
             left_join: expense in Expense,
             on: budget.expense_category_id == expense.category_id,
@@ -749,11 +761,11 @@ defmodule Benjamin.Finanses do
             on: expense.date <= ^balance.end_at,
             where: budget.balance_id == ^balance.id,
             group_by: budget.id,
-            select: %ExpenseBudget{budget | real_expenses: sum(expense.amount) }
+            select: %ExpenseBudget{budget | real_expenses: sum(expense.amount)}
 
-    Repo.all(query)
-    |> Repo.preload([:expense_category])
-
+    query
+      |> Repo.all()
+      |> Repo.preload([:expense_category])
   end
 
   @doc """

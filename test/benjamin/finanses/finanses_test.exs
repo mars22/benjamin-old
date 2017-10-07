@@ -21,6 +21,16 @@ defmodule Benjamin.FinansesTest do
       assert Finanses.get_balance!(balance.id) == balance
     end
 
+    test "balance_default_changese/0 returns default value for empty changes" do
+      default_changes = Finanses.balance_default_changese()
+      current_date = Date.utc_today
+      {begin_at, end_at} = Balance.date_range(current_date.year, current_date.month)
+      assert default_changes.data.year == current_date.year
+      assert default_changes.data.month == current_date.month
+      assert default_changes.data.begin_at == begin_at
+      assert default_changes.data.end_at == end_at
+    end
+
     test "get_balance_with_related!/1 returns the balance with given id and all realated data" do
       balance = Factory.insert!(:balance_with_related)
       result_balance = Finanses.get_balance_with_related!(balance.id)
@@ -481,13 +491,12 @@ defmodule Benjamin.FinansesTest do
   describe "expense_categories_budgets" do
     alias Benjamin.Finanses.ExpenseBudget
 
-    @valid_attrs %{planned_expenses: "120.5", real_expenses: "120.5"}
     @update_attrs %{planned_expenses: "456.7", real_expenses: "456.7"}
     @invalid_attrs %{planned_expenses: nil, real_expenses: nil}
 
 
 
-    def expense_budget_fixture(attrs \\ %{}) do
+    def expense_budget_fixture() do
       balance = Factory.insert!(:balance)
       Factory.insert!(:expense_budget, [balance_id: balance.id])
     end

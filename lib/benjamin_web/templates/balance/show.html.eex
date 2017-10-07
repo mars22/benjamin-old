@@ -4,7 +4,7 @@
       <h2>Balance </h2>
       <p><strong>Year: </strong><%= @balance.year %></p>
       <p><strong>Month: </strong><%= month_nrb_to_name @balance.month %></p>
-      <p><strong>Date range: </strong><%= format_date @balance.begin_at %> - <%= format_date @balance.end_at %></p>
+      <p><strong>Expenses from: </strong><%= format_date @balance.begin_at %> <strong>to: </strong><%= format_date @balance.end_at %></p>
       <p><strong>Description: </strong><%= @balance.description %></p>
 
       <%= link "Edit", to: balance_path(@conn, :edit, @balance), class: "btn btn-primary" %>

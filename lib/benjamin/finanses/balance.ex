@@ -38,16 +38,6 @@ defmodule Benjamin.Finanses.Balance do
     |> update_date_range
   end
 
-  def create_changeset(%Balance{} = balance, attrs) do
-    balance
-    |> cast(attrs, [:month, :year, :description, :begin_at, :end_at])
-    |> validate_required([:month, :year])
-    |> validate_inclusion(:month, 1..12)
-    |> validate_inclusion(:year, year_range())
-    |> set_default_date_range
-  end
-
-
   defp year_range() do
     current_year = Date.utc_today.year
     (current_year - 10)..current_year
@@ -60,14 +50,6 @@ defmodule Benjamin.Finanses.Balance do
     {begin_at, end_at}
   end
 
-  defp set_default_date_range(changeset) do
-    if changeset.valid? do
-      put_date_range(changeset)
-    else
-      changeset
-    end
-
-  end
 
   defp update_date_range(%Ecto.Changeset{changes: changes} = changeset) do
     month_or_year_changed? =

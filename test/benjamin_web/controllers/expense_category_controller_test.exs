@@ -1,7 +1,6 @@
 defmodule BenjaminWeb.ExpenseCategoryControllerTest do
   use BenjaminWeb.ConnCase
 
-  alias Benjamin.Finanses
   alias Benjamin.Finanses.Factory
 
   @create_attrs %{is_deleted: true, name: "some name"}

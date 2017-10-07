@@ -9,7 +9,7 @@ defmodule BenjaminWeb.ExpenseControllerTest do
   end
 
   describe "list of expenses" do
-    test "render only parent expenses", %{conn: conn, category: category} do
+    test "render only parent expenses", %{conn: conn} do
       expense1 = Factory.insert!(:expense_with_parts)
       expense2 = Factory.insert!(:expense_with_parts)
       expense3 = Factory.insert!(:expense)

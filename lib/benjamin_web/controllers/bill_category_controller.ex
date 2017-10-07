@@ -16,7 +16,7 @@ defmodule BenjaminWeb.BillCategoryController do
 
   def create(conn, %{"bill_category" => bill_category_params}) do
     case Finanses.create_bill_category(bill_category_params) do
-      {:ok, bill_category} ->
+      {:ok, _} ->
         conn
         |> put_flash(:info, "Bill category created successfully.")
         |> redirect(to: bill_category_path(conn, :index))
@@ -35,7 +35,7 @@ defmodule BenjaminWeb.BillCategoryController do
     bill_category = Finanses.get_bill_category!(id)
 
     case Finanses.update_bill_category(bill_category, bill_category_params) do
-      {:ok, bill_category} ->
+      {:ok, _} ->
         conn
         |> put_flash(:info, "Bill category updated successfully.")
         |> redirect(to: bill_category_path(conn, :index))

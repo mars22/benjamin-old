@@ -1,7 +1,6 @@
 defmodule BenjaminWeb.ExpenseBudgetControllerTest do
   use BenjaminWeb.ConnCase
 
-  alias Benjamin.Finanses
   alias Benjamin.Finanses.Factory
 
   @invalid_attrs %{planned_expenses: nil, real_expenses: nil}

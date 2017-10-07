@@ -18,6 +18,18 @@
   </div>
 
   <div class="form-group">
+    <%= label f, "Expenses from", class: "control-label" %>
+    <%= text_input f, :begin_at, class: "form-control", type: "date", tagindex: 1%>
+    <%= error_tag f, :begin_at %>
+  </div>
+
+  <div class="form-group">
+    <%= label f, "Expenses to", class: "control-label" %>
+    <%= text_input f, :end_at, class: "form-control", type: "date", tagindex: 1%>
+    <%= error_tag f, :end_at %>
+  </div>
+
+  <div class="form-group">
     <%= label f, :description, class: "control-label" %>
     <%= text_input f, :description, class: "form-control" %>
     <%= error_tag f, :description %>
