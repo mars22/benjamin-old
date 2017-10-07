@@ -18,9 +18,9 @@
     <div class="card-body">
       <strong>Total income: </strong><%= total_income @balance %>
       </br>
-      <strong>Total bills: </strong><%= total_bills @balance %>
+      <strong>Total planned/real bills: </strong><%= total_planned_bills @balance %> / <%= total_real_bills @balance %>
       </br>
-      <strong>Planned expenses: </strong><%= total_planned_expenses @balance %>
+      <strong>Total planned/real expenses: </strong><%= total_planned_expenses @balance %> / <%= total_real_expenses @balance %>
       </br>
       <strong>Planned saves: </strong><%= planned_saves @balance %>
       </br>
@@ -76,7 +76,8 @@
       <thead>
         <tr>
           <th>Name</th>
-          <th>Amount</th>
+          <th>Planned amount</th>
+          <th>Real amount</th>
           <th>Paid</th>
           <th>Description</th>
           <th></th>
@@ -86,6 +87,7 @@
     <%= for bill <- @balance.bills do %>
         <tr>
           <td><%= bill.category.name %></td>
+          <td><%= format_amount bill.planned_amount %></td>
           <td><%= format_amount bill.amount %></td>
           <td><%= bill.paid %></td>
           <td><%= bill.description %></td>

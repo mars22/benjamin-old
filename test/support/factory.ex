@@ -53,6 +53,7 @@ defmodule Benjamin.Finanses.Factory do
 
   def build(:bill) do
     %Bill{
+      planned_amount: Decimal.new(12.5),
       amount: Decimal.new(12.5),
       category: build(:bill_category)
     }

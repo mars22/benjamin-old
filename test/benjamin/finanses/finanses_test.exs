@@ -171,9 +171,17 @@ defmodule Benjamin.FinansesTest do
   describe "bills" do
     alias Benjamin.Finanses.Bill
 
-    @valid_attrs %{amount: "120.5", description: "some description", paid: true, paid_at: ~D[2010-04-17]}
-    @update_attrs %{amount: "456.7", description: "some updated description", paid: false, paid_at: ~D[2011-05-18]}
-    @invalid_attrs %{amount: nil, description: nil, paid: nil, paid_at: nil}
+    @valid_attrs %{planned_amount: "120.5", amount: "120.5", description: "some description", paid: true, paid_at: ~D[2010-04-17]}
+    @update_attrs %{planned_amount: "456.7", amount: "120.5", description: "some updated description", paid: false, paid_at: ~D[2011-05-18]}
+    @invalid_attrs %{planned_amount: nil, description: nil, paid: nil, paid_at: nil}
+
+    def build_bill(attrs) do
+      balance = Factory.insert!(:balance)
+      bill_category = Factory.insert!(:bill_category)
+      attrs
+        |> Map.put(:balance_id, balance.id)
+        |> Map.put(:category_id, bill_category.id)
+    end
 
     test "list_bills/0 returns all bills" do
       %{bills: [bill]} = Factory.insert!(:balance_with_bill)
@@ -187,11 +195,7 @@ defmodule Benjamin.FinansesTest do
     end
 
     test "create_bill/1 with valid data creates a bill" do
-      balance = Factory.insert!(:balance)
-      bill_category = Factory.insert!(:bill_category)
-
-      attrs = Map.put(@valid_attrs, :balance_id, balance.id)
-      attrs = Map.put(attrs, :category_id, bill_category.id)
+      attrs = build_bill(@valid_attrs)
       assert {:ok, %Bill{} = bill} = Finanses.create_bill(attrs)
       assert bill.amount == Decimal.new("120.5")
       assert bill.description == "some description"
@@ -199,11 +203,7 @@ defmodule Benjamin.FinansesTest do
     end
 
     test "create_bill/1 can't create the same bill twice" do
-      balance = Factory.insert!(:balance)
-      bill_category = Factory.insert!(:bill_category)
-
-      attrs = Map.put(@valid_attrs, :balance_id, balance.id)
-      attrs = Map.put(attrs, :category_id, bill_category.id)
+      attrs = build_bill(@valid_attrs)
       assert {:ok, %Bill{} = bill} = Finanses.create_bill(attrs)
       assert bill.amount == Decimal.new("120.5")
       assert bill.description == "some description"
@@ -218,11 +218,18 @@ defmodule Benjamin.FinansesTest do
       assert {:error, %Ecto.Changeset{}} = Finanses.create_bill(@invalid_attrs)
     end
 
+    test "create_bill/1 with planned_amount set to 0 or less then 0 returns error changeset" do
+      attrs  = %{planned_amount: "-10", amount: "120.5", description: "some description", paid: true, paid_at: ~D[2010-04-17]}
+      attrs = build_bill(attrs)
+      assert {:error, %Ecto.Changeset{}} = Finanses.create_bill(attrs)
+    end
+
     test "update_bill/2 with valid data updates the bill" do
       %{bills: [bill]} = Factory.insert!(:balance_with_bill)
       assert {:ok, bill} = Finanses.update_bill(bill, @update_attrs)
       assert %Bill{} = bill
-      assert bill.amount == Decimal.new("456.7")
+      assert bill.planned_amount == Decimal.new("456.7")
+      assert bill.amount == Decimal.new("120.5")
       assert bill.description == "some updated description"
       assert bill.paid == false
     end

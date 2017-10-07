@@ -35,9 +35,19 @@ defmodule BenjaminWeb.BalanceView do
     |> Enum.reduce(Decimal.new(0), &(Decimal.add(&1.amount, &2)))
   end
 
-  defp sum_bills(%{bills: bills}) do
+  defp sum_real_bills(%{bills: bills}) do
     bills
     |> Enum.reduce(Decimal.new(0), &(Decimal.add(&1.amount, &2)))
+  end
+
+  defp sum_planned_bills(%{bills: bills}) do
+    bills
+    |> Enum.reduce(Decimal.new(0), &(Decimal.add(&1.planned_amount, &2)))
+  end
+
+  def sum_real_expenses(%{expenses_budgets: expenses_budgets}) do
+    expenses_budgets
+    |> Enum.reduce(Decimal.new(0), &(Decimal.add(&1.real_expenses, &2)))
   end
 
   def sum_planned_expenses(%{expenses_budgets: expenses_budgets}) do
@@ -51,9 +61,15 @@ defmodule BenjaminWeb.BalanceView do
     |> format_amount
   end
 
-  def total_bills(balance) do
+  def total_planned_bills(balance) do
     balance
-    |> sum_bills
+    |> sum_planned_bills
+    |> format_amount
+  end
+
+  def total_real_bills(balance) do
+    balance
+    |> sum_real_bills
     |> format_amount
   end
 
@@ -63,9 +79,15 @@ defmodule BenjaminWeb.BalanceView do
     |> format_amount
   end
 
+  def total_real_expenses(balance) do
+    balance
+    |> sum_real_expenses
+    |> format_amount
+  end
+
   def planned_saves(balance) do
     all_outcomes =
-      Decimal.add(sum_bills(balance), sum_planned_expenses(balance))
+      Decimal.add(sum_planned_bills(balance), sum_planned_expenses(balance))
 
     balance
     |> sum_incomes()

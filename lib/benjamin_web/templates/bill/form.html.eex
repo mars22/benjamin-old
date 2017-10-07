@@ -12,6 +12,12 @@
   </div>
 
   <div class="form-group">
+    <%= label f, :planned_amount, class: "control-label" %>
+    <%= number_input f, :planned_amount, step: "any", class: "form-control" %>
+    <%= error_tag f, :planned_amount %>
+  </div>
+
+  <div class="form-group">
     <%= label f, :amount, class: "control-label" %>
     <%= number_input f, :amount, step: "any", class: "form-control" %>
     <%= error_tag f, :amount %>
