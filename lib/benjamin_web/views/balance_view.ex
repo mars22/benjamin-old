@@ -95,5 +95,9 @@ defmodule BenjaminWeb.BalanceView do
     |> format_amount
   end
 
-
+  def real_saves(transactions) do
+    transactions
+    |> Enum.reduce(Decimal.new(0), &(Decimal.add(&1.amount, &2)))
+    |> format_amount
+  end
 end

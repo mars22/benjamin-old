@@ -18,7 +18,9 @@ defmodule Benjamin.Finanses do
 
   """
   def list_balances do
-    Repo.all(Balance)
+    Balance
+    |> order_by([desc: :year, desc: :month])
+    |> Repo.all()
   end
 
   @doc """
@@ -783,7 +785,10 @@ defmodule Benjamin.Finanses do
       ** (Ecto.NoResultsError)
 
   """
-  def get_saving!(id), do: Repo.get!(Saving, id)
+  def get_saving!(id) do
+    Repo.get!(Saving, id)
+    |> Repo.preload(:transactions)
+  end
 
   @doc """
   Creates a saving.
@@ -848,5 +853,110 @@ defmodule Benjamin.Finanses do
   """
   def change_saving(%Saving{} = saving) do
     Saving.changeset(saving, %{})
+  end
+
+  alias Benjamin.Finanses.Transaction
+
+  @doc """
+  Returns the list of transactions.
+
+  ## Examples
+
+      iex> list_transactions()
+      [%Transaction{}, ...]
+
+  """
+  def list_transactions do
+    Repo.all(Transaction)
+  end
+
+  def list_transactions(from, to) do
+    query = from t in Transaction,
+            where: t.date >= ^from,
+            where: t.date <= ^to
+    query
+    |> Repo.all()
+    |> Repo.preload(:saving)
+  end
+
+  @doc """
+  Gets a single transaction.
+
+  Raises `Ecto.NoResultsError` if the Saving transaction does not exist.
+
+  ## Examples
+
+      iex> get_transaction!(123)
+      %Transaction{}
+
+      iex> get_transaction!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_transaction!(id), do: Repo.get!(Transaction, id)
+
+  @doc """
+  Creates a transaction.
+
+  ## Examples
+
+      iex> create_transaction(%{field: value})
+      {:ok, %Transaction{}}
+
+      iex> create_transaction(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_transaction(attrs \\ %{}) do
+    %Transaction{}
+    |> Transaction.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  @doc """
+  Updates a transaction.
+
+  ## Examples
+
+      iex> update_transaction(transaction, %{field: new_value})
+      {:ok, %Transaction{}}
+
+      iex> update_transaction(transaction, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_transaction(%Transaction{} = transaction, attrs) do
+    transaction
+    |> Transaction.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Deletes a Transaction.
+
+  ## Examples
+
+      iex> delete_transaction(transaction)
+      {:ok, %Transaction{}}
+
+      iex> delete_transaction(transaction)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_transaction(%Transaction{} = transaction) do
+    Repo.delete(transaction)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking transaction changes.
+
+  ## Examples
+
+      iex> change_transaction(transaction)
+      %Ecto.Changeset{source: %Transaction{}}
+
+  """
+  def change_transaction(%Transaction{} = transaction) do
+    Transaction.changeset(transaction, %{})
   end
 end

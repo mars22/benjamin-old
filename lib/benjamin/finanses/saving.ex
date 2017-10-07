@@ -1,13 +1,14 @@
 defmodule Benjamin.Finanses.Saving do
   use Ecto.Schema
   import Ecto.Changeset
-  alias Benjamin.Finanses.Saving
+  alias Benjamin.Finanses.{Saving, Transaction}
 
 
   schema "savings" do
     field :end_at, :date
     field :goal_amount, :decimal
     field :name, :string
+    has_many :transactions, Transaction
 
     timestamps()
   end

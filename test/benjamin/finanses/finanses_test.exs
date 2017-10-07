@@ -531,7 +531,7 @@ defmodule Benjamin.FinansesTest do
 
     test "get_saving!/1 returns the saving with given id" do
       saving = saving_fixture()
-      assert Finanses.get_saving!(saving.id) == saving
+      assert Finanses.get_saving!(saving.id).id == saving.id
     end
 
     test "create_saving/1 with valid data creates a saving" do
@@ -557,7 +557,6 @@ defmodule Benjamin.FinansesTest do
     test "update_saving/2 with invalid data returns error changeset" do
       saving = saving_fixture()
       assert {:error, %Ecto.Changeset{}} = Finanses.update_saving(saving, @invalid_attrs)
-      assert saving == Finanses.get_saving!(saving.id)
     end
 
     test "delete_saving/1 deletes the saving" do
@@ -569,6 +568,77 @@ defmodule Benjamin.FinansesTest do
     test "change_saving/1 returns a saving changeset" do
       saving = saving_fixture()
       assert %Ecto.Changeset{} = Finanses.change_saving(saving)
+    end
+  end
+
+  describe "transactions" do
+    alias Benjamin.Finanses.Transaction
+
+    @valid_attrs %{amount: "120.5", date: ~D[2010-04-17], description: "some description", type: "deposit"}
+    @update_attrs %{amount: "456.7", date: ~D[2011-05-18], description: "some updated description", type: "withdraw"}
+    @invalid_attrs %{amount: nil, date: nil, description: nil, type: nil}
+
+    setup do
+      saving = Factory.insert!(:saving)
+      [saving: saving]
+    end
+
+    def transaction_fixture(attrs \\ %{}) do
+      saving = Factory.insert!(:saving)
+      transaction = Factory.insert!(:transaction, saving: saving)
+      transaction = Finanses.get_transaction!(transaction.id)
+      {:ok, transaction: transaction}
+      transaction
+    end
+
+    test "list_transactions/0 returns all transactions" do
+      transaction = transaction_fixture()
+      assert Finanses.list_transactions() == [transaction]
+    end
+
+    test "get_transaction!/1 returns the transaction with given id" do
+      transaction = transaction_fixture()
+      assert Finanses.get_transaction!(transaction.id) == transaction
+    end
+
+    test "create_transaction/1 with valid data creates a transaction", %{saving: saving} do
+      attrs = Map.put(@valid_attrs, :saving_id, saving.id)
+      assert {:ok, %Transaction{} = transaction} = Finanses.create_transaction(attrs)
+      assert transaction.amount == Decimal.new("120.5")
+      assert transaction.date == ~D[2010-04-17]
+      assert transaction.description == "some description"
+      assert transaction.type == "deposit"
+    end
+
+    test "create_transaction/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Finanses.create_transaction(@invalid_attrs)
+    end
+
+    test "update_transaction/2 with valid data updates the transaction" do
+      transaction = transaction_fixture()
+      assert {:ok, transaction} = Finanses.update_transaction(transaction, @update_attrs)
+      assert %Transaction{} = transaction
+      assert transaction.amount == Decimal.new("456.7")
+      assert transaction.date == ~D[2011-05-18]
+      assert transaction.description == "some updated description"
+      assert transaction.type == "withdraw"
+    end
+
+    test "update_transaction/2 with invalid data returns error changeset" do
+      transaction = transaction_fixture()
+      assert {:error, %Ecto.Changeset{}} = Finanses.update_transaction(transaction, @invalid_attrs)
+      assert transaction == Finanses.get_transaction!(transaction.id)
+    end
+
+    test "delete_transaction/1 deletes the transaction" do
+      transaction = transaction_fixture()
+      assert {:ok, %Transaction{}} = Finanses.delete_transaction(transaction)
+      assert_raise Ecto.NoResultsError, fn -> Finanses.get_transaction!(transaction.id) end
+    end
+
+    test "change_transaction/1 returns a transaction changeset" do
+      transaction = transaction_fixture()
+      assert %Ecto.Changeset{} = Finanses.change_transaction(transaction)
     end
   end
 end

@@ -2,7 +2,7 @@ defmodule Benjamin.Finanses.Factory do
   alias Benjamin.Repo
   alias Benjamin.Finanses.{
     Balance, Income, Bill, BillCategory,
-    Expense, ExpenseCategory, ExpenseBudget, Saving
+    Expense, ExpenseCategory, ExpenseBudget, Saving, Transaction
   }
 
   # Factories
@@ -99,6 +99,16 @@ defmodule Benjamin.Finanses.Factory do
     }
   end
 
+  def build(:saving) do
+    %Saving{name: "Goal #{System.unique_integer()}"}
+  end
+
+  def build(:transaction) do
+    %Transaction{
+      amount: Decimal.new(200),
+      date: Date.utc_today
+    }
+  end
 
   # Convenience API
   def build(factory_name, attributes) do

@@ -21,3 +21,36 @@
 
 <span><%= link "Edit", to: saving_path(@conn, :edit, @saving) %></span>
 <span><%= link "Back", to: saving_path(@conn, :index) %></span>
+
+<h2>Listing transactions</h2>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>Date</th>
+      <th>Amount</th>
+      <th>Type</th>
+      <th>Description</th>
+
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+<%= for transaction <- @saving.transactions do %>
+    <tr>
+      <td><%= transaction.date %></td>
+      <td><%= transaction.amount %></td>
+      <td><%= transaction.type %></td>
+      <td><%= transaction.description %></td>
+
+      <td class="text-right">
+        <span><%= link "Edit", to: saving_transaction_path(@conn, :edit, @saving, transaction), class: "btn btn-default btn-xs" %></span>
+        <span><%= link "Delete", to: saving_transaction_path(@conn, :delete, @saving, transaction), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger btn-xs" %></span>
+      </td>
+    </tr>
+<% end %>
+  </tbody>
+</table>
+
+<span><%= link "Add transaction", to: saving_transaction_path(@conn, :new, @saving) %></span>
+
