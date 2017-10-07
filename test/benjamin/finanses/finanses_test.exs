@@ -100,8 +100,8 @@ defmodule Benjamin.FinansesTest do
   describe "incomes" do
     alias Benjamin.Finanses.Income
 
-    @valid_attrs %{amount: "120.5", description: "some description"}
-    @update_attrs %{amount: "456.7", description: "some updated description"}
+    @valid_attrs %{amount: "120.5", date: ~D[2017-12-01], description: "some description"}
+    @update_attrs %{amount: "456.7", date: ~D[2017-12-01], description: "some updated description"}
     @invalid_data [%{amount: nil}, %{amount: -12}]
 
     test "list_incomes/0 returns all incomes" do
@@ -120,12 +120,6 @@ defmodule Benjamin.FinansesTest do
       assert {:ok, %Income{} = income} = Finanses.create_income(attrs)
       assert income.amount == Decimal.new("120.5")
       assert income.description == "some description"
-    end
-
-    test "create_income/1 with invalid data returns error changeset" do
-      for invalid_attrs <- @invalid_data do
-        assert {:error, %Ecto.Changeset{}} = Finanses.create_income(invalid_attrs)
-      end
     end
 
     test "update_income/2 with valid data updates the income" do

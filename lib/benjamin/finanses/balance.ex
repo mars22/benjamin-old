@@ -6,7 +6,7 @@ defmodule Benjamin.Finanses.Balance do
   * Incomes
   * Savings
   * Payments/Bills
-  * Expenses
+  * Expenses budgets
 
   There should be one balace per month.
   """

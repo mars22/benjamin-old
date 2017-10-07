@@ -47,7 +47,7 @@ defmodule BenjaminWeb.BalanceView do
 
   def sum_real_expenses(%{expenses_budgets: expenses_budgets}) do
     expenses_budgets
-    |> Enum.reduce(Decimal.new(0), &(Decimal.add(&1.real_expenses, &2)))
+    |> Enum.reduce(Decimal.new(0), &(Decimal.add(&1.real_expenses || Decimal.new(0), &2)))
   end
 
   def sum_planned_expenses(%{expenses_budgets: expenses_budgets}) do

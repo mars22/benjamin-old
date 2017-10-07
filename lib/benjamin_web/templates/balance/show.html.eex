@@ -4,6 +4,7 @@
       <h2>Balance </h2>
       <p><strong>Year: </strong><%= @balance.year %></p>
       <p><strong>Month: </strong><%= month_nrb_to_name @balance.month %></p>
+      <p><strong>Date range: </strong><%= format_date @balance.begin_at %> - <%= format_date @balance.end_at %></p>
       <p><strong>Description: </strong><%= @balance.description %></p>
 
       <%= link "Edit", to: balance_path(@conn, :edit, @balance), class: "btn btn-primary" %>
@@ -37,6 +38,7 @@
       <table class="table table-responsive">
         <thead>
           <tr>
+            <th>Date</th>
             <th>Type</th>
             <th>Amount</th>
             <th>VAT</th>
@@ -49,6 +51,7 @@
         <tbody>
       <%= for income <- @balance.incomes do %>
           <tr>
+            <td><%= format_date income.date %></td>
             <td><%= BenjaminWeb.IncomeView.income_type income %></td>
             <td><%= format_amount income.amount %></td>
             <td><%= BenjaminWeb.IncomeView.display_vat income %></td>

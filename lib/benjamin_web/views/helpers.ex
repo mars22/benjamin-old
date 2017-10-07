@@ -21,4 +21,8 @@ defmodule BenjaminWeb.ViewHelpers do
       _ -> ""
     end
   end
+
+  def format_date(%Date{} = date), do: "#{date.day}.#{date.month}.#{date.year}"
+  def format_date(_), do: ""
+
 end

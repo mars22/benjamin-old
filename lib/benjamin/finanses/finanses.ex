@@ -749,7 +749,7 @@ defmodule Benjamin.Finanses do
             on: expense.date <= ^balance.end_at,
             where: budget.balance_id == ^balance.id,
             group_by: budget.id,
-            select: %ExpenseBudget{budget | real_expenses: sum(expense.amount)}
+            select: %ExpenseBudget{budget | real_expenses: sum(expense.amount) }
 
     Repo.all(query)
     |> Repo.preload([:expense_category])

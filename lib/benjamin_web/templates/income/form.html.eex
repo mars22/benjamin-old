@@ -6,6 +6,12 @@
   <% end %>
 
   <div class="form-group">
+    <%= label f, :date, class: "control-label" %>
+    <%= text_input f, :date, class: "form-control", type: "date", tagindex: 1%>
+    <%= error_tag f, :date %>
+  </div>
+
+  <div class="form-group">
     <%= label f, :amount, class: "control-label" %>
     <%= number_input f, :amount, class: "form-control", step: "any" %>
     <%= error_tag f, :amount %>

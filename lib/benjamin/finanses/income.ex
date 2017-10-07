@@ -6,6 +6,7 @@ defmodule Benjamin.Finanses.Income do
 
   schema "incomes" do
     field :amount, :decimal
+    field :date, :date
     field :description, :string
     field :is_invoice, :boolean, default: false
     field :vat, :decimal, default: Decimal.new(23)
@@ -18,8 +19,8 @@ defmodule Benjamin.Finanses.Income do
   @doc false
   def changeset(%Income{} = income, attrs) do
     income
-    |> cast(attrs, [:amount, :description, :balance_id, :is_invoice, :vat, :tax])
-    |> validate_required([:amount, :balance_id])
+    |> cast(attrs, [:amount, :date, :description, :balance_id, :is_invoice, :vat, :tax])
+    |> validate_required([:amount, :balance_id, :date])
     |> validate_number(:amount, greater_than_or_equal_to: 0)
     |> foreign_key_constraint(:balance_id)
   end
