@@ -25,8 +25,8 @@
           <li class="nav-item <%= is_active(@conn, :page_path, :index) %>">
             <a class="nav-link" href="<%= page_path @conn, :index %>">Home <span class="sr-only">(current)</span></a>
           </li>
-          <li class="nav-item <%= is_active(@conn, :balance_path, :index) %>">
-            <a class="nav-link" href="<%= balance_path @conn, :index %>">Balances</a>
+          <li class="nav-item <%= is_active(@conn, :budget_path, :index) %>">
+            <a class="nav-link" href="<%= budget_path @conn, :index %>">Budgets</a>
           </li>
           <li class="nav-item <%= is_active(@conn, :expense_path, :index) %>">
             <a class="nav-link" href="<%= expense_path @conn, :index %>">Expenses<span class="sr-only">(current)</span></a>

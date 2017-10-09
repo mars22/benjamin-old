@@ -4,106 +4,106 @@ defmodule Benjamin.FinansesTest do
   alias Benjamin.Finanses
   alias Benjamin.Finanses.Factory
 
-  describe "balances" do
-    alias Benjamin.Finanses.Balance
+  describe "budgets" do
+    alias Benjamin.Finanses.Budget
 
     @valid_attrs %{description: "some description", month: 12, year: 2017, begin_at: ~D[2017-12-01], end_at: ~D[2017-12-31]}
     @update_attrs %{description: "some updated description", month: 12, year: 2017}
     @invalid_attrs %{description: nil, month: nil}
 
-    test "list_balances/0 returns all balances" do
-      balance = Factory.insert!(:balance)
-      assert Finanses.list_balances() == [balance]
+    test "list_budgets/0 returns all budgets" do
+      budget = Factory.insert!(:budget)
+      assert Finanses.list_budgets() == [budget]
     end
 
-    test "get_balance!/1 returns the balance with given id" do
-      balance = Factory.insert!(:balance)
-      assert Finanses.get_balance!(balance.id) == balance
+    test "get_budget!/1 returns the budget with given id" do
+      budget = Factory.insert!(:budget)
+      assert Finanses.get_budget!(budget.id) == budget
     end
 
-    test "balance_default_changese/0 returns default value for empty changes" do
-      default_changes = Finanses.balance_default_changese()
+    test "budget_default_changese/0 returns default value for empty changes" do
+      default_changes = Finanses.budget_default_changese()
       current_date = Date.utc_today
-      {begin_at, end_at} = Balance.date_range(current_date.year, current_date.month)
+      {begin_at, end_at} = Budget.date_range(current_date.year, current_date.month)
       assert default_changes.data.year == current_date.year
       assert default_changes.data.month == current_date.month
       assert default_changes.data.begin_at == begin_at
       assert default_changes.data.end_at == end_at
     end
 
-    test "get_balance_with_related!/1 returns the balance with given id and all realated data" do
-      balance = Factory.insert!(:balance_with_related)
-      result_balance = Finanses.get_balance_with_related!(balance.id)
-      assert balance == result_balance
+    test "get_budget_with_related!/1 returns the budget with given id and all realated data" do
+      budget = Factory.insert!(:budget_with_related)
+      result_budget = Finanses.get_budget_with_related!(budget.id)
+      assert budget == result_budget
     end
 
-    test "create_balance/1 with valid data creates a balance" do
-      assert {:ok, %Balance{} = balance} = Finanses.create_balance(@valid_attrs)
-      assert balance.description == "some description"
-      assert balance.month == 12
-      assert balance.begin_at == ~D[2017-12-01]
-      assert balance.end_at == ~D[2017-12-31]
+    test "create_budget/1 with valid data creates a budget" do
+      assert {:ok, %Budget{} = budget} = Finanses.create_budget(@valid_attrs)
+      assert budget.description == "some description"
+      assert budget.month == 12
+      assert budget.begin_at == ~D[2017-12-01]
+      assert budget.end_at == ~D[2017-12-31]
     end
 
-    test "create_balance/1 with invalid data returns error changeset" do
-      assert {:error, %Ecto.Changeset{}} = Finanses.create_balance(@invalid_attrs)
+    test "create_budget/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Finanses.create_budget(@invalid_attrs)
     end
 
-    test "create_balance/1 with invalid month returns error changeset" do
+    test "create_budget/1 with invalid month returns error changeset" do
       for invalid_month <- [-1,0,13] do
         invalid_attrs = %{ @valid_attrs | month: invalid_month}
-        assert {:error, %Ecto.Changeset{}=changeset} = Finanses.create_balance(invalid_attrs)
+        assert {:error, %Ecto.Changeset{}=changeset} = Finanses.create_budget(invalid_attrs)
         assert [month: {"is invalid", [validation: :inclusion]}] = changeset.errors
       end
     end
 
-    test "create_balance/1 with invalid year returns error changeset" do
+    test "create_budget/1 with invalid year returns error changeset" do
       next_year = Date.utc_today.year + 1
       for invalid_year <- [-1, 0, next_year] do
         invalid_attrs = %{ @valid_attrs | year: invalid_year}
-        assert {:error, %Ecto.Changeset{}=changeset} = Finanses.create_balance(invalid_attrs)
+        assert {:error, %Ecto.Changeset{}=changeset} = Finanses.create_budget(invalid_attrs)
         assert [year: {"is invalid", [validation: :inclusion]}] = changeset.errors
       end
     end
 
-    test "update_balance/2 with valid data updates the balance" do
-      balance = Factory.insert!(:balance)
+    test "update_budget/2 with valid data updates the budget" do
+      budget = Factory.insert!(:budget)
       attrs = %{@valid_attrs | description: "New", begin_at: ~D[2016-12-01], end_at: ~D[2016-12-31]}
-      assert {:ok, balance} = Finanses.update_balance(balance, attrs)
-      assert balance.description == "New"
-      assert balance.month == 12
-      assert balance.begin_at == ~D[2016-12-01]
-      assert balance.end_at == ~D[2016-12-31]
+      assert {:ok, budget} = Finanses.update_budget(budget, attrs)
+      assert budget.description == "New"
+      assert budget.month == 12
+      assert budget.begin_at == ~D[2016-12-01]
+      assert budget.end_at == ~D[2016-12-31]
     end
 
-    test "update_balance/2 with new month or year updates the balance date range" do
-      org_balance = Factory.insert!(:balance, @valid_attrs)
+    test "update_budget/2 with new month or year updates the budget date range" do
+      org_budget = Factory.insert!(:budget, @valid_attrs)
       attrs = %{@valid_attrs | year: 2008}
-      assert {:ok, balance} = Finanses.update_balance(org_balance, attrs)
-      assert balance.begin_at.year == 2008
-      assert balance.end_at.year == 2008
+      assert {:ok, budget} = Finanses.update_budget(org_budget, attrs)
+      assert budget.begin_at.year == 2008
+      assert budget.end_at.year == 2008
 
       attrs = %{@valid_attrs | month: 1}
-      assert {:ok, balance} = Finanses.update_balance(org_balance, attrs)
-      assert balance.begin_at.month == 1
-      assert balance.end_at.month == 1
+      assert {:ok, budget} = Finanses.update_budget(org_budget, attrs)
+      assert budget.begin_at.month == 1
+      assert budget.end_at.month == 1
     end
 
-    test "update_balance/2 with invalid data returns error changeset" do
-      balance = Factory.insert!(:balance)
-      assert {:error, %Ecto.Changeset{}} = Finanses.update_balance(balance, @invalid_attrs)
-      assert balance == Finanses.get_balance!(balance.id)
+    test "update_budget/2 with invalid data returns error changeset" do
+      budget = Factory.insert!(:budget)
+      assert {:error, %Ecto.Changeset{}} = Finanses.update_budget(budget, @invalid_attrs)
+      assert budget == Finanses.get_budget!(budget.id)
     end
 
-    test "delete_balance/1 deletes the balance" do
-      balance = Factory.insert!(:balance)
-      assert {:ok, %Balance{}} = Finanses.delete_balance(balance)
-      assert_raise Ecto.NoResultsError, fn -> Finanses.get_balance!(balance.id) end
+    test "delete_budget/1 deletes the budget" do
+      budget = Factory.insert!(:budget)
+      assert {:ok, %Budget{}} = Finanses.delete_budget(budget)
+      assert_raise Ecto.NoResultsError, fn -> Finanses.get_budget!(budget.id) end
     end
 
-    test "change_balance/1 returns a balance changeset" do
-      balance = Factory.insert!(:balance)
-      assert %Ecto.Changeset{} = Finanses.change_balance(balance)
+    test "change_budget/1 returns a budget changeset" do
+      budget = Factory.insert!(:budget)
+      assert %Ecto.Changeset{} = Finanses.change_budget(budget)
     end
   end
 
@@ -115,25 +115,25 @@ defmodule Benjamin.FinansesTest do
     @invalid_data [%{amount: nil}, %{amount: -12}]
 
     test "list_incomes/0 returns all incomes" do
-      %{incomes: [income]} = Factory.insert!(:balance_with_income)
+      %{incomes: [income]} = Factory.insert!(:budget_with_income)
       assert Finanses.list_incomes() == [income]
     end
 
     test "get_income!/1 returns the income with given id" do
-      %{incomes: [income]} = Factory.insert!(:balance_with_income)
+      %{incomes: [income]} = Factory.insert!(:budget_with_income)
       assert Finanses.get_income!(income.id) == income
     end
 
     test "create_income/1 with valid data creates a income" do
-      balance = Factory.insert!(:balance)
-      attrs = Map.put(@valid_attrs, :balance_id, balance.id)
+      budget = Factory.insert!(:budget)
+      attrs = Map.put(@valid_attrs, :budget_id, budget.id)
       assert {:ok, %Income{} = income} = Finanses.create_income(attrs)
       assert income.amount == Decimal.new("120.5")
       assert income.description == "some description"
     end
 
     test "update_income/2 with valid data updates the income" do
-      %{incomes: [income]} = Factory.insert!(:balance_with_income)
+      %{incomes: [income]} = Factory.insert!(:budget_with_income)
       assert {:ok, income} = Finanses.update_income(income, @update_attrs)
       assert %Income{} = income
       assert income.amount == Decimal.new("456.7")
@@ -142,25 +142,25 @@ defmodule Benjamin.FinansesTest do
 
     test "update_income/2 with invalid data returns error changeset" do
       for invalid_attrs <- @invalid_data do
-        %{incomes: [income]} = Factory.insert!(:balance_with_income)
+        %{incomes: [income]} = Factory.insert!(:budget_with_income)
         assert {:error, %Ecto.Changeset{}} = Finanses.update_income(income, invalid_attrs)
         assert income == Finanses.get_income!(income.id)
       end
     end
 
     test "delete_income/1 deletes the income"  do
-      %{incomes: [income]} = Factory.insert!(:balance_with_income)
+      %{incomes: [income]} = Factory.insert!(:budget_with_income)
       assert {:ok, %Income{}} = Finanses.delete_income(income)
       assert_raise Ecto.NoResultsError, fn -> Finanses.get_income!(income.id) end
     end
 
     test "change_income/1 returns a income changeset" do
-      %{incomes: [income]} = Factory.insert!(:balance_with_income)
+      %{incomes: [income]} = Factory.insert!(:budget_with_income)
       assert %Ecto.Changeset{} = Finanses.change_income(income)
     end
 
     test "calculate_vat/1 returns a vat value" do
-      %{incomes: [income]} = Factory.insert!(:balance_with_income)
+      %{incomes: [income]} = Factory.insert!(:budget_with_income)
       vat = Decimal.round(Decimal.new(23), 2)
       assert vat == Income.calculate_vat(income)
     end
@@ -180,21 +180,21 @@ defmodule Benjamin.FinansesTest do
     @invalid_attrs %{planned_amount: nil, description: nil, paid: nil, paid_at: nil}
 
     def build_bill(attrs) do
-      balance = Factory.insert!(:balance)
+      budget = Factory.insert!(:budget)
       bill_category = Factory.insert!(:bill_category)
       attrs
-        |> Map.put(:balance_id, balance.id)
+        |> Map.put(:budget_id, budget.id)
         |> Map.put(:category_id, bill_category.id)
     end
 
     test "list_bills/0 returns all bills" do
-      %{bills: [bill]} = Factory.insert!(:balance_with_bill)
+      %{bills: [bill]} = Factory.insert!(:budget_with_bill)
       [bill_from_db] = Finanses.list_bills()
       assert  bill_from_db.id == bill.id
     end
 
     test "get_bill!/1 returns the bill with given id" do
-      %{bills: [bill]} = Factory.insert!(:balance_with_bill)
+      %{bills: [bill]} = Factory.insert!(:budget_with_bill)
       assert Finanses.get_bill!(bill.id) == bill
     end
 
@@ -229,7 +229,7 @@ defmodule Benjamin.FinansesTest do
     end
 
     test "update_bill/2 with valid data updates the bill" do
-      %{bills: [bill]} = Factory.insert!(:balance_with_bill)
+      %{bills: [bill]} = Factory.insert!(:budget_with_bill)
       assert {:ok, bill} = Finanses.update_bill(bill, @update_attrs)
       assert %Bill{} = bill
       assert bill.planned_amount == Decimal.new("456.7")
@@ -239,19 +239,19 @@ defmodule Benjamin.FinansesTest do
     end
 
     test "update_bill/2 with invalid data returns error changeset" do
-      %{bills: [bill]} = Factory.insert!(:balance_with_bill)
+      %{bills: [bill]} = Factory.insert!(:budget_with_bill)
       assert {:error, %Ecto.Changeset{}} = Finanses.update_bill(bill, @invalid_attrs)
       assert bill == Finanses.get_bill!(bill.id)
     end
 
     test "delete_bill/1 deletes the bill" do
-      %{bills: [bill]} = Factory.insert!(:balance_with_bill)
+      %{bills: [bill]} = Factory.insert!(:budget_with_bill)
       assert {:ok, %Bill{}} = Finanses.delete_bill(bill)
       assert_raise Ecto.NoResultsError, fn -> Finanses.get_bill!(bill.id) end
     end
 
     test "change_bill/1 returns a bill changeset" do
-      %{bills: [bill]} = Factory.insert!(:balance_with_bill)
+      %{bills: [bill]} = Factory.insert!(:budget_with_bill)
       assert %Ecto.Changeset{} = Finanses.change_bill(bill)
     end
   end
@@ -423,12 +423,12 @@ defmodule Benjamin.FinansesTest do
       assert %Ecto.Changeset{} = Finanses.change_expense(expense)
     end
 
-    test "list_expenses_for_balance/1 returns all expenses that should belong to balance" do
+    test "list_expenses_for_budget/1 returns all expenses that should belong to budget" do
       Factory.insert!(:expense, date: ~D[1900-12-12])
       expense = Factory.insert!(:expense)
-      balance = Factory.insert!(:balance)
+      budget = Factory.insert!(:budget)
 
-      expenses = Finanses.list_expenses_for_balance(balance)
+      expenses = Finanses.list_expenses_for_budget(budget)
 
       assert expenses == [expense]
     end
@@ -444,15 +444,15 @@ defmodule Benjamin.FinansesTest do
 
 
     def expense_budget_fixture() do
-      balance = Factory.insert!(:balance)
-      Factory.insert!(:expense_budget, [balance_id: balance.id])
+      budget = Factory.insert!(:budget)
+      Factory.insert!(:expense_budget, [budget_id: budget.id])
     end
 
     test "list_expenses_budgets/0 returns all expense_categories_budgets" do
-      balance = Factory.insert!(:balance)
-      Factory.insert!(:expense_budget, [balance_id: balance.id])
+      budget = Factory.insert!(:budget)
+      Factory.insert!(:expense_budget, [budget_id: budget.id])
 
-      expenses_budgets = Finanses.list_expenses_budgets(balance)
+      expenses_budgets = Finanses.list_expenses_budgets(budget)
       [expense_budget] = expenses_budgets
       assert expense_budget.real_expenses == nil
     end
@@ -464,16 +464,16 @@ defmodule Benjamin.FinansesTest do
     end
 
     test "create_expense_budget/1 with valid data creates a expense_budget" do
-      balance = Factory.insert!(:balance)
+      budget = Factory.insert!(:budget)
       expenses_category = Factory.insert!(:expense_category)
       attr = %{
         planned_expenses: "120.5", real_expenses: "120.5",
-        balance_id: balance.id, expense_category_id: expenses_category.id
+        budget_id: budget.id, expense_category_id: expenses_category.id
       }
       assert {:ok, %ExpenseBudget{} = expense_budget} = Finanses.create_expense_budget(attr)
       assert expense_budget.planned_expenses == Decimal.new("120.5")
       assert expense_budget.real_expenses == nil
-      assert expense_budget.balance_id == balance.id
+      assert expense_budget.budget_id == budget.id
       assert expense_budget.expense_category_id == expenses_category.id
     end
 

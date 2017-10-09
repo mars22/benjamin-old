@@ -1,0 +1,28 @@
+
+<h2>Budgets</h2>
+<%= link "New Budget", to: budget_path(@conn, :new) , class: "btn btn-primary btn-xs"%>
+<table class="table table-responsive">
+
+  <thead class="thead-inverse">
+    <tr>
+      <th>Year</th>
+      <th>Month</th>
+      <th>Description</th>
+
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+<%= for budget <- @budgets do %>
+    <tr>
+      <td><%= budget.year %></td>
+      <td><%= month_nrb_to_name budget.month %></td>
+      <td><%= budget.description %></td>
+
+      <td class="text-right">
+        <span><%= link "Show", to: budget_path(@conn, :show, budget), class: "btn btn-default btn-xs" %></span>
+      </td>
+    </tr>
+<% end %>
+  </tbody>
+</table>

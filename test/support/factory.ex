@@ -1,7 +1,7 @@
 defmodule Benjamin.Finanses.Factory do
   alias Benjamin.Repo
   alias Benjamin.Finanses.{
-    Balance, Income, Bill, BillCategory,
+    Budget, Income, Bill, BillCategory,
     Expense, ExpenseCategory, ExpenseBudget, Saving, Transaction
   }
 
@@ -9,10 +9,10 @@ defmodule Benjamin.Finanses.Factory do
 
   # Factories
 
-  def build(:balance) do
+  def build(:budget) do
     current_date = Date.utc_today()
-    {begin_at, end_at} = Balance.date_range(current_date.year, current_date.month)
-    %Balance{
+    {begin_at, end_at} = Budget.date_range(current_date.year, current_date.month)
+    %Budget{
       month: current_date.month,
       year: current_date.year,
       begin_at: begin_at,
@@ -20,8 +20,8 @@ defmodule Benjamin.Finanses.Factory do
     }
   end
 
-  def build(:balance_with_related) do
-    build(:balance,
+  def build(:budget_with_related) do
+    build(:budget,
       bills: [
         build(:bill)
       ],
@@ -32,16 +32,16 @@ defmodule Benjamin.Finanses.Factory do
 
   end
 
-  def build(:balance_with_income) do
-    build(:balance,
+  def build(:budget_with_income) do
+    build(:budget,
       incomes: [
         build(:income)
       ]
     )
   end
 
-  def build(:balance_with_bill) do
-    build(:balance,
+  def build(:budget_with_bill) do
+    build(:budget,
       bills: [
         build(:bill)
       ]

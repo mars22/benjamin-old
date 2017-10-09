@@ -6,32 +6,32 @@ defmodule BenjaminWeb.ExpenseBudgetControllerTest do
   @invalid_attrs %{planned_expenses: nil, real_expenses: nil}
 
   setup do
-    balance = Factory.insert!(:balance)
+    budget = Factory.insert!(:budget)
     expenses_category = Factory.insert!(:expense_category)
-    [balance: balance, expenses_category: expenses_category]
+    [budget: budget, expenses_category: expenses_category]
   end
 
   describe "new expense_budget" do
-    test "renders form", %{conn: conn, balance: balance} do
-      conn = get conn, balance_expense_budget_path(conn, :new, balance)
+    test "renders form", %{conn: conn, budget: budget} do
+      conn = get conn, budget_expense_budget_path(conn, :new, budget)
       assert html_response(conn, 200) =~ "New Expense category budget"
     end
   end
 
   describe "create expense_budget" do
-    test "redirects to balance show when data is valid", %{conn: conn, balance: balance, expenses_category: expenses_category} do
+    test "redirects to budget show when data is valid", %{conn: conn, budget: budget, expenses_category: expenses_category} do
       attrs = %{planned_expenses: "120.5", expense_category_id: expenses_category.id}
 
-      conn = post conn, balance_expense_budget_path(conn, :create, balance.id), expense_budget: attrs
+      conn = post conn, budget_expense_budget_path(conn, :create, budget.id), expense_budget: attrs
 
-      assert redirected_to(conn) == balance_path(conn, :show, balance.id)
+      assert redirected_to(conn) == budget_path(conn, :show, budget.id)
 
-      conn = get conn, balance_path(conn, :show, balance.id)
+      conn = get conn, budget_path(conn, :show, budget.id)
       assert html_response(conn, 200) =~ "Expenses budgets"
     end
 
-    test "renders errors when data is invalid", %{conn: conn, balance: balance} do
-      conn = post conn, balance_expense_budget_path(conn, :create, balance.id), expense_budget: @invalid_attrs
+    test "renders errors when data is invalid", %{conn: conn, budget: budget} do
+      conn = post conn, budget_expense_budget_path(conn, :create, budget.id), expense_budget: @invalid_attrs
       assert html_response(conn, 200) =~ "New Expense category budget"
     end
   end
@@ -39,8 +39,8 @@ defmodule BenjaminWeb.ExpenseBudgetControllerTest do
   describe "edit expense_budget" do
     setup [:create_expense_budget]
 
-    test "renders form for editing chosen expense_budget", %{conn: conn, balance: balance, expense_budget: expense_budget} do
-      conn = get conn, balance_expense_budget_path(conn, :edit, balance, expense_budget)
+    test "renders form for editing chosen expense_budget", %{conn: conn, budget: budget, expense_budget: expense_budget} do
+      conn = get conn, budget_expense_budget_path(conn, :edit, budget, expense_budget)
       assert html_response(conn, 200) =~ "Edit Expense category budget"
     end
   end
@@ -48,14 +48,14 @@ defmodule BenjaminWeb.ExpenseBudgetControllerTest do
   describe "update expense_budget" do
     setup [:create_expense_budget]
 
-    test "redirects when data is valid", %{conn: conn, balance: balance, expense_budget: expense_budget} do
+    test "redirects when data is valid", %{conn: conn, budget: budget, expense_budget: expense_budget} do
       attrs = %{planned_expenses: "456.7"}
-      conn = put conn, balance_expense_budget_path(conn, :update, balance, expense_budget), expense_budget: attrs
-      assert redirected_to(conn) == balance_path(conn, :show, balance)
+      conn = put conn, budget_expense_budget_path(conn, :update, budget, expense_budget), expense_budget: attrs
+      assert redirected_to(conn) == budget_path(conn, :show, budget)
     end
 
-    test "renders errors when data is invalid", %{conn: conn, balance: balance, expense_budget: expense_budget} do
-      conn = put conn, balance_expense_budget_path(conn, :update, balance, expense_budget), expense_budget: @invalid_attrs
+    test "renders errors when data is invalid", %{conn: conn, budget: budget, expense_budget: expense_budget} do
+      conn = put conn, budget_expense_budget_path(conn, :update, budget, expense_budget), expense_budget: @invalid_attrs
       assert html_response(conn, 200) =~ "Edit Expense category budget"
     end
   end
@@ -63,17 +63,17 @@ defmodule BenjaminWeb.ExpenseBudgetControllerTest do
   describe "delete expense_budget" do
     setup [:create_expense_budget]
 
-    test "deletes chosen expense_budget", %{conn: conn, balance: balance, expense_budget: expense_budget} do
-      conn = delete conn, balance_expense_budget_path(conn, :delete, balance, expense_budget)
-      assert redirected_to(conn) == balance_path(conn, :show, balance)
+    test "deletes chosen expense_budget", %{conn: conn, budget: budget, expense_budget: expense_budget} do
+      conn = delete conn, budget_expense_budget_path(conn, :delete, budget, expense_budget)
+      assert redirected_to(conn) == budget_path(conn, :show, budget)
       assert_error_sent 404, fn ->
-        delete conn, balance_expense_budget_path(conn, :delete, balance, expense_budget)
+        delete conn, budget_expense_budget_path(conn, :delete, budget, expense_budget)
       end
     end
   end
 
-  defp create_expense_budget(%{balance: balance}) do
-    expense_budget = Factory.insert!(:expense_budget, balance_id: balance.id)
+  defp create_expense_budget(%{budget: budget}) do
+    expense_budget = Factory.insert!(:expense_budget, budget_id: budget.id)
     {:ok, expense_budget: expense_budget}
   end
 end

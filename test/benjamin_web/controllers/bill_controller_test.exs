@@ -10,9 +10,9 @@ defmodule BenjaminWeb.BillControllerTest do
 
 
   setup do
-    balance = Factory.insert!(:balance)
+    budget = Factory.insert!(:budget)
     bill_category = Factory.insert!(:bill_category)
-    [balance: balance, bill_category: bill_category]
+    [budget: budget, bill_category: bill_category]
   end
 
   def fixture(attrs \\ %{}) do
@@ -23,15 +23,15 @@ defmodule BenjaminWeb.BillControllerTest do
     bill
   end
 
-  defp create_fixtures(%{balance: balance, bill_category: bill_category}) do
-    bill = fixture(%{balance_id: balance.id, category_id: bill_category.id})
+  defp create_fixtures(%{budget: budget, bill_category: bill_category}) do
+    bill = fixture(%{budget_id: budget.id, category_id: bill_category.id})
     {:ok, bill: bill}
   end
 
 
   describe "new bill" do
-    test "renders form", %{conn: conn, balance: balance} do
-      conn = get conn, balance_bill_path(conn, :new, balance.id)
+    test "renders form", %{conn: conn, budget: budget} do
+      conn = get conn, budget_bill_path(conn, :new, budget.id)
       response = html_response(conn, 200)
       assert response =~ "New Bill"
       assert response =~ "category 1"
@@ -39,20 +39,20 @@ defmodule BenjaminWeb.BillControllerTest do
   end
 
   describe "create bill" do
-    test "redirects to balance show when data is valid", %{conn: conn, balance: balance, bill_category: bill_category} do
+    test "redirects to budget show when data is valid", %{conn: conn, budget: budget, bill_category: bill_category} do
       create_attrs = Map.put(@create_attrs, :category_id, bill_category.id)
-      conn = post conn, balance_bill_path(conn, :create, balance), bill: create_attrs
-      assert redirected_to(conn) == balance_path(conn, :show, balance)
+      conn = post conn, budget_bill_path(conn, :create, budget), bill: create_attrs
+      assert redirected_to(conn) == budget_path(conn, :show, budget)
 
-      conn = get conn, balance_path(conn, :show, balance)
+      conn = get conn, budget_path(conn, :show, budget)
       response = html_response(conn, 200)
       assert  response =~ "120,5"
       assert  response =~ "category 1"
 
     end
 
-    test "renders errors when data is invalid", %{conn: conn, balance: balance} do
-      conn = post conn, balance_bill_path(conn, :create, balance), bill: @invalid_attrs
+    test "renders errors when data is invalid", %{conn: conn, budget: budget} do
+      conn = post conn, budget_bill_path(conn, :create, budget), bill: @invalid_attrs
       assert html_response(conn, 200) =~ "New Bill"
     end
   end
@@ -60,8 +60,8 @@ defmodule BenjaminWeb.BillControllerTest do
   describe "edit bill" do
     setup [:create_fixtures]
 
-    test "renders form for editing chosen bill", %{conn: conn, balance: balance, bill: bill} do
-      conn = get conn, balance_bill_path(conn, :edit, balance, bill)
+    test "renders form for editing chosen bill", %{conn: conn, budget: budget, bill: bill} do
+      conn = get conn, budget_bill_path(conn, :edit, budget, bill)
       assert html_response(conn, 200) =~ "Edit Bill"
     end
   end
@@ -69,18 +69,18 @@ defmodule BenjaminWeb.BillControllerTest do
   describe "update bill" do
     setup [:create_fixtures]
 
-    test "redirects to balance show when data is valid", %{conn: conn, balance: balance, bill: bill} do
-      conn = put conn, balance_bill_path(conn, :update, balance, bill), bill: @update_attrs
-      assert redirected_to(conn) == balance_path(conn, :show, balance)
+    test "redirects to budget show when data is valid", %{conn: conn, budget: budget, bill: bill} do
+      conn = put conn, budget_bill_path(conn, :update, budget, bill), bill: @update_attrs
+      assert redirected_to(conn) == budget_path(conn, :show, budget)
 
-      conn = get conn, balance_path(conn, :show, balance)
+      conn = get conn, budget_path(conn, :show, budget)
       response = html_response(conn, 200)
       assert  response =~ "456,7"
       assert  response =~ "category 1"
     end
 
-    test "renders errors when data is invalid", %{conn: conn, balance: balance, bill: bill} do
-      conn = put conn, balance_bill_path(conn, :update, balance, bill), bill: @invalid_attrs
+    test "renders errors when data is invalid", %{conn: conn, budget: budget, bill: bill} do
+      conn = put conn, budget_bill_path(conn, :update, budget, bill), bill: @invalid_attrs
       assert html_response(conn, 200) =~ "Edit Bill"
     end
   end
@@ -88,11 +88,11 @@ defmodule BenjaminWeb.BillControllerTest do
   describe "delete bill" do
     setup [:create_fixtures]
 
-    test "deletes chosen bill", %{conn: conn, balance: balance, bill: bill} do
-      conn = delete conn, balance_bill_path(conn, :delete, balance, bill)
-      assert redirected_to(conn) == balance_path(conn, :show, balance)
+    test "deletes chosen bill", %{conn: conn, budget: budget, bill: bill} do
+      conn = delete conn, budget_bill_path(conn, :delete, budget, bill)
+      assert redirected_to(conn) == budget_path(conn, :show, budget)
       assert_error_sent 404, fn ->
-        delete conn, balance_bill_path(conn, :delete, balance, bill)
+        delete conn, budget_bill_path(conn, :delete, budget, bill)
       end
     end
   end

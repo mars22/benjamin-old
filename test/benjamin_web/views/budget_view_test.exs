@@ -1,4 +1,4 @@
-defmodule BenjaminWeb.BalanceViewTest do
+defmodule BenjaminWeb.BudgetViewTest do
   use BenjaminWeb.ConnCase, async: true
 
 

@@ -1,4 +1,4 @@
-defmodule BenjaminWeb.BalanceView do
+defmodule BenjaminWeb.BudgetView do
   use BenjaminWeb, :view
 
   @months %{
@@ -55,41 +55,41 @@ defmodule BenjaminWeb.BalanceView do
     |> Enum.reduce(Decimal.new(0), &(Decimal.add(&1.planned_expenses, &2)))
   end
 
-  def total_income(balace) do
-    balace
+  def total_income(budget) do
+    budget
     |> sum_incomes
     |> format_amount
   end
 
-  def total_planned_bills(balance) do
-    balance
+  def total_planned_bills(budget) do
+    budget
     |> sum_planned_bills
     |> format_amount
   end
 
-  def total_real_bills(balance) do
-    balance
+  def total_real_bills(budget) do
+    budget
     |> sum_real_bills
     |> format_amount
   end
 
-  def total_planned_expenses(balance) do
-    balance
+  def total_planned_expenses(budget) do
+    budget
     |> sum_planned_expenses
     |> format_amount
   end
 
-  def total_real_expenses(balance) do
-    balance
+  def total_real_expenses(budget) do
+    budget
     |> sum_real_expenses
     |> format_amount
   end
 
-  def planned_saves(balance) do
+  def planned_saves(budget) do
     all_outcomes =
-      Decimal.add(sum_planned_bills(balance), sum_planned_expenses(balance))
+      Decimal.add(sum_planned_bills(budget), sum_planned_expenses(budget))
 
-    balance
+    budget
     |> sum_incomes()
     |> Decimal.sub(all_outcomes)
     |> format_amount

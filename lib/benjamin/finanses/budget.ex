@@ -1,21 +1,21 @@
-defmodule Benjamin.Finanses.Balance do
+defmodule Benjamin.Finanses.Budget do
   @moduledoc """
-  Define a balance.
+  Define a budget.
 
-  Balance is used to group financial information such as:
+  Budget is used to group financial information such as:
   * Incomes
   * Savings
   * Payments/Bills
   * Expenses budgets
 
-  There should be one balace per month.
+  There should be one budget per month.
   """
   use Ecto.Schema
   import Ecto.Changeset
-  alias Benjamin.Finanses.{Balance, Bill, Income, ExpenseBudget}
+  alias Benjamin.Finanses.{Budget, Bill, Income, ExpenseBudget}
 
 
-  schema "balances" do
+  schema "budgets" do
     field :description, :string
     field :month, :integer
     field :year, :integer
@@ -29,8 +29,8 @@ defmodule Benjamin.Finanses.Balance do
   end
 
   @doc false
-  def changeset(%Balance{} = balance, attrs) do
-    balance
+  def changeset(%Budget{} = budget, attrs) do
+    budget
     |> cast(attrs, [:month, :year, :description, :begin_at, :end_at])
     |> validate_required([:month, :year, :begin_at, :end_at])
     |> validate_inclusion(:month, 1..12)

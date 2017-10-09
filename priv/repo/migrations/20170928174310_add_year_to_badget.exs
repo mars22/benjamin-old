@@ -1,8 +1,8 @@
-defmodule Benjamin.Repo.Migrations.AddYearToBalance do
+defmodule Benjamin.Repo.Migrations.AddYearToBudget do
   use Ecto.Migration
 
   def change do
-    alter table(:balances) do
+    alter table(:budgets) do
       add :year, :integer, null: false
     end
   end

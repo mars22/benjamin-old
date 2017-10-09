@@ -1,5 +1,5 @@
 <h2>Edit Expense category budget</h2>
 
-<%= render "form.html", Map.put(assigns, :action, balance_expense_budget_path(@conn, :update, @balance, @expense_budget)) %>
+<%= render "form.html", Map.put(assigns, :action, budget_expense_budget_path(@conn, :update, @budget, @expense_budget)) %>
 
-<span><%= link "Back", to: balance_path(@conn, :show, @balance) %></span>
+<span><%= link "Back", to: budget_path(@conn, :show, @budget) %></span>

@@ -6,135 +6,135 @@ defmodule Benjamin.Finanses do
   import Ecto.Query, warn: false
   alias Benjamin.Repo
 
-  alias Benjamin.Finanses.Balance
+  alias Benjamin.Finanses.Budget
 
   @doc """
-  Returns the list of balances.
+  Returns the list of budgets.
 
   ## Examples
 
-      iex> list_balances()
-      [%Balance{}, ...]
+      iex> list_budgets()
+      [%Budget{}, ...]
 
   """
-  def list_balances do
-    Balance
+  def list_budgets do
+    Budget
     |> order_by([desc: :year, desc: :month])
     |> Repo.all()
   end
 
   @doc """
-  Gets a single balance.
+  Gets a single budget.
 
-  Raises `Ecto.NoResultsError` if the Balance does not exist.
+  Raises `Ecto.NoResultsError` if the Budget does not exist.
 
   ## Examples
 
-      iex> get_balance!(123)
-      %Balance{}
+      iex> get_budget!(123)
+      %Budget{}
 
-      iex> get_balance!(456)
+      iex> get_budget!(456)
       ** (Ecto.NoResultsError)
 
   """
-  def get_balance!(id), do: Repo.get!(Balance, id)
+  def get_budget!(id), do: Repo.get!(Budget, id)
 
   @doc """
-  Gets a single balance with related data .
+  Gets a single budget with related data .
 
-  Raises `Ecto.NoResultsError` if the Balance does not exist.
+  Raises `Ecto.NoResultsError` if the Budget does not exist.
 
   ## Examples
 
-      iex> get_balance_with_related!(123)
-      %Balance{}
+      iex> get_budget_with_related!(123)
+      %Budget{}
 
-      iex> get_balance_with_related!(456)
+      iex> get_budget_with_related!(456)
       ** (Ecto.NoResultsError)
 
   """
-  def get_balance_with_related!(id) do
-    Balance
+  def get_budget_with_related!(id) do
+    Budget
     |> Repo.get!(id)
     |> Repo.preload(:incomes)
     |> Repo.preload([bills: [:category]])
   end
 
   @doc """
-  Creates a balance.
+  Creates a budget.
 
   ## Examples
 
-      iex> create_balance(%{field: value})
-      {:ok, %Balance{}}
+      iex> create_budget(%{field: value})
+      {:ok, %Budget{}}
 
-      iex> create_balance(%{field: bad_value})
+      iex> create_budget(%{field: bad_value})
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_balance(attrs \\ %{}) do
-    %Balance{}
-    |> Balance.changeset(attrs)
+  def create_budget(attrs \\ %{}) do
+    %Budget{}
+    |> Budget.changeset(attrs)
     |> Repo.insert()
   end
 
   @doc """
-  Updates a balance.
+  Updates a budget.
 
   ## Examples
 
-      iex> update_balance(balance, %{field: new_value})
-      {:ok, %Balance{}}
+      iex> update_budget(budget, %{field: new_value})
+      {:ok, %Budget{}}
 
-      iex> update_balance(balance, %{field: bad_value})
+      iex> update_budget(budget, %{field: bad_value})
       {:error, %Ecto.Changeset{}}
 
   """
-  def update_balance(%Balance{} = balance, attrs) do
-    balance
-    |> Balance.changeset(attrs)
+  def update_budget(%Budget{} = budget, attrs) do
+    budget
+    |> Budget.changeset(attrs)
     |> Repo.update()
   end
 
   @doc """
-  Deletes a Balance.
+  Deletes a Budget.
 
   ## Examples
 
-      iex> delete_balance(balance)
-      {:ok, %Balance{}}
+      iex> delete_budget(budget)
+      {:ok, %Budget{}}
 
-      iex> delete_balance(balance)
+      iex> delete_budget(budget)
       {:error, %Ecto.Changeset{}}
 
   """
-  def delete_balance(%Balance{} = balance) do
-    Repo.delete(balance)
+  def delete_budget(%Budget{} = budget) do
+    Repo.delete(budget)
   end
 
   @doc """
-  Returns an `%Ecto.Changeset{}` for tracking balance changes.
+  Returns an `%Ecto.Changeset{}` for tracking budget changes.
 
   ## Examples
 
-      iex> change_balance(balance)
-      %Ecto.Changeset{source: %Balance{}}
+      iex> change_budget(budget)
+      %Ecto.Changeset{source: %Budget{}}
 
   """
-  def change_balance(%Balance{} = balance) do
-    Balance.changeset(balance, %{})
+  def change_budget(%Budget{} = budget) do
+    Budget.changeset(budget, %{})
   end
 
-  def balance_default_changese() do
+  def budget_default_changese() do
     current_date = Date.utc_today()
-    {begin_at, end_at} = Balance.date_range(current_date.year, current_date.month)
-    balance = %Balance{
+    {begin_at, end_at} = Budget.date_range(current_date.year, current_date.month)
+    budget = %Budget{
       year: current_date.year,
       month: current_date.month,
       begin_at: begin_at,
       end_at: end_at,
     }
-    Balance.changeset(balance, %{})
+    Budget.changeset(budget, %{})
   end
 
   alias Benjamin.Finanses.Income
@@ -567,19 +567,19 @@ defmodule Benjamin.Finanses do
   end
 
   @doc """
-  Returns the list of expenses that belong to balance.
+  Returns the list of expenses that belong to budget.
 
   ## Examples
 
-      iex> glist_expenses_for_balance(balance)
+      iex> glist_expenses_for_budget(budget)
       [%Expense{},..]
   """
-  def list_expenses_for_balance(%Balance{} = balance) do
+  def list_expenses_for_budget(%Budget{} = budget) do
 
     query = from e in Expense,
       where: is_nil(e.parent_id),
-      where: e.date >= ^balance.begin_at,
-      where: e.date <= ^balance.end_at,
+      where: e.date >= ^budget.begin_at,
+      where: e.date <= ^budget.end_at,
       preload: [:category]
     Repo.all(query)
   end
@@ -652,21 +652,21 @@ defmodule Benjamin.Finanses do
   alias Benjamin.Finanses.ExpenseBudget
 
   @doc """
-  Returns the list of expense_budgets for given balance with filled real_expenses.
+  Returns the list of expense_budgets for given budget with filled real_expenses.
 
   ## Examples
 
-      iex> list_expense_budgets(%Balance{})
+      iex> list_expense_budgets(%Budget{})
       [%ExpenseBudget{}, ...]
 
   """
-  def list_expenses_budgets(%Balance{} = balance) do
+  def list_expenses_budgets(%Budget{} = budget) do
     query = from budget in ExpenseBudget,
             left_join: expense in Expense,
             on: budget.expense_category_id == expense.category_id,
-            on: expense.date >= ^balance.begin_at,
-            on: expense.date <= ^balance.end_at,
-            where: budget.balance_id == ^balance.id,
+            on: expense.date >= ^budget.begin_at,
+            on: expense.date <= ^budget.end_at,
+            where: budget.budget_id == ^budget.id,
             group_by: budget.id,
             select: %ExpenseBudget{budget | real_expenses: sum(expense.amount)}
 

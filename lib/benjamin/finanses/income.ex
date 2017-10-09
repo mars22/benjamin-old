@@ -1,7 +1,7 @@
 defmodule Benjamin.Finanses.Income do
   use Ecto.Schema
   import Ecto.Changeset
-  alias Benjamin.Finanses.{Income, Balance}
+  alias Benjamin.Finanses.{Income, Budget}
 
 
   schema "incomes" do
@@ -11,7 +11,7 @@ defmodule Benjamin.Finanses.Income do
     field :is_invoice, :boolean, default: false
     field :vat, :decimal, default: Decimal.new(23)
     field :tax, :decimal, default: Decimal.new(18)
-    belongs_to :balance, Balance
+    belongs_to :budget, Budget
 
     timestamps()
   end
@@ -19,10 +19,10 @@ defmodule Benjamin.Finanses.Income do
   @doc false
   def changeset(%Income{} = income, attrs) do
     income
-    |> cast(attrs, [:amount, :date, :description, :balance_id, :is_invoice, :vat, :tax])
-    |> validate_required([:amount, :balance_id, :date])
+    |> cast(attrs, [:amount, :date, :description, :budget_id, :is_invoice, :vat, :tax])
+    |> validate_required([:amount, :budget_id, :date])
     |> validate_number(:amount, greater_than_or_equal_to: 0)
-    |> foreign_key_constraint(:balance_id)
+    |> foreign_key_constraint(:budget_id)
   end
 
   def calculate_vat(%Income{} = income) do

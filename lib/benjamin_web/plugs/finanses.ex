@@ -3,11 +3,11 @@ defmodule BenjaminWeb.FinansesPlug do
   alias Benjamin.Finanses
 
 
-  def assign_balance(conn, _opts) do
+  def assign_budget(conn, _opts) do
     case conn.params do
-      %{"balance_id" => balance_id} ->
-        balance = Finanses.get_balance!(balance_id)
-        assign(conn, :balance, balance)
+      %{"budget_id" => budget_id} ->
+        budget = Finanses.get_budget!(budget_id)
+        assign(conn, :budget, budget)
       _ ->
         conn
     end

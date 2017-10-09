@@ -1,14 +1,14 @@
 <div class="card-deck">
   <div class="card">
     <div class="card-body">
-      <h2>Balance </h2>
-      <p><strong>Year: </strong><%= @balance.year %></p>
-      <p><strong>Month: </strong><%= month_nrb_to_name @balance.month %></p>
-      <p><strong>Expenses from: </strong><%= format_date @balance.begin_at %> <strong>to: </strong><%= format_date @balance.end_at %></p>
-      <p><strong>Description: </strong><%= @balance.description %></p>
+      <h2>Budget </h2>
+      <p><strong>Year: </strong><%= @budget.year %></p>
+      <p><strong>Month: </strong><%= month_nrb_to_name @budget.month %></p>
+      <p><strong>Expenses from: </strong><%= format_date @budget.begin_at %> <strong>to: </strong><%= format_date @budget.end_at %></p>
+      <p><strong>Description: </strong><%= @budget.description %></p>
 
-      <%= link "Edit", to: balance_path(@conn, :edit, @balance), class: "btn btn-primary" %>
-      <%= link "Delete", to: balance_path(@conn, :delete, @balance), method: :delete, data: [confirm: "Are you sure? All data connected with balace will be deleted as well!"], class: "btn btn-danger btn-sm" %>
+      <%= link "Edit", to: budget_path(@conn, :edit, @budget), class: "btn btn-primary" %>
+      <%= link "Delete", to: budget_path(@conn, :delete, @budget), method: :delete, data: [confirm: "Are you sure? All data connected with budget will be deleted as well!"], class: "btn btn-danger btn-sm" %>
     </div>
   </div>
 
@@ -17,13 +17,13 @@
       <strong>Summary</strong>
     </div>
     <div class="card-body">
-      <strong>Total income: </strong><%= total_income @balance %>
+      <strong>Total income: </strong><%= total_income @budget %>
       </br>
-      <strong>Total planned/real bills: </strong><%= total_planned_bills @balance %> / <%= total_real_bills @balance %>
+      <strong>Total planned/real bills: </strong><%= total_planned_bills @budget %> / <%= total_real_bills @budget %>
       </br>
-      <strong>Total planned/real expenses: </strong><%= total_planned_expenses @balance %> / <%= total_real_expenses @balance %>
+      <strong>Total planned/real expenses: </strong><%= total_planned_expenses @budget %> / <%= total_real_expenses @budget %>
       </br>
-      <strong>Planned/real saves: </strong><%= planned_saves @balance %> / <%= real_saves @transactions %>
+      <strong>Planned/real saves: </strong><%= planned_saves @budget %> / <%= real_saves @transactions %>
       </br>
     </div>
   </div>
@@ -31,7 +31,7 @@
 
 <div class="card border border-success">
   <div class="card-header">
-    <strong>Incomes</strong> <%= link "New Income", to: balance_income_path(@conn, :new, @balance), class: "btn btn-primary float-right"  %>
+    <strong>Incomes</strong> <%= link "New Income", to: budget_income_path(@conn, :new, @budget), class: "btn btn-primary float-right"  %>
   </div>
   <div class="card-body">
 
@@ -49,7 +49,7 @@
           </tr>
         </thead>
         <tbody>
-      <%= for income <- @balance.incomes do %>
+      <%= for income <- @budget.incomes do %>
           <tr>
             <td><%= format_date income.date %></td>
             <td><%= BenjaminWeb.IncomeView.income_type income %></td>
@@ -59,8 +59,8 @@
             <td><%= income.description %></td>
 
             <td class="text-right">
-              <span><%= link "Edit", to: balance_income_path(@conn, :edit, @balance, income), class: "btn btn-default btn-sm" %></span>
-              <span><%= link "Delete", to: balance_income_path(@conn, :delete, @balance, income), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger btn-sm" %></span>
+              <span><%= link "Edit", to: budget_income_path(@conn, :edit, @budget, income), class: "btn btn-default btn-sm" %></span>
+              <span><%= link "Delete", to: budget_income_path(@conn, :delete, @budget, income), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger btn-sm" %></span>
             </td>
           </tr>
       <% end %>
@@ -72,7 +72,7 @@
 
 <div class="card border border-secondary">
   <div class="card-header">
-    <strong>Bills</strong> <%= link "New Bill", to: balance_bill_path(@conn, :new, @balance), class: "btn btn-primary float-right"  %>
+    <strong>Bills</strong> <%= link "New Bill", to: budget_bill_path(@conn, :new, @budget), class: "btn btn-primary float-right"  %>
   </div>
   <div class="card-body">
     <table class="table table-responsive">
@@ -87,7 +87,7 @@
         </tr>
       </thead>
       <tbody>
-    <%= for bill <- @balance.bills do %>
+    <%= for bill <- @budget.bills do %>
         <tr>
           <td><%= bill.category.name %></td>
           <td><%= format_amount bill.planned_amount %></td>
@@ -95,8 +95,8 @@
           <td><%= bill.paid %></td>
           <td><%= bill.description %></td>
           <td class="text-right">
-            <span><%= link "Edit", to: balance_bill_path(@conn, :edit, @balance, bill), class: "btn btn-default btn-sm" %></span>
-            <span><%= link "Delete", to: balance_bill_path(@conn, :delete, @balance, bill), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger btn-sm" %></span>
+            <span><%= link "Edit", to: budget_bill_path(@conn, :edit, @budget, bill), class: "btn btn-default btn-sm" %></span>
+            <span><%= link "Delete", to: budget_bill_path(@conn, :delete, @budget, bill), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger btn-sm" %></span>
           </td>
         </tr>
     <% end %>
@@ -107,7 +107,7 @@
 
 <div class="card border border-secondary">
   <div class="card-header">
-    <strong>Expenses budgets</strong> <%= link "New Budget", to: balance_expense_budget_path(@conn, :new, @balance), class: "btn btn-primary float-right"  %>
+    <strong>Expenses budgets</strong> <%= link "New Budget", to: budget_expense_budget_path(@conn, :new, @budget), class: "btn btn-primary float-right"  %>
   </div>
   <div class="card-body">
     <table class="table table-responsive">
@@ -120,14 +120,14 @@
         </tr>
       </thead>
       <tbody>
-    <%= for budget <- @balance.expenses_budgets do %>
+    <%= for budget <- @budget.expenses_budgets do %>
         <tr>
           <td><%= budget.expense_category.name %></td>
           <td><%= format_amount budget.planned_expenses %></td>
           <td><%= format_amount budget.real_expenses %></td>
           <td class="text-right">
-            <span><%= link "Edit", to: balance_expense_budget_path(@conn, :edit, @balance, budget), class: "btn btn-default btn-sm" %></span>
-            <span><%= link "Delete", to: balance_expense_budget_path(@conn, :delete, @balance, budget), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger btn-sm" %></span>
+            <span><%= link "Edit", to: budget_expense_budget_path(@conn, :edit, @budget, budget), class: "btn btn-default btn-sm" %></span>
+            <span><%= link "Delete", to: budget_expense_budget_path(@conn, :delete, @budget, budget), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger btn-sm" %></span>
           </td>
         </tr>
     <% end %>

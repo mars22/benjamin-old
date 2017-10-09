@@ -5,7 +5,7 @@ defmodule BenjaminWeb.ExpenseBudgetController do
   alias Benjamin.Finanses.ExpenseBudget
   import BenjaminWeb.FinansesPlug
 
-  plug :assign_balance
+  plug :assign_budget
   plug :assign_categories
 
 
@@ -14,13 +14,13 @@ defmodule BenjaminWeb.ExpenseBudgetController do
     render(conn, "new.html", changeset: changeset)
   end
 
-  def create(conn, %{"expense_budget" => expense_budget_params, "balance_id" => balance_id}) do
-    expense_budget_params = Map.put(expense_budget_params, "balance_id", balance_id)
+  def create(conn, %{"expense_budget" => expense_budget_params, "budget_id" => budget_id}) do
+    expense_budget_params = Map.put(expense_budget_params, "budget_id", budget_id)
     case Finanses.create_expense_budget(expense_budget_params) do
       {:ok, expense_budget} ->
         conn
         |> put_flash(:info, "Expense category budget created successfully.")
-        |> redirect(to: balance_path(conn, :show, balance_id))
+        |> redirect(to: budget_path(conn, :show, budget_id))
       {:error, %Ecto.Changeset{} = changeset} ->
         render(conn, "new.html", changeset: changeset)
     end
@@ -39,7 +39,7 @@ defmodule BenjaminWeb.ExpenseBudgetController do
       {:ok, expense_budget} ->
         conn
         |> put_flash(:info, "Expense category budget updated successfully.")
-        |> redirect(to: balance_path(conn, :show, expense_budget.balance_id))
+        |> redirect(to: budget_path(conn, :show, expense_budget.budget_id))
       {:error, %Ecto.Changeset{} = changeset} ->
         render(conn, "edit.html", expense_budget: expense_budget, changeset: changeset)
     end
@@ -51,7 +51,7 @@ defmodule BenjaminWeb.ExpenseBudgetController do
 
     conn
     |> put_flash(:info, "Expense category budget deleted successfully.")
-    |> redirect(to: balance_path(conn, :show, expense_budget.balance_id))
+    |> redirect(to: budget_path(conn, :show, expense_budget.budget_id))
   end
 
   defp assign_categories(conn, _) do

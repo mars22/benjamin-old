@@ -23,7 +23,7 @@ defmodule BenjaminWeb.Router do
     pipe_through :browser # Use the default browser stack
 
     get "/", PageController, :index
-    resources "/balances", BalanceController do
+    resources "/budgets", BudgetController do
       resources "/incomes", IncomeController, except: [:index, :show]
       resources "/bills", BillController, except: [:index, :show]
       resources "/expense_categories_budgets", ExpenseBudgetController, except: [:index, :show]

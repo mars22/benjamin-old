@@ -1,5 +1,0 @@
-<h2>Edit Balance</h2>
-
-<%= render "form.html", Map.put(assigns, :action, balance_path(@conn, :update, @balance)) %>
-
-<%= link "Back", to: balance_path(@conn, :index),class: "btn btn-secondary btn-sm" %>

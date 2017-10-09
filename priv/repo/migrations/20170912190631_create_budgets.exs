@@ -1,8 +1,8 @@
-defmodule Benjamin.Repo.Migrations.CreateBalances do
+defmodule Benjamin.Repo.Migrations.CreateBudgets do
   use Ecto.Migration
 
   def change do
-    create table(:balances) do
+    create table(:budgets) do
       add :month, :integer
       add :description, :string
 
