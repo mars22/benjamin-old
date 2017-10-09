@@ -5,6 +5,8 @@ defmodule Benjamin.Finanses.Factory do
     Expense, ExpenseCategory, ExpenseBudget, Saving, Transaction
   }
 
+  alias Benjamin.Accounts.{Credential, User}
+
   # Factories
 
   def build(:balance) do
@@ -109,6 +111,29 @@ defmodule Benjamin.Finanses.Factory do
       date: Date.utc_today
     }
   end
+
+  def build(:user) do
+    %User{
+      name: "name #{System.unique_integer()}",
+      username: "user name #{System.unique_integer()}",
+    }
+  end
+
+  def build(:credential) do
+    %Credential{
+      email: "email#{System.unique_integer()}@wp.pl",
+      password_hash: "$argon2i$v=19$m=65536,t=6,p=1$xdU5FUSAuzBS00O1Uv/uMA$t1ca99VbwB+T4bSSsTo1WyYjxV/IrLASxv0arSO35og"
+    }
+  end
+
+  def build(:user_with_credential) do
+    %User{
+      name: "name #{System.unique_integer()}",
+      username: "user name #{System.unique_integer()}",
+      credential: build(:credential)
+    }
+  end
+
 
   # Convenience API
   def build(factory_name, attributes) do

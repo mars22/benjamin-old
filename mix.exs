@@ -43,6 +43,8 @@ defmodule Benjamin.Mixfile do
       {:cowboy, "~> 1.0"},
       {:credo, "~> 0.8", only: [:dev, :test], runtime: false},
       {:number, "~> 0.5.4"},
+      {:comeonin, "~> 4.0"},
+      {:argon2_elixir, "~> 1.2"},
     ]
   end
 

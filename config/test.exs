@@ -17,3 +17,7 @@ config :benjamin, Benjamin.Repo,
   database: "benjamin_test",
   hostname: "localhost",
   pool: Ecto.Adapters.SQL.Sandbox
+
+config :argon2_elixir,
+  t_cost: 2,
+  m_cost: 12
