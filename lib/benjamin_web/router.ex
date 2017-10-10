@@ -4,6 +4,7 @@ defmodule BenjaminWeb.Router do
   pipeline :auth do
     plug :accepts, ["html"]
     plug :fetch_session
+    plug :fetch_flash
   end
 
   pipeline :browser do
@@ -12,7 +13,6 @@ defmodule BenjaminWeb.Router do
     plug :fetch_flash
     plug :protect_from_forgery
     plug :put_secure_browser_headers
-    # plug :authenticate_user
   end
 
   pipeline :api do
@@ -20,7 +20,7 @@ defmodule BenjaminWeb.Router do
   end
 
   scope "/", BenjaminWeb do
-    pipe_through :browser # Use the default browser stack
+    pipe_through [:browser, :authenticate_user] # Use the default browser stack
 
     get "/", PageController, :index
     resources "/budgets", BudgetController do
@@ -48,14 +48,18 @@ defmodule BenjaminWeb.Router do
 
 
   defp authenticate_user(conn, _) do
-    case get_session(conn, :user_id) do
-      nil ->
-        conn
-        |> Phoenix.Controller.put_flash(:error, "Login required")
-        |> Phoenix.Controller.redirect(to: "/auth/sessions/new")
-        |> halt()
-      user_id ->
-        assign(conn, :current_user, "TODO")
+    if Mix.env == :test do
+      conn
+    else
+      case get_session(conn, :user_id) do
+        nil ->
+          conn
+          |> Phoenix.Controller.put_flash(:error, "Login required")
+          |> Phoenix.Controller.redirect(to: "/auth/sessions/new")
+          |> halt()
+        user_id ->
+          assign(conn, :current_user, "TODO")
+      end
     end
   end
 end
