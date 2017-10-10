@@ -13,8 +13,6 @@
 alias Benjamin.Accounts.{Credential, User}
 
 
-
-
 Benjamin.Repo.insert!(%User{
   name: "Admin",
   username: "Marcin",
