@@ -2,7 +2,6 @@ defmodule BenjaminWeb.SessionControllerTest do
   use BenjaminWeb.ConnCase
 
   alias Benjamin.Finanses.Factory
-  alias Benjamin.Accounts
 
   describe "login" do
     test "renders form", %{conn: conn} do

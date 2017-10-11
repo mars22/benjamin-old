@@ -175,9 +175,9 @@ defmodule Benjamin.FinansesTest do
   describe "bills" do
     alias Benjamin.Finanses.Bill
 
-    @valid_attrs %{planned_amount: "120.5", amount: "120.5", description: "some description", paid: true, paid_at: ~D[2010-04-17]}
-    @update_attrs %{planned_amount: "456.7", amount: "120.5", description: "some updated description", paid: false, paid_at: ~D[2011-05-18]}
-    @invalid_attrs %{planned_amount: nil, description: nil, paid: nil, paid_at: nil}
+    @valid_attrs %{planned_amount: "120.5", amount: "120.5", description: "some description", paid_at: ~D[2010-04-17]}
+    @update_attrs %{planned_amount: "456.7", amount: "120.5", description: "some updated description", paid_at: ~D[2011-05-18]}
+    @invalid_attrs %{planned_amount: nil, description: nil, paid_at: nil}
 
     def build_bill(attrs) do
       budget = Factory.insert!(:budget)
@@ -203,7 +203,6 @@ defmodule Benjamin.FinansesTest do
       assert {:ok, %Bill{} = bill} = Finanses.create_bill(attrs)
       assert bill.amount == Decimal.new("120.5")
       assert bill.description == "some description"
-      assert bill.paid == true
     end
 
     test "create_bill/1 can't create the same bill twice" do
@@ -211,7 +210,6 @@ defmodule Benjamin.FinansesTest do
       assert {:ok, %Bill{} = bill} = Finanses.create_bill(attrs)
       assert bill.amount == Decimal.new("120.5")
       assert bill.description == "some description"
-      assert bill.paid == true
       assert bill.paid_at == ~D[2010-04-17]
 
       assert {:error, %Ecto.Changeset{} = _} = Finanses.create_bill(attrs)
@@ -235,7 +233,6 @@ defmodule Benjamin.FinansesTest do
       assert bill.planned_amount == Decimal.new("456.7")
       assert bill.amount == Decimal.new("120.5")
       assert bill.description == "some updated description"
-      assert bill.paid == false
     end
 
     test "update_bill/2 with invalid data returns error changeset" do
@@ -583,7 +580,7 @@ defmodule Benjamin.FinansesTest do
       [saving: saving]
     end
 
-    def transaction_fixture(attrs \\ %{}) do
+    def transaction_fixture() do
       saving = Factory.insert!(:saving)
       transaction = Factory.insert!(:transaction, saving: saving)
       transaction = Finanses.get_transaction!(transaction.id)

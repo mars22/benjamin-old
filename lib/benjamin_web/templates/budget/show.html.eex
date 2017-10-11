@@ -81,7 +81,6 @@
           <th>Name</th>
           <th>Planned amount</th>
           <th>Real amount</th>
-          <th>Paid</th>
           <th>Description</th>
           <th></th>
         </tr>
@@ -92,7 +91,6 @@
           <td><%= bill.category.name %></td>
           <td><%= format_amount bill.planned_amount %></td>
           <td><%= format_amount bill.amount %></td>
-          <td><%= bill.paid %></td>
           <td><%= bill.description %></td>
           <td class="text-right">
             <span><%= link "Edit", to: budget_bill_path(@conn, :edit, @budget, bill), class: "btn btn-default btn-sm" %></span>

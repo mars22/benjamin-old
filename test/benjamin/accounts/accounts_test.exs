@@ -70,7 +70,6 @@ defmodule Benjamin.AccountsTest do
     alias Benjamin.Accounts.Credential
 
     @valid_attrs %{email: "some@email.com", password: "some password"}
-    @update_attrs %{email: "some@updatedemail.com", password: "some updated password"}
     @invalid_attrs %{email: nil, password: nil}
 
     setup do
@@ -88,12 +87,12 @@ defmodule Benjamin.AccountsTest do
     end
 
     test "verify/2 returns true if credentials are correct", %{user: user} do
-      credential = credential_fixture(user_id: user.id)
+      credential_fixture(user_id: user.id)
       assert {:ok, %Credential{}} = Accounts.verify(@valid_attrs.email, @valid_attrs.password)
     end
 
     test "verify/2 returns false if credentials are invalid", %{user: user} do
-      credential = credential_fixture(user_id: user.id)
+      credential_fixture(user_id: user.id)
       assert Accounts.verify(@valid_attrs.email, "bad pass") == {:error, "invalid password"}
     end
 

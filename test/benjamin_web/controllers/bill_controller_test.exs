@@ -4,9 +4,9 @@ defmodule BenjaminWeb.BillControllerTest do
   alias Benjamin.Finanses
   alias Benjamin.Finanses.Factory
 
-  @create_attrs %{planned_amount: "120.5", description: "some description", paid: false}
-  @update_attrs %{planned_amount: "456.7", description: "some updated description", paid: true, paid_at: Date.utc_today}
-  @invalid_attrs %{planned_amount: nil, description: nil, paid: nil, paid_at: nil}
+  @create_attrs %{planned_amount: "120.5", description: "some description"}
+  @update_attrs %{planned_amount: "456.7", description: "some updated description", paid_at: Date.utc_today}
+  @invalid_attrs %{planned_amount: nil, description: nil, paid_at: nil}
 
 
   setup do
