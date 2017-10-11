@@ -35,6 +35,7 @@ defmodule Benjamin.Finanses.Budget do
     |> validate_required([:month, :year, :begin_at, :end_at])
     |> validate_inclusion(:month, 1..12)
     |> validate_inclusion(:year, year_range())
+    |> unique_constraint(:month, name: :budgets_month_year_index, message: "budget for this time period already exist")
     |> update_date_range
   end
 

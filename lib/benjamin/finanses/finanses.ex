@@ -542,6 +542,7 @@ defmodule Benjamin.Finanses do
   def list_expenses do
     query = from e in Expense,
             where: is_nil(e.parent_id),
+            order_by: [desc: e.date],
             preload: [:category]
     Repo.all(query)
   end
@@ -580,6 +581,7 @@ defmodule Benjamin.Finanses do
       where: is_nil(e.parent_id),
       where: e.date >= ^budget.begin_at,
       where: e.date <= ^budget.end_at,
+      order_by: [desc: e.date],
       preload: [:category]
     Repo.all(query)
   end
@@ -662,7 +664,7 @@ defmodule Benjamin.Finanses do
   """
   def list_expenses_budgets(%Budget{} = budget) do
     query = from budget in ExpenseBudget,
-            left_join: expense in Expense,
+            full_join: expense in Expense,
             on: budget.expense_category_id == expense.category_id,
             on: expense.date >= ^budget.begin_at,
             on: expense.date <= ^budget.end_at,

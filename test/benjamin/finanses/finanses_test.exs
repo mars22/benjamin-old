@@ -49,6 +49,12 @@ defmodule Benjamin.FinansesTest do
       assert {:error, %Ecto.Changeset{}} = Finanses.create_budget(@invalid_attrs)
     end
 
+    test "can't create the same budget twice" do
+      assert {:ok, %Budget{} = budget} = Finanses.create_budget(@valid_attrs)
+      assert {:error, %Ecto.Changeset{} = changeset} = Finanses.create_budget(@valid_attrs)
+      assert [month: {"budget for this time period already exist", _}] = changeset.errors
+    end
+
     test "create_budget/1 with invalid month returns error changeset" do
       for invalid_month <- [-1,0,13] do
         invalid_attrs = %{ @valid_attrs | month: invalid_month}
@@ -141,8 +147,8 @@ defmodule Benjamin.FinansesTest do
     end
 
     test "update_income/2 with invalid data returns error changeset" do
+      %{incomes: [income]} = Factory.insert!(:budget_with_income)
       for invalid_attrs <- @invalid_data do
-        %{incomes: [income]} = Factory.insert!(:budget_with_income)
         assert {:error, %Ecto.Changeset{}} = Finanses.update_income(income, invalid_attrs)
         assert income == Finanses.get_income!(income.id)
       end

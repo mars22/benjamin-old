@@ -22,9 +22,6 @@
 
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
-          <li class="nav-item <%= is_active(@conn, :page_path, :index) %>">
-            <a class="nav-link" href="<%= page_path @conn, :index %>">Home <span class="sr-only">(current)</span></a>
-          </li>
           <li class="nav-item <%= is_active(@conn, :budget_path, :index) %>">
             <a class="nav-link" href="<%= budget_path @conn, :index %>">Budgets</a>
           </li>
