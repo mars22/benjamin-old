@@ -21,6 +21,16 @@ defmodule Benjamin.FinansesTest do
       assert Finanses.get_budget!(budget.id) == budget
     end
 
+    test "get_budget_by_date/1 returns the budget that contains date" do
+      budget = Factory.insert!(:budget)
+      assert Finanses.get_budget_by_date(Date.utc_today) == budget
+    end
+
+    test "get_budget_by_date/1 returns nil if not find" do
+      budget = Factory.insert!(:budget)
+      assert Finanses.get_budget_by_date(~D[2016-12-01]) == nil
+    end
+
     test "budget_default_changese/0 returns default value for empty changes" do
       default_changes = Finanses.budget_default_changese()
       current_date = Date.utc_today
@@ -390,6 +400,20 @@ defmodule Benjamin.FinansesTest do
       attrs = %{amount: "120.5", date: Date.utc_today, category_id: category.id}
       assert {:ok, %Expense{} = expense} = Finanses.create_expense(attrs)
       assert expense.amount == Decimal.new("120.5")
+      assert [] = Finanses.list_expenses_budgets()
+    end
+
+    test "create_expense/1 add expense budget if not exist" do
+      category = Factory.insert!(:expense_category)
+      budget = Factory.insert!(:budget)
+      assert [] = Finanses.list_expenses_budgets_for_budget(budget)
+
+      attrs = %{amount: "120.5", date: Date.utc_today, category_id: category.id}
+      Finanses.create_expense(attrs)
+      assert [expense_budget] = Finanses.list_expenses_budgets_for_budget(budget)
+      assert expense_budget.real_expenses == Decimal.new(120.5)
+      assert expense_budget.planned_expenses == Decimal.new(0)
+      assert expense_budget.expense_category_id == category.id
     end
 
     test "create_expense/1 description is required when category force it." do
@@ -451,11 +475,11 @@ defmodule Benjamin.FinansesTest do
       Factory.insert!(:expense_budget, [budget_id: budget.id])
     end
 
-    test "list_expenses_budgets/0 returns all expense_categories_budgets" do
+    test "list_expenses_budgets_for_budget/0 returns all expense_categories_budgets" do
       budget = Factory.insert!(:budget)
       Factory.insert!(:expense_budget, [budget_id: budget.id])
 
-      expenses_budgets = Finanses.list_expenses_budgets(budget)
+      expenses_budgets = Finanses.list_expenses_budgets_for_budget(budget)
       [expense_budget] = expenses_budgets
       assert expense_budget.real_expenses == nil
     end

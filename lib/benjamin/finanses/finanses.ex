@@ -4,9 +4,10 @@ defmodule Benjamin.Finanses do
   """
 
   import Ecto.Query, warn: false
+  alias Ecto.Multi
   alias Benjamin.Repo
 
-  alias Benjamin.Finanses.Budget
+  alias Benjamin.Finanses.{Budget, ExpenseBudget}
 
   @doc """
   Returns the list of budgets.
@@ -38,6 +39,15 @@ defmodule Benjamin.Finanses do
 
   """
   def get_budget!(id), do: Repo.get!(Budget, id)
+
+
+  def get_budget_by_date(date) do
+    query = from b in Budget,
+            where: b.begin_at <= ^date,
+            where: b.end_at >= ^date
+
+    Repo.one(query)
+  end
 
   @doc """
   Gets a single budget with related data .
@@ -599,9 +609,40 @@ defmodule Benjamin.Finanses do
 
   """
   def create_expense(attrs \\ %{}) do
-    %Expense{}
-    |> Expense.changeset(attrs)
-    |> Repo.insert()
+    Multi.new
+    |> Multi.insert(:expense, Expense.changeset(%Expense{}, attrs))
+    |> Multi.run(:budget, &get_budget/1)
+    |> Multi.run(:expense_budget, &multi_create_expense_budget/1)
+    |> Repo.transaction
+    |> case do
+      {:error, :expense, %Ecto.Changeset{} = changeset, %{}} -> {:error, changeset}
+      {:ok, %{expense: expense}} -> {:ok, expense}
+    end
+  end
+
+  def get_budget(%{expense: %Expense{category_id: category_id, date: date}}) do
+    case get_budget_by_date(date) do
+      %Budget{id: id} -> {:ok, %{category_id: category_id, budget_id: id}}
+      nil -> {:ok, :noop}
+    end
+  end
+
+  defp multi_create_expense_budget(%{budget: :noop}), do: {:ok, :noop}
+  defp multi_create_expense_budget(%{budget: %{category_id: category_id, budget_id: budget_id}}) do
+    query = from b in ExpenseBudget,
+            where: b.budget_id == ^budget_id,
+            where: b.expense_category_id == ^category_id
+
+    case Repo.one(query) do
+      %ExpenseBudget{}  -> {:ok, :noop}
+      nil -> create_expense_budget(
+              %{
+                expense_category_id: category_id,
+                budget_id: budget_id,
+                planned_expenses: 0
+              }
+            )
+    end
   end
 
   @doc """
@@ -651,7 +692,6 @@ defmodule Benjamin.Finanses do
     Expense.changeset(expense, %{})
   end
 
-  alias Benjamin.Finanses.ExpenseBudget
 
   @doc """
   Returns the list of expense_budgets for given budget with filled real_expenses.
@@ -662,7 +702,7 @@ defmodule Benjamin.Finanses do
       [%ExpenseBudget{}, ...]
 
   """
-  def list_expenses_budgets(%Budget{} = budget) do
+  def list_expenses_budgets_for_budget(%Budget{} = budget) do
     query = from budget in ExpenseBudget,
             full_join: expense in Expense,
             on: budget.expense_category_id == expense.category_id,
@@ -673,6 +713,11 @@ defmodule Benjamin.Finanses do
             select: %ExpenseBudget{budget | real_expenses: sum(expense.amount)}
 
     query
+      |> list_expenses_budgets
+  end
+
+  def list_expenses_budgets(querable \\ ExpenseBudget) do
+    querable
       |> Repo.all()
       |> Repo.preload([:expense_category])
   end

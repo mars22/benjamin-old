@@ -28,7 +28,7 @@ defmodule BenjaminWeb.BudgetController do
   def show(conn, %{"id" => id}) do
     budget = Finanses.get_budget_with_related!(id)
     expenses = Finanses.list_expenses_for_budget(budget)
-    expenses_budgets = Finanses.list_expenses_budgets(budget)
+    expenses_budgets = Finanses.list_expenses_budgets_for_budget(budget)
     transactions = Finanses.list_transactions(budget.begin_at, budget.end_at)
     budget = %Budget{budget | expenses_budgets: expenses_budgets}
     render(conn, "show.html", budget: budget, expenses: expenses, transactions: transactions)
