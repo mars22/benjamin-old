@@ -29,6 +29,13 @@
     <%= error_tag f, :end_at %>
   </div>
 
+  <%= if Map.get(assigns, :existing_budgets) do %>
+  <div class="form-group">
+    <%= label :budget, :copy_from, class: "control-label" %>
+    <%= select :budget, :copy_from, budgets(@existing_budgets), step: "any", class: "form-control" %>
+  </div>
+  <% end %>
+
   <div class="form-group">
     <%= label f, :description, class: "control-label" %>
     <%= text_input f, :description, class: "form-control" %>

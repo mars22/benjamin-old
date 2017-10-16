@@ -5,7 +5,7 @@ defmodule Benjamin.FinansesTest do
   alias Benjamin.Finanses.Factory
 
   describe "budgets" do
-    alias Benjamin.Finanses.Budget
+    alias Benjamin.Finanses.{Bill, Budget}
 
     @valid_attrs %{description: "some description", month: 12, year: 2017, begin_at: ~D[2017-12-01], end_at: ~D[2017-12-31]}
     @update_attrs %{description: "some updated description", month: 12, year: 2017}
@@ -53,6 +53,38 @@ defmodule Benjamin.FinansesTest do
       assert budget.month == 12
       assert budget.begin_at == ~D[2017-12-01]
       assert budget.end_at == ~D[2017-12-31]
+    end
+
+    test "create_budget/1 copy planned bills and exepenses budgets from previose one if exists." do
+      attrs = %{month: 10, year: 2017, begin_at: ~D[2017-10-01], end_at: ~D[2017-10-31]}
+      assert {:ok, %Budget{}=budget} = Finanses.create_budget(attrs)
+      assert %Budget{bills: []} = Finanses.get_budget_with_related!(budget.id)
+      assert [] == Finanses.list_expenses_budgets_for_budget(budget)
+
+      {:ok, bill_cat} = Finanses.create_bill_category(%{name: "Cat"})
+      {:ok, expense_cat} = Finanses.create_expense_category(%{name: "ExpCat"})
+
+      Finanses.create_bill(%{budget_id: budget.id, category_id: bill_cat.id, planned_amount: "100", real_amount: "98"})
+      Finanses.create_expense_budget(
+        %{
+          budget_id: budget.id,
+          expense_category_id: expense_cat.id,
+          planned_expenses: "300"
+        }
+      )
+
+      attrs = %{month: 11, year: 2017, begin_at: ~D[2017-11-01], end_at: ~D[2017-11-30], copy_from: budget.id}
+      assert {:ok, %Budget{}=budget} = Finanses.create_budget(attrs)
+      assert %Budget{bills: [bill]} = Finanses.get_budget_with_related!(budget.id)
+      assert bill.category_id == bill_cat.id
+      assert bill.planned_amount == Decimal.new(100)
+      assert bill.amount == Decimal.new(0)
+
+      assert [expense_budget] = Finanses.list_expenses_budgets_for_budget(budget)
+      assert expense_budget.expense_category_id == expense_cat.id
+      assert expense_budget.planned_expenses == Decimal.new(300)
+      assert expense_budget.real_expenses == nil
+
     end
 
     test "create_budget/1 with invalid data returns error changeset" do
@@ -204,8 +236,8 @@ defmodule Benjamin.FinansesTest do
     end
 
     test "list_bills/0 returns all bills" do
-      %{bills: [bill]} = Factory.insert!(:budget_with_bill)
-      [bill_from_db] = Finanses.list_bills()
+      %{id: id, bills: [bill]} = Factory.insert!(:budget_with_bill)
+      [bill_from_db] = Finanses.list_bills_for_budget(id)
       assert  bill_from_db.id == bill.id
     end
 

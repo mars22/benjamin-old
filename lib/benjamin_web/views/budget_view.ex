@@ -21,6 +21,13 @@ defmodule BenjaminWeb.BudgetView do
     "#{name} (#{month_nbr})"
   end
 
+  def budgets(budget) do
+    budget
+    |> Enum.map(&{month_nrb_to_name(&1.month), &1.id})
+    |> Enum.into([{'------', nil}])
+  end
+
+
   def month_to_select do
     Enum.map(@months, &{elem(&1, 1), elem(&1, 0)})
   end

@@ -7,7 +7,7 @@ defmodule Benjamin.Finanses do
   alias Ecto.Multi
   alias Benjamin.Repo
 
-  alias Benjamin.Finanses.{Budget, ExpenseBudget}
+  alias Benjamin.Finanses.{Bill, Budget, ExpenseBudget}
 
   @doc """
   Returns the list of budgets.
@@ -82,7 +82,51 @@ defmodule Benjamin.Finanses do
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_budget(attrs \\ %{}) do
+  def create_budget(attrs \\ %{})
+
+  def create_budget(%{copy_from: source_budget_id} = attrs) do
+    Multi.new()
+    |> Multi.insert(:budget, Budget.changeset(%Budget{}, attrs))
+    |> Multi.run(:bills, &(copy_bills(source_budget_id, &1)))
+    |> Multi.run(:expenses_budgets, &(copy_expenses_budgets(source_budget_id, &1)))
+    |> Repo.transaction()
+    |> case do
+      {:ok, %{budget: budget}} -> {:ok, budget}
+      {:error, :budget, %Ecto.Changeset{} = changeset, %{}} -> {:error, changeset}
+    end
+  end
+
+  defp copy_bills(source_budget_id, %{budget: %Budget{id: id}}) do
+    case list_bills_for_budget(source_budget_id) do
+      [_|_] = bills ->
+        new_bills =
+          bills
+          |> Enum.map(&Bill.copy/1)
+          |> Enum.map(&%{&1 | budget_id: id})
+
+        Repo.insert_all(Bill, new_bills)
+        {:ok, :noop}
+      [] ->
+        {:ok, :noop}
+    end
+  end
+
+  defp copy_expenses_budgets(source_budget_id, %{budget: budget}) do
+    case list_expenses_budgets_for_budget(source_budget_id) do
+      [_|_] = expenses_budgets ->
+        new_expenses_budgets =
+          expenses_budgets
+          |> Enum.map(&ExpenseBudget.copy/1)
+          |> Enum.map(&%{&1 | budget_id: budget.id})
+
+        Repo.insert_all(ExpenseBudget, new_expenses_budgets)
+        {:ok, :noop}
+      [] ->
+        {:ok, :noop}
+    end
+  end
+
+  def create_budget(attrs) do
     %Budget{}
     |> Budget.changeset(attrs)
     |> Repo.insert()
@@ -243,19 +287,19 @@ defmodule Benjamin.Finanses do
     Income.changeset(income, attrs)
   end
 
-  alias Benjamin.Finanses.Bill
-
   @doc """
   Returns the list of bills.
 
   ## Examples
 
-      iex> list_bills()
+      iex> list_bills_for_budget(id)
       [%Bill{}, ...]
 
   """
-  def list_bills do
-    Repo.all(Bill)
+  def list_bills_for_budget(id) do
+    Bill
+    |> where(budget_id: ^id)
+    |> Repo.all()
   end
 
   @doc """
@@ -620,7 +664,7 @@ defmodule Benjamin.Finanses do
     end
   end
 
-  def get_budget(%{expense: %Expense{category_id: category_id, date: date}}) do
+  defp get_budget(%{expense: %Expense{category_id: category_id, date: date}}) do
     case get_budget_by_date(date) do
       %Budget{id: id} -> {:ok, %{category_id: category_id, budget_id: id}}
       nil -> {:ok, :noop}
@@ -702,6 +746,12 @@ defmodule Benjamin.Finanses do
       [%ExpenseBudget{}, ...]
 
   """
+  def list_expenses_budgets_for_budget(budget_id) when is_integer(budget_id) do
+    ExpenseBudget
+    |> where([budget_id: ^budget_id])
+    |> Repo.all
+  end
+
   def list_expenses_budgets_for_budget(%Budget{} = budget) do
     query = from budget in ExpenseBudget,
             full_join: expense in Expense,
@@ -833,7 +883,8 @@ defmodule Benjamin.Finanses do
 
   """
   def get_saving!(id) do
-    Repo.get!(Saving, id)
+    Saving
+    |> Repo.get!(id)
     |> Repo.preload(:transactions)
   end
 

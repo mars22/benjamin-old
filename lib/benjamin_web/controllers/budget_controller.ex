@@ -11,17 +11,33 @@ defmodule BenjaminWeb.BudgetController do
 
   def new(conn, _params) do
     changeset = Finanses.budget_default_changese()
-    render(conn, "new.html", changeset: changeset)
+    existing_budgets = Finanses.list_budgets()
+
+    render(conn, "new.html", changeset: changeset, existing_budgets: existing_budgets)
   end
 
   def create(conn, %{"budget" => budget_params}) do
+    budget_params = for {k, v} <- budget_params, do: {String.to_atom(k), v}
+    budget_params = Enum.into(budget_params, %{})
+    budget_params =
+      case Map.get(budget_params, :copy_from) do
+        "" -> Map.drop(budget_params, [:copy_from])
+        nil -> Map.drop(budget_params, [:copy_from])
+        source_budget_id when is_integer(source_budget_id) ->
+          budget_params
+        source_budget_id ->
+          %{budget_params | copy_from: String.to_integer(source_budget_id)}
+      end
+
     case Finanses.create_budget(budget_params) do
       {:ok, budget} ->
         conn
         |> put_flash(:info, "Budget created successfully.")
         |> redirect(to: budget_path(conn, :show, budget))
       {:error, %Ecto.Changeset{} = changeset} ->
-        render(conn, "new.html", changeset: changeset)
+        existing_budgets = Finanses.list_budgets()
+
+        render(conn, "new.html", changeset: changeset, existing_budgets: existing_budgets)
     end
   end
 

@@ -23,4 +23,10 @@ defmodule Benjamin.Finanses.Bill do
     |> validate_number(:planned_amount, greater_than_or_equal_to: 0)
     |> unique_constraint(:category_id, name: :bills_budget_id_category_id_index)
   end
+
+  def copy(%Bill{} = bill) do
+    extra = %{inserted_at: Ecto.DateTime.utc, updated_at: Ecto.DateTime.utc}
+    copied = %{budget_id: bill.budget_id, planned_amount: bill.planned_amount, amount: Decimal.new(0) , category_id: bill.category_id}
+    Map.merge(copied, extra)
+  end
 end
