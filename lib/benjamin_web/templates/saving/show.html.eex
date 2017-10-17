@@ -8,6 +8,11 @@
   </li>
 
   <li>
+    <strong>Total savings:</strong>
+    <%= total_transactions @saving.transactions %>
+  </li>
+
+  <li>
     <strong>Goal amount:</strong>
     <%= @saving.goal_amount %>
   </li>

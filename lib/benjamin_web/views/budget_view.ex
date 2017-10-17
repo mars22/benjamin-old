@@ -92,22 +92,10 @@ defmodule BenjaminWeb.BudgetView do
     |> format_amount
   end
 
-  def sum_all_saves(transactions) do
-    transactions
-    |> Enum.filter(&(&1.type == "deposit"))
-    |> Enum.reduce(Decimal.new(0), &(Decimal.add(&1.amount, &2)))
-  end
-
-  def total_saves(transactions) do
-    transactions
-    |> sum_all_saves
-    |> format_amount
-  end
-
   def balace(budget, transactions) do
     all_expenses =
       Decimal.add(sum_real_bills(budget), sum_real_expenses(budget))
-    all_outcomes = Decimal.add(all_expenses, sum_all_saves(transactions))
+    all_outcomes = Decimal.add(all_expenses, sum_deposits(transactions))
 
     budget
     |> sum_incomes()

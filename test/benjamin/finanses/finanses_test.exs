@@ -584,8 +584,11 @@ defmodule Benjamin.FinansesTest do
     end
 
     test "list_savings/0 returns all savings" do
-      saving = saving_fixture()
-      assert Finanses.list_savings() == [saving]
+      saving = %Saving{saving_fixture() | transactions: []}
+
+      [from_db] = Finanses.list_savings()
+
+      assert  from_db == saving
     end
 
     test "get_saving!/1 returns the saving with given id" do
@@ -627,6 +630,16 @@ defmodule Benjamin.FinansesTest do
     test "change_saving/1 returns a saving changeset" do
       saving = saving_fixture()
       assert %Ecto.Changeset{} = Finanses.change_saving(saving)
+    end
+
+
+    test "sum_transactions return total amout" do
+      transactions = [
+        %{type: "deposit", amount: Decimal.new(100)},
+        %{type: "deposit", amount: Decimal.new(150)},
+        %{type: "withdraw", amount: Decimal.new(70)},
+      ]
+      assert Saving.sum_transactions(transactions) == Decimal.new(180)
     end
   end
 

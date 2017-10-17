@@ -754,7 +754,7 @@ defmodule Benjamin.Finanses do
 
   def list_expenses_budgets_for_budget(%Budget{} = budget) do
     query = from budget in ExpenseBudget,
-            full_join: expense in Expense,
+            left_join: expense in Expense,
             on: budget.expense_category_id == expense.category_id,
             on: expense.date >= ^budget.begin_at,
             on: expense.date <= ^budget.end_at,
@@ -853,7 +853,7 @@ defmodule Benjamin.Finanses do
     ExpenseBudget.changeset(expense_budget, %{})
   end
 
-  alias Benjamin.Finanses.Saving
+  alias Benjamin.Finanses.{Saving, Transaction}
 
   @doc """
   Returns the list of savings.
@@ -865,7 +865,9 @@ defmodule Benjamin.Finanses do
 
   """
   def list_savings do
-    Repo.all(Saving)
+    Saving
+    |> Repo.all
+    |> Repo.preload(:transactions)
   end
 
   @doc """

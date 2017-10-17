@@ -20,4 +20,19 @@ defmodule Benjamin.Finanses.Saving do
     |> validate_required([:name])
     |> unique_constraint(:name)
   end
+
+
+  def sum_transactions(transactions) do
+    {deposits, withdraws} = Enum.split_with(transactions, &(&1.type=="deposit"))
+    sum_deposits = sum_all(deposits)
+    sum_withdraws = sum_all(withdraws)
+    Decimal.sub(sum_deposits, sum_withdraws)
+  end
+
+  defp sum_all(oparations) do
+    Enum.reduce(oparations, Decimal.new(0), &(Decimal.add(&1.amount, &2)))
+  end
+
+
+
 end

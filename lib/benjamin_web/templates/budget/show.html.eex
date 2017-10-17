@@ -35,7 +35,7 @@
           <tr>
             <th scope="row">Saves</th>
             <td>--------</td>
-            <td><%= total_saves @transactions %></td>
+            <td><%= total_transactions_for_budget @transactions %></td>
           <tr>
           <tr>
             <th scope="row">Bills</th>

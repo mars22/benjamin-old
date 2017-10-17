@@ -1,9 +1,14 @@
 <h2>Listing Savings</h2>
 
+<strong>Total of all savings: </strong> <%= total_savings @savings %>
+</br>
+</br>
+
 <table class="table">
   <thead>
     <tr>
       <th>Name</th>
+      <th>Total amount</th>
       <th>Goal amount</th>
       <th>End at</th>
 
@@ -14,7 +19,8 @@
 <%= for saving <- @savings do %>
     <tr>
       <td><%= saving.name %></td>
-      <td><%= saving.goal_amount %></td>
+      <td><%= total_transactions saving.transactions %></td>
+      <td><%= format_amount saving.goal_amount %></td>
       <td><%= saving.end_at %></td>
 
       <td class="text-right">
