@@ -16,15 +16,44 @@
     <div class="card-header">
       <strong>Summary</strong>
     </div>
-    <div class="card-body">
-      <strong>Total income: </strong><%= total_income @budget %>
-      </br>
-      <strong>Total planned/real bills: </strong><%= total_planned_bills @budget %> / <%= total_real_bills @budget %>
-      </br>
-      <strong>Total planned/real expenses: </strong><%= total_planned_expenses @budget %> / <%= total_real_expenses @budget %>
-      </br>
-      <strong>Planned/real saves: </strong><%= planned_saves @budget %> / <%= real_saves @transactions %>
-      </br>
+    <div class="card-body" style="padding: 0">
+
+      <table class="table table-responsive table-bordered table-sm">
+        <thead>
+          <tr>
+            <th></th>
+            <th>Planned</th>
+            <th>Real</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row">Incomes</th>
+            <td>--------</td>
+            <td><%= total_income @budget %></td>
+          <tr>
+          <tr>
+            <th scope="row">Saves</th>
+            <td>--------</td>
+            <td><%= total_saves @transactions %></td>
+          <tr>
+          <tr>
+            <th scope="row">Bills</th>
+            <td><%= total_planned_bills @budget %></td>
+            <td><%= total_real_bills @budget %></td>
+          <tr>
+          <tr>
+            <th scope="row">Expenses</th>
+            <td><%= total_planned_expenses @budget %></td>
+            <td><%= total_real_expenses @budget %></td>
+          <tr>
+          <tr>
+            <th scope="row">In the bank</th>
+            <td>--------</td>
+            <td><%= balace @budget, @transactions %></td>
+          <tr>
+        </tbody>
+      </table>
     </div>
   </div>
 </div>
