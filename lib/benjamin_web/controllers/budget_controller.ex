@@ -47,7 +47,14 @@ defmodule BenjaminWeb.BudgetController do
     expenses_budgets = Finanses.list_expenses_budgets_for_budget(budget)
     transactions = Finanses.list_transactions(budget.begin_at, budget.end_at)
     budget = %Budget{budget | expenses_budgets: expenses_budgets}
-    render(conn, "show.html", budget: budget, expenses: expenses, transactions: transactions)
+    kpi = Finanses.calculate_budget_kpi(budget, transactions)
+    render(
+      conn, "show.html",
+      budget: budget,
+      expenses: expenses,
+      transactions: transactions,
+      kpi: kpi
+    )
   end
 
   def edit(conn, %{"id" => id}) do

@@ -75,4 +75,31 @@ defmodule Benjamin.Finanses.Budget do
     |> put_change(:begin_at, begin_at)
     |> put_change(:end_at, end_at)
   end
+
+  def sum_incomes(%{incomes: incomes}) do
+    incomes
+    |> Enum.reduce(Decimal.new(0), &(Decimal.add(&1.amount, &2)))
+  end
+
+  def sum_real_bills(%{bills: bills}) do
+    bills
+    |> Enum.reduce(Decimal.new(0), &(Decimal.add(&1.amount, &2)))
+  end
+
+  def sum_planned_bills(%{bills: bills}) do
+    bills
+    |> Enum.reduce(Decimal.new(0), &(Decimal.add(&1.planned_amount, &2)))
+  end
+
+  def sum_real_expenses(%{expenses_budgets: expenses_budgets}) do
+    expenses_budgets
+    |> Enum.reduce(Decimal.new(0), &(Decimal.add(&1.real_expenses || Decimal.new(0), &2)))
+  end
+
+  def sum_planned_expenses(%{expenses_budgets: expenses_budgets}) do
+    expenses_budgets
+    |> Enum.reduce(Decimal.new(0), &(Decimal.add(&1.planned_expenses, &2)))
+  end
+
+
 end

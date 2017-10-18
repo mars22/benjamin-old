@@ -7,7 +7,8 @@ defmodule Benjamin.Finanses do
   alias Ecto.Multi
   alias Benjamin.Repo
 
-  alias Benjamin.Finanses.{Bill, Budget, ExpenseBudget}
+  alias Benjamin.Finanses.{Bill, Budget, ExpenseBudget, Transaction}
+  alias Benjamin.Finanses.{Saving, Transaction}
 
   @doc """
   Returns the list of budgets.
@@ -189,6 +190,31 @@ defmodule Benjamin.Finanses do
       end_at: end_at,
     }
     Budget.changeset(budget, %{})
+  end
+
+  def calculate_budget_kpi(budget, transactions) do
+    total_incomes = Budget.sum_incomes(budget)
+    bills_planned = Budget.sum_planned_bills(budget)
+    bills_real = Budget.sum_real_bills(budget)
+    expenses_budgets_planned = Budget.sum_planned_expenses(budget)
+    expenses_budgets_real = Budget.sum_real_expenses(budget)
+
+    sum_deposits = Transaction.sum_deposits(transactions)
+
+    all_expenses = Decimal.add(bills_real, expenses_budgets_real)
+    all_outcomes = Decimal.add(all_expenses, sum_deposits)
+
+    balance = Decimal.sub(total_incomes, all_outcomes)
+
+    %{
+      total_incomes: total_incomes,
+      total_saved: sum_deposits,
+      bills_planned: bills_planned,
+      bills_real: bills_real,
+      expenses_budgets_planned: expenses_budgets_planned,
+      expenses_budgets_real: expenses_budgets_real,
+      balance: balance,
+    }
   end
 
   alias Benjamin.Finanses.Income
@@ -853,8 +879,6 @@ defmodule Benjamin.Finanses do
     ExpenseBudget.changeset(expense_budget, %{})
   end
 
-  alias Benjamin.Finanses.{Saving, Transaction}
-
   @doc """
   Returns the list of savings.
 
@@ -868,6 +892,11 @@ defmodule Benjamin.Finanses do
     Saving
     |> Repo.all
     |> Repo.preload(:transactions)
+    |> Enum.map(&%Saving{&1 | total_amount: Saving.sum_transactions(&1.transactions)})
+  end
+
+  def total_saved(savings) do
+    Enum.reduce(savings, Decimal.new(0), &(Decimal.add(&1.total_amount, &2)))
   end
 
   @doc """
@@ -885,9 +914,12 @@ defmodule Benjamin.Finanses do
 
   """
   def get_saving!(id) do
-    Saving
-    |> Repo.get!(id)
-    |> Repo.preload(:transactions)
+    saving =
+      Saving
+      |> Repo.get!(id)
+      |> Repo.preload(:transactions)
+
+    %Saving{ saving | total_amount: Saving.sum_transactions(saving.transactions)}
   end
 
   @doc """

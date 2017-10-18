@@ -30,27 +30,27 @@
           <tr>
             <th scope="row">Incomes</th>
             <td>--------</td>
-            <td><%= total_income @budget %></td>
+            <td><%= format_amount @kpi.total_incomes %></td>
           <tr>
           <tr>
             <th scope="row">Saves</th>
             <td>--------</td>
-            <td><%= total_transactions_for_budget @transactions %></td>
+            <td><%= format_amount @kpi.total_saved %></td>
           <tr>
           <tr>
             <th scope="row">Bills</th>
-            <td><%= total_planned_bills @budget %></td>
-            <td><%= total_real_bills @budget %></td>
+            <td><%= format_amount @kpi.bills_planned %></td>
+            <td><%= format_amount @kpi.bills_real %></td>
           <tr>
           <tr>
             <th scope="row">Expenses</th>
-            <td><%= total_planned_expenses @budget %></td>
-            <td><%= total_real_expenses @budget %></td>
+            <td><%= format_amount @kpi.expenses_budgets_planned %></td>
+            <td><%= format_amount @kpi.expenses_budgets_real %></td>
           <tr>
           <tr>
             <th scope="row">In the bank</th>
             <td>--------</td>
-            <td><%= balace @budget, @transactions %></td>
+            <td><%= format_amount @kpi.balance %></td>
           <tr>
         </tbody>
       </table>

@@ -7,6 +7,7 @@ defmodule Benjamin.Finanses.Saving do
   schema "savings" do
     field :end_at, :date
     field :goal_amount, :decimal
+    field :total_amount, :decimal, virtual: true
     field :name, :string
     has_many :transactions, Transaction
 
@@ -20,7 +21,6 @@ defmodule Benjamin.Finanses.Saving do
     |> validate_required([:name])
     |> unique_constraint(:name)
   end
-
 
   def sum_transactions(transactions) do
     {deposits, withdraws} = Enum.split_with(transactions, &(&1.type=="deposit"))

@@ -9,7 +9,7 @@
 
   <li>
     <strong>Total savings:</strong>
-    <%= total_transactions @saving.transactions %>
+    <%= format_amount @saving.total_amount %>
   </li>
 
   <li>

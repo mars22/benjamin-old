@@ -24,37 +24,4 @@ defmodule BenjaminWeb.ViewHelpers do
 
   def format_date(%Date{} = date), do: "#{date.day}.#{date.month}.#{date.year}"
   def format_date(_), do: ""
-
-
-  alias Benjamin.Finanses.Saving
-
-  def sum_transactions(transactions) do
-    transactions
-    |> Saving.sum_transactions
-  end
-
-  def total_savings(savings) do
-    savings
-    |> Enum.reduce(Decimal.new(0), &(Decimal.add(sum_transactions(&1.transactions), &2)))
-    |> format_amount
-  end
-
-  def total_transactions(transactions) do
-    transactions
-    |> sum_transactions
-    |> format_amount
-  end
-
-  def sum_deposits(transactions) do
-    transactions
-    |> Enum.filter(&(&1.type == "deposit"))
-    |> Enum.reduce(Decimal.new(0), &(Decimal.add(&1.amount, &2)))
-  end
-
-  def total_transactions_for_budget(transactions) do
-    transactions
-    |> sum_deposits
-    |> format_amount
-  end
-
 end

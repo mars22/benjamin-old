@@ -26,4 +26,16 @@ defmodule Benjamin.Finanses.Transaction do
   def types() do
     @types
   end
+
+  def sum_deposits(transactions) do
+    transactions
+    |> Enum.filter(&(&1.type == "deposit"))
+    |> Enum.reduce(Decimal.new(0), &(Decimal.add(&1.amount, &2)))
+  end
+
+  def sum_withdraws(transactions) do
+    transactions
+    |> Enum.filter(&(&1.type == "withdraw"))
+    |> Enum.reduce(Decimal.new(0), &(Decimal.add(&1.amount, &2)))
+  end
 end

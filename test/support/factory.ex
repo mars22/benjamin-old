@@ -32,6 +32,21 @@ defmodule Benjamin.Finanses.Factory do
 
   end
 
+  def build(:budget_with_all_related) do
+    build(:budget,
+      bills: [
+        build(:bill)
+      ],
+      incomes: [
+        build(:income)
+      ],
+      expenses_budgets: [
+        build(:expense_budget)
+      ]
+    )
+  end
+
+
   def build(:budget_with_income) do
     build(:budget,
       incomes: [

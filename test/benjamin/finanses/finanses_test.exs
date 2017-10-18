@@ -155,6 +155,52 @@ defmodule Benjamin.FinansesTest do
     end
   end
 
+  describe "KPI" do
+    alias Benjamin.Finanses.Budget
+
+    test "calculate_budget_kpi/1 returns kpi related with given budget" do
+      bill = Factory.build(
+        :bill,
+        planned_amount: Decimal.new(200),
+        amount: Decimal.new(220)
+      )
+      income = Factory.build(:income, amount: Decimal.new(1000))
+
+
+      budget = Factory.insert!(
+        :budget, [bills: [bill], incomes: [income]]
+      )
+      expense_budget_1 = Factory.insert!(:expense_budget, [budget_id: budget.id, planned_expenses: Decimal.new(100)])
+      expense_budget_2 = Factory.insert!(:expense_budget, [budget_id: budget.id, planned_expenses: Decimal.new(0)])
+
+      Finanses.create_expense(%{amount: Decimal.new(20), date: budget.begin_at, category_id: expense_budget_1.expense_category_id})
+      Finanses.create_expense(%{amount: Decimal.new(30), date: budget.begin_at, category_id: expense_budget_2.expense_category_id})
+
+      expenses_budgets = Finanses.list_expenses_budgets_for_budget(budget)
+
+      budget = %Budget{budget | expenses_budgets: expenses_budgets}
+
+      saving = Factory.insert!(:saving)
+      transaction_deposit = Factory.insert!(:transaction, [saving_id: saving.id, amount: Decimal.new(200), type: "deposit", date: budget.begin_at])
+      transaction_withdraw = Factory.insert!(:transaction, [saving_id: saving.id, amount: Decimal.new(50), type: "withdraw", date: budget.begin_at])
+
+      kpi = Finanses.calculate_budget_kpi(
+        budget,
+        [transaction_deposit, transaction_withdraw]
+      )
+      expected_kpi = %{
+        total_incomes: Decimal.new(1000),
+        total_saved: Decimal.new(200),
+        bills_planned: Decimal.new(200),
+        bills_real: Decimal.new(220),
+        expenses_budgets_planned: Decimal.new(100),
+        expenses_budgets_real: Decimal.new(50),
+        balance: Decimal.new(530),
+      }
+      assert expected_kpi == kpi
+    end
+  end
+
   describe "incomes" do
     alias Benjamin.Finanses.Income
 
@@ -584,7 +630,7 @@ defmodule Benjamin.FinansesTest do
     end
 
     test "list_savings/0 returns all savings" do
-      saving = %Saving{saving_fixture() | transactions: []}
+      saving = %Saving{saving_fixture() | transactions: [], total_amount: Decimal.new(0)}
 
       [from_db] = Finanses.list_savings()
 
