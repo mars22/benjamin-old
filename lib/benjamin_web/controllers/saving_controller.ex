@@ -6,8 +6,8 @@ defmodule BenjaminWeb.SavingController do
 
   def index(conn, _params) do
     savings = Finanses.list_savings()
-    total_saved = Finanses.total_saved(savings)
-    render(conn, "index.html", savings: savings, total_saved: total_saved)
+    saved = Finanses.saved(savings)
+    render(conn, "index.html", savings: savings, saved: saved)
   end
 
   def new(conn, _params) do

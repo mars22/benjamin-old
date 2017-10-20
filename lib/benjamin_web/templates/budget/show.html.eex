@@ -33,19 +33,19 @@
             <td><%= format_amount @kpi.total_incomes %></td>
           <tr>
           <tr>
-            <th scope="row">Saves</th>
-            <td>--------</td>
-            <td><%= format_amount @kpi.total_saved %></td>
-          <tr>
-          <tr>
             <th scope="row">Bills</th>
             <td><%= format_amount @kpi.bills_planned %></td>
-            <td><%= format_amount @kpi.bills_real %></td>
+            <td><%= format_amount @kpi.bills %></td>
           <tr>
           <tr>
             <th scope="row">Expenses</th>
             <td><%= format_amount @kpi.expenses_budgets_planned %></td>
-            <td><%= format_amount @kpi.expenses_budgets_real %></td>
+            <td><%= format_amount @kpi.expenses_budgets %></td>
+          <tr>
+          <tr>
+            <th scope="row">Saves</th>
+            <td><%= format_amount @kpi.saves_planned %></td>
+            <td><%= format_amount @kpi.saved %></td>
           <tr>
           <tr>
             <th scope="row">In the bank</th>

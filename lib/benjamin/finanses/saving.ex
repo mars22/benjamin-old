@@ -23,7 +23,7 @@ defmodule Benjamin.Finanses.Saving do
   end
 
   def sum_transactions(transactions) do
-    {deposits, withdraws} = Enum.split_with(transactions, &(&1.type=="deposit"))
+    {deposits, withdraws} = Enum.split_with(transactions, &(&1.type == "deposit"))
     sum_deposits = sum_all(deposits)
     sum_withdraws = sum_all(withdraws)
     Decimal.sub(sum_deposits, sum_withdraws)

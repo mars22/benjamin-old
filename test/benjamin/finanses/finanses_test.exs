@@ -27,7 +27,7 @@ defmodule Benjamin.FinansesTest do
     end
 
     test "get_budget_by_date/1 returns nil if not find" do
-      budget = Factory.insert!(:budget)
+      Factory.insert!(:budget)
       assert Finanses.get_budget_by_date(~D[2016-12-01]) == nil
     end
 
@@ -92,7 +92,7 @@ defmodule Benjamin.FinansesTest do
     end
 
     test "can't create the same budget twice" do
-      assert {:ok, %Budget{} = budget} = Finanses.create_budget(@valid_attrs)
+      assert {:ok, %Budget{}} = Finanses.create_budget(@valid_attrs)
       assert {:error, %Ecto.Changeset{} = changeset} = Finanses.create_budget(@valid_attrs)
       assert [month: {"budget for this time period already exist", _}] = changeset.errors
     end
@@ -190,11 +190,12 @@ defmodule Benjamin.FinansesTest do
       )
       expected_kpi = %{
         total_incomes: Decimal.new(1000),
-        total_saved: Decimal.new(200),
+        saves_planned: Decimal.new(700),
+        saved: Decimal.new(200),
         bills_planned: Decimal.new(200),
-        bills_real: Decimal.new(220),
+        bills: Decimal.new(220),
         expenses_budgets_planned: Decimal.new(100),
-        expenses_budgets_real: Decimal.new(50),
+        expenses_budgets: Decimal.new(50),
         balance: Decimal.new(530),
       }
       assert expected_kpi == kpi

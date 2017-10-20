@@ -1,6 +1,6 @@
 <h2>Listing Savings</h2>
 
-<strong>Total of all savings: </strong> <%= format_amount @total_saved %>
+<strong>Total of all savings: </strong> <%= format_amount @saved %>
 </br>
 </br>
 
