@@ -19,3 +19,14 @@ import "phoenix_html"
 // paths "./socket" or full ones "web/static/js/socket".
 
 // import socket from "./socket"
+
+let table = document.getElementById("expenses-budgets");
+
+function showDetails(event){
+  if(event.target.className==="clickable"){
+    $(`#${this.dataset.expenseCategoryId}`).modal();
+  }
+}
+
+$("#expenses-budgets > tbody > tr").click(showDetails);
+

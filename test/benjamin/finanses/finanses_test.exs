@@ -529,14 +529,18 @@ defmodule Benjamin.FinansesTest do
       assert %Ecto.Changeset{} = Finanses.change_expense(expense)
     end
 
-    test "list_expenses_for_budget/1 returns all expenses that should belong to budget" do
+    test "list_expenses_for_budget/1 returns all expenses that should belong to budget grouped by category" do
       Factory.insert!(:expense, date: ~D[1900-12-12])
-      expense = Factory.insert!(:expense)
+      expense1 = Factory.insert!(:expense)
+      expense2 = Factory.insert!(:expense)
       budget = Factory.insert!(:budget)
 
       expenses = Finanses.list_expenses_for_budget(budget)
 
-      assert expenses == [expense]
+      assert expenses == %{
+        {expense1.category_id, expense1.category.name} => [expense1],
+        {expense2.category_id, expense2.category.name} => [expense2],
+      }
     end
 
   end

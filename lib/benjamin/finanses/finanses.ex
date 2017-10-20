@@ -655,7 +655,7 @@ defmodule Benjamin.Finanses do
 
   ## Examples
 
-      iex> glist_expenses_for_budget(budget)
+      iex> list_expenses_for_budget(budget)
       [%Expense{},..]
   """
   def list_expenses_for_budget(%Budget{} = budget) do
@@ -667,6 +667,9 @@ defmodule Benjamin.Finanses do
       order_by: [desc: e.date],
       preload: [:category]
     Repo.all(query)
+    |> Enum.group_by(fn expense ->
+      {expense.category_id, expense.category.name}
+    end)
   end
 
   @doc """
