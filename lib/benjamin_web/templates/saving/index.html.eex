@@ -1,11 +1,8 @@
-<h2>Listing Savings</h2>
-
-<strong>Total of all savings: </strong> <%= format_amount @saved %>
-</br>
-</br>
-
-<table class="table">
-  <thead>
+<h2>Savings</h2>
+<strong class="float-right">Total of all savings: <%= format_amount @saved %></strong>
+<span><%= link "New Saving", to: saving_path(@conn, :new), class: "btn btn-primary btn-xs" %></span>
+<table class="table table-responsive">
+  <thead class="thead-inverse">
     <tr>
       <th>Name</th>
       <th>Total amount</th>
@@ -32,5 +29,3 @@
 <% end %>
   </tbody>
 </table>
-
-<span><%= link "New Saving", to: saving_path(@conn, :new) %></span>

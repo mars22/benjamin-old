@@ -1,34 +1,31 @@
-<h2>Show Saving</h2>
+<%= link "Back", to: saving_path(@conn, :index), class: "btn btn-secondary" %>
+<div class="card">
+    <div class="card-body">
+      <h2>Saving: <%= @saving.name %></h2>
+      <p>
+        <strong>Total savings:</strong>
+        <%= format_amount @saving.total_amount %>
+      </p>
 
-<ul>
+      <p>
+        <strong>Goal amount:</strong>
+        <%= @saving.goal_amount %>
+      </p>
 
-  <li>
-    <strong>Name:</strong>
-    <%= @saving.name %>
-  </li>
+      <p>
+        <strong>End at:</strong>
+        <%= @saving.end_at %>
+      </p>
+      <%= link "Edit", to: saving_path(@conn, :edit, @saving), class: "btn btn-primary" %>
+      <%= link "Delete", to: saving_path(@conn, :delete, @saving), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger btn-xs" %>
+  </div>
+</div>
+</br>
 
-  <li>
-    <strong>Total savings:</strong>
-    <%= format_amount @saving.total_amount %>
-  </li>
-
-  <li>
-    <strong>Goal amount:</strong>
-    <%= @saving.goal_amount %>
-  </li>
-
-  <li>
-    <strong>End at:</strong>
-    <%= @saving.end_at %>
-  </li>
-
-</ul>
-
-<span><%= link "Edit", to: saving_path(@conn, :edit, @saving) %></span>
-<span><%= link "Back", to: saving_path(@conn, :index) %></span>
-
-<h2>Listing transactions</h2>
-
+<h3>Listing transactions</h3>
+<%= link "Add transaction", to: saving_transaction_path(@conn, :new, @saving), class: "btn btn-primary" %>
+</br>
+</br>
 <table class="table">
   <thead>
     <tr>
@@ -56,6 +53,4 @@
 <% end %>
   </tbody>
 </table>
-
-<span><%= link "Add transaction", to: saving_transaction_path(@conn, :new, @saving) %></span>
 
