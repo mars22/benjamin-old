@@ -800,8 +800,9 @@ defmodule Benjamin.Finanses do
 
   def list_expenses_budgets(querable \\ ExpenseBudget) do
     querable
-      |> Repo.all()
-      |> Repo.preload([:expense_category])
+    |> Repo.all()
+    |> Repo.preload([:expense_category])
+    |> Enum.sort_by(&(&1.real_expenses), &>=/2)
   end
 
   @doc """
