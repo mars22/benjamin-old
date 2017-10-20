@@ -137,7 +137,7 @@
     <strong>Expenses budgets</strong> <%= link "New Budget", to: budget_expense_budget_path(@conn, :new, @budget), class: "btn btn-primary float-right"  %>
   </div>
   <div class="card-body">
-    <table class="table table-responsive" id="expenses-budgets">
+    <table class="table table-responsive table-hover" id="expenses-budgets">
       <thead>
         <tr>
           <th>Category</th>

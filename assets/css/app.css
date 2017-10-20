@@ -18,3 +18,7 @@ main {
 .card {
   margin-top: 10px;
 }
+
+#expenses-budgets{
+  cursor: pointer;
+}
