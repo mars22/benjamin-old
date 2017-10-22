@@ -47,6 +47,19 @@ defmodule Benjamin.FinansesTest do
       assert budget == result_budget
     end
 
+    test "get_previous_budget!/1 returns the budget before give" do
+      prev_budget_1 = Factory.insert!(:budget, [month: 7, year: 2017, begin_at: ~D[2017-07-01], end_at: ~D[2017-07-26]])
+      prev_budget_2 = Factory.insert!(:budget, [month: 6, year: 2017, begin_at: ~D[2017-06-01], end_at: ~D[2017-06-30]])
+      prev_budget_3 = Factory.insert!(:budget, [month: 9, year: 2017, begin_at: ~D[2017-09-01], end_at: ~D[2017-09-30]])
+      prev_budget_4 = Factory.insert!(:budget, [month: 6, year: 2016, begin_at: ~D[2016-06-01], end_at: ~D[2016-06-30]])
+
+      result = Finanses.get_previous_budget(prev_budget_1)
+      assert prev_budget_2.id == result.id
+
+      result = Finanses.get_previous_budget(prev_budget_2)
+      assert prev_budget_4.id == result.id
+    end
+
     test "create_budget/1 with valid data creates a budget" do
       assert {:ok, %Budget{} = budget} = Finanses.create_budget(@valid_attrs)
       assert budget.description == "some description"
@@ -152,6 +165,51 @@ defmodule Benjamin.FinansesTest do
     test "change_budget/1 returns a budget changeset" do
       budget = Factory.insert!(:budget)
       assert %Ecto.Changeset{} = Finanses.change_budget(budget)
+    end
+
+    test "create_budget changes end date of previous budget if needed" do
+      prev_budget = Factory.insert!(:budget, [month: 7, year: 2017, begin_at: ~D[2017-07-01], end_at: ~D[2017-07-31]])
+      {:ok, current_budget} = Finanses.create_budget(%{month: 8, year: 2017, begin_at: ~D[2017-07-27], end_at: ~D[2017-08-31]})
+      prev_budget = Finanses.get_budget!(prev_budget.id)
+
+      assert prev_budget.begin_at == ~D[2017-07-01]
+      assert prev_budget.end_at == ~D[2017-07-26]
+      assert current_budget.begin_at == ~D[2017-07-27]
+      assert current_budget.end_at == ~D[2017-08-31]
+    end
+
+    test "update_budget changes end date of previous budget if needed" do
+      prev_budget_1 = Factory.insert!(:budget, [month: 7, year: 2017, begin_at: ~D[2017-07-01], end_at: ~D[2017-07-26]])
+      prev_budget_2 = Factory.insert!(:budget, [month: 6, year: 2017, begin_at: ~D[2017-06-01], end_at: ~D[2017-06-30]])
+      {:ok, current_budget} = Finanses.create_budget(%{month: 8, year: 2017, begin_at: ~D[2017-07-27], end_at: ~D[2017-08-31]})
+      prev_budget_3 = Factory.insert!(:budget, [month: 9, year: 2017, begin_at: ~D[2017-09-01], end_at: ~D[2017-09-30]])
+
+      {:ok, current_budget} = Finanses.update_budget(current_budget, %{begin_at: ~D[2017-07-25]})
+      prev_budget_1 = Finanses.get_budget!(prev_budget_1.id)
+      assert prev_budget_1.begin_at == ~D[2017-07-01]
+      assert prev_budget_1.end_at == ~D[2017-07-24]
+
+      prev_budget_2 = Finanses.get_budget!(prev_budget_2.id)
+      assert prev_budget_2.begin_at == ~D[2017-06-01]
+      assert prev_budget_2.end_at == ~D[2017-06-30]
+
+      prev_budget_3 = Finanses.get_budget!(prev_budget_3.id)
+      assert prev_budget_3.begin_at == ~D[2017-09-01]
+      assert prev_budget_3.end_at == ~D[2017-09-30]
+
+      {:ok, current_budget} = Finanses.update_budget(current_budget, %{begin_at: ~D[2017-07-28]})
+      prev_budget_1 = Finanses.get_budget!(prev_budget_1.id)
+      assert prev_budget_1.begin_at == ~D[2017-07-01]
+      assert prev_budget_1.end_at == ~D[2017-07-27]
+
+      prev_budget_2 = Finanses.get_budget!(prev_budget_2.id)
+      assert prev_budget_2.begin_at == ~D[2017-06-01]
+      assert prev_budget_2.end_at == ~D[2017-06-30]
+
+      prev_budget_3 = Finanses.get_budget!(prev_budget_3.id)
+      assert prev_budget_3.begin_at == ~D[2017-09-01]
+      assert prev_budget_3.end_at == ~D[2017-09-30]
+
     end
   end
 

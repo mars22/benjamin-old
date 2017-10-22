@@ -15,7 +15,7 @@ defmodule BenjaminWeb.SavingControllerTest do
   describe "index" do
     test "lists all savings", %{conn: conn} do
       conn = get conn, saving_path(conn, :index)
-      assert html_response(conn, 200) =~ "Listing Savings"
+      assert html_response(conn, 200) =~ "Savings"
     end
   end
 
@@ -34,7 +34,7 @@ defmodule BenjaminWeb.SavingControllerTest do
       assert redirected_to(conn) == saving_path(conn, :show, id)
 
       conn = get conn, saving_path(conn, :show, id)
-      assert html_response(conn, 200) =~ "Show Saving"
+      assert html_response(conn, 200) =~ "Saving"
     end
 
     test "renders errors when data is invalid", %{conn: conn} do

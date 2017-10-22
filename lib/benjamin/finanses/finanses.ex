@@ -25,6 +25,18 @@ defmodule Benjamin.Finanses do
     |> Repo.all()
   end
 
+
+  def get_previous_budget(current_budget) do
+    query = from  b in Budget,
+            where: b.id != ^current_budget.id,
+            where: b.year <= ^current_budget.year,
+            where: b.month <= ^current_budget.month,
+            order_by: [desc: :year, desc: :month],
+            limit: 1
+    Repo.one(query)
+  end
+
+
   @doc """
   Gets a single budget.
 
@@ -88,21 +100,38 @@ defmodule Benjamin.Finanses do
   def create_budget(%{copy_from: source_budget_id} = attrs) do
     Multi.new()
     |> Multi.insert(:budget, Budget.changeset(%Budget{}, attrs))
+    |> Multi.run(:update_prev, &update_prev_budget_end_at/1)
     |> Multi.run(:bills, &(copy_bills(source_budget_id, &1)))
     |> Multi.run(:expenses_budgets, &(copy_expenses_budgets(source_budget_id, &1)))
     |> Repo.transaction()
-    |> case do
+    |> handle_budget_creation
+  end
+
+  def create_budget(attrs) do
+    Multi.new()
+    |> Multi.insert(:budget, Budget.changeset(%Budget{}, attrs))
+    |> Multi.run(:update_prev, &update_prev_budget_end_at/1)
+    |> Repo.transaction()
+    |> handle_budget_creation
+  end
+
+  defp handle_budget_creation(results) do
+    case results do
       {:ok, %{budget: budget}} -> {:ok, budget}
       {:error, :budget, %Ecto.Changeset{} = changeset, %{}} -> {:error, changeset}
     end
   end
 
-  def create_budget(attrs) do
-    %Budget{}
-    |> Budget.changeset(attrs)
-    |> Repo.insert()
+  defp update_prev_budget_end_at(%{budget: %Budget{} = current_budget}) do
+    case get_previous_budget(current_budget) do
+      %Budget{end_at: end_at} = budget ->
+        case Date.diff(end_at, current_budget.begin_at) do
+          diff when diff == -1 -> {:ok, :noop}
+          diff -> update_budget(budget, %{end_at: Date.add(current_budget.begin_at, -1)})
+        end
+      nil -> {:ok, :noop}
+    end
   end
-
 
   defp copy_bills(source_budget_id, %{budget: %Budget{id: id}}) do
     case list_bills_for_budget(source_budget_id) do
@@ -147,9 +176,11 @@ defmodule Benjamin.Finanses do
 
   """
   def update_budget(%Budget{} = budget, attrs) do
-    budget
-    |> Budget.changeset(attrs)
-    |> Repo.update()
+    Multi.new()
+    |> Multi.update(:budget, Budget.changeset(budget, attrs))
+    |> Multi.run(:update_prev, &update_prev_budget_end_at/1)
+    |> Repo.transaction()
+    |> handle_budget_creation
   end
 
   @doc """
