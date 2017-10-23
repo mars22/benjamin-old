@@ -80,7 +80,7 @@ defmodule Benjamin.Finanses.Factory do
     %Income{
       amount: Decimal.new(123),
       date: Date.utc_today(),
-      is_invoice: false,
+      type: "salary",
       vat: Decimal.new(23),
       tax: Decimal.new(18)
     }

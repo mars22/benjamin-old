@@ -3,14 +3,14 @@ defmodule Benjamin.Finanses.Income do
   import Ecto.Changeset
   alias Benjamin.Finanses.{Income, Budget}
 
-  @types ~w(salary invoice from_savings other)
+  @types ~w(salary invoice savings other)
 
 
   schema "incomes" do
     field :amount, :decimal
     field :date, :date
     field :description, :string
-    # field :type, :string
+    field :type, :string
     field :is_invoice, :boolean, default: false
     field :vat, :decimal, default: Decimal.new(23)
     field :tax, :decimal, default: Decimal.new(18)
@@ -28,9 +28,10 @@ defmodule Benjamin.Finanses.Income do
   @doc false
   def changeset(%Income{} = income, attrs) do
     income
-    |> cast(attrs, [:amount, :date, :description, :budget_id, :is_invoice, :vat, :tax])
-    |> validate_required([:amount, :budget_id, :date])
+    |> cast(attrs, [:amount, :date, :description, :budget_id, :type, :vat, :tax])
+    |> validate_required([:amount, :budget_id, :date, :type])
     |> validate_number(:amount, greater_than_or_equal_to: 0)
+    |> validate_inclusion(:type, @types)
     |> foreign_key_constraint(:budget_id)
   end
 
@@ -63,8 +64,8 @@ defmodule Benjamin.Finanses.Income do
     |> Decimal.div(Decimal.new(100))
   end
 
-  def add_taxes(income) do
-    case income.is_invoice do
+  def add_taxes(%Income{} = income) do
+    case income.type == "invoice" do
       true -> %Income{ income | vat_amount: calculate_vat(income), tax_amount: calculate_tax(income)}
       false -> income
     end

@@ -4,10 +4,10 @@ defmodule BenjaminWeb.IncomeControllerTest do
   alias Benjamin.Finanses
   alias Benjamin.Finanses.Factory
 
-  @create_attrs %{amount: "120.5", date: Date.utc_today, description: "my income", is_invoice: true}
+  @create_attrs %{amount: "120.5", date: Date.utc_today, description: "my income", type: "invoice"}
   @update_attrs %{amount: "130", date: Date.utc_today, description: "new income"}
   @invalid_attrs %{amount: "", description: "some description"}
-  @valid_attrs %{amount: "120.5", date: Date.utc_today, description: "some description"}
+  @valid_attrs %{amount: "120.5", date: Date.utc_today, description: "some description", type: "salary"}
 
   setup do
     budget = Factory.insert!(:budget)

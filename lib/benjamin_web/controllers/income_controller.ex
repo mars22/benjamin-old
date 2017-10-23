@@ -7,6 +7,7 @@ defmodule BenjaminWeb.IncomeController do
 
 
   plug :assign_budget
+  plug :assign_types
 
 
   def new(conn, _params) do
@@ -50,5 +51,9 @@ defmodule BenjaminWeb.IncomeController do
     conn
     |> put_flash(:info, "Income deleted successfully.")
     |> redirect(to: budget_path(conn, :show, income.budget_id))
+  end
+
+  def assign_types(conn, _opts) do
+    assign(conn, :types, Income.types())
   end
 end

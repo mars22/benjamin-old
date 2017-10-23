@@ -263,7 +263,7 @@ defmodule Benjamin.FinansesTest do
   describe "incomes" do
     alias Benjamin.Finanses.Income
 
-    @valid_attrs %{amount: "120.5", date: ~D[2017-12-01], description: "some description"}
+    @valid_attrs %{amount: "120.5", date: ~D[2017-12-01], description: "some description", type: "salary"}
     @update_attrs %{amount: "456.7", date: ~D[2017-12-01], description: "some updated description"}
     @invalid_data [%{amount: nil}, %{amount: -12}]
 

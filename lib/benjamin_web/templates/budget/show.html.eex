@@ -81,7 +81,7 @@
       <%= for income <- @budget.incomes do %>
           <tr>
             <td><%= format_date income.date %></td>
-            <td><%= BenjaminWeb.IncomeView.income_type income %></td>
+            <td><%= income.type %></td>
             <td><%= format_amount income.amount %></td>
             <td><%= format_amount income.vat_amount %></td>
             <td><%= format_amount income.tax_amount %></td>

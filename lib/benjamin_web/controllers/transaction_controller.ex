@@ -63,6 +63,6 @@ defmodule BenjaminWeb.TransactionController do
   end
 
   def assign_types(conn, _opts) do
-      assign(conn, :types, Transaction.types())
+    assign(conn, :types, Transaction.types())
   end
 end
