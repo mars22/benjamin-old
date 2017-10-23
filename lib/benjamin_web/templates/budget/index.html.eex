@@ -7,8 +7,9 @@
     <tr>
       <th>Year</th>
       <th>Month</th>
+      <th>Expenses from</th>
+      <th>Expenses to</th>
       <th>Description</th>
-
       <th></th>
     </tr>
   </thead>
@@ -17,8 +18,9 @@
     <tr>
       <td><%= budget.year %></td>
       <td><%= month_nrb_to_name budget.month %></td>
+      <td><%= budget.begin_at %></td>
+      <td><%= budget.end_at %></td>
       <td><%= budget.description %></td>
-
       <td class="text-right">
         <span><%= link "Show", to: budget_path(@conn, :show, budget), class: "btn btn-default btn-xs" %></span>
       </td>

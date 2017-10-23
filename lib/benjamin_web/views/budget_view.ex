@@ -18,7 +18,7 @@ defmodule BenjaminWeb.BudgetView do
 
   def month_nrb_to_name(month_nbr) when month_nbr in 1..12 do
     name = Map.get @months, month_nbr
-    "#{name} (#{month_nbr})"
+    "#{name}"
   end
 
   def budgets(budget) do
