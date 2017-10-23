@@ -17,7 +17,7 @@ defmodule BenjaminWeb.ExpenseBudgetController do
   def create(conn, %{"expense_budget" => expense_budget_params, "budget_id" => budget_id}) do
     expense_budget_params = Map.put(expense_budget_params, "budget_id", budget_id)
     case Finanses.create_expense_budget(expense_budget_params) do
-      {:ok, expense_budget} ->
+      {:ok, _} ->
         conn
         |> put_flash(:info, "Expense category budget created successfully.")
         |> redirect(to: budget_path(conn, :show, budget_id))

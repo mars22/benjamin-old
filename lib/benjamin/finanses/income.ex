@@ -11,7 +11,6 @@ defmodule Benjamin.Finanses.Income do
     field :date, :date
     field :description, :string
     field :type, :string
-    field :is_invoice, :boolean, default: false
     field :vat, :decimal, default: Decimal.new(23)
     field :tax, :decimal, default: Decimal.new(18)
     field :vat_amount, :decimal, virtual: true
@@ -66,7 +65,7 @@ defmodule Benjamin.Finanses.Income do
 
   def add_taxes(%Income{} = income) do
     case income.type == "invoice" do
-      true -> %Income{ income | vat_amount: calculate_vat(income), tax_amount: calculate_tax(income)}
+      true -> %Income{income | vat_amount: calculate_vat(income), tax_amount: calculate_tax(income)}
       false -> income
     end
   end

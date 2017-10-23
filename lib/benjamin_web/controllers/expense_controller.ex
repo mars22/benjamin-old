@@ -2,7 +2,7 @@ defmodule BenjaminWeb.ExpenseController do
   use BenjaminWeb, :controller
 
   alias Benjamin.Finanses
-  alias Benjamin.Finanses.{Expense, ExpenseController}
+  alias Benjamin.Finanses.Expense
 
   def index(conn, _params) do
     expenses = Finanses.list_expenses()
@@ -18,7 +18,7 @@ defmodule BenjaminWeb.ExpenseController do
 
   def create(conn, %{"expense" => expense_params}) do
     case Finanses.create_expense(expense_params) do
-      {:ok, expense} ->
+      {:ok, _} ->
         conn
         |> put_flash(:info, "Expense created successfully.")
         |> redirect(to: expense_path(conn, :index))

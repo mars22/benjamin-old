@@ -2,7 +2,7 @@ defmodule BenjaminWeb.BudgetController do
   use BenjaminWeb, :controller
 
   alias Benjamin.Finanses
-  alias Benjamin.Finanses.{Budget, Income}
+  alias Benjamin.Finanses.Budget
 
   def index(conn, _params) do
     budgets = Finanses.list_budgets()

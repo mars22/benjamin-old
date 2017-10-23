@@ -135,7 +135,7 @@ defmodule Benjamin.Finanses do
       %Budget{end_at: end_at} = budget ->
         case Date.diff(end_at, current_budget.begin_at) do
           diff when diff == -1 -> {:ok, :noop}
-          diff -> update_budget(budget, %{end_at: Date.add(current_budget.begin_at, -1)})
+          _ -> update_budget(budget, %{end_at: Date.add(current_budget.begin_at, -1)})
         end
       nil -> {:ok, :noop}
     end
@@ -703,7 +703,9 @@ defmodule Benjamin.Finanses do
       where: e.date <= ^budget.end_at,
       order_by: [desc: e.date],
       preload: [:category]
-    Repo.all(query)
+
+    query
+    |> Repo.all()
     |> Enum.group_by(fn expense ->
       {expense.category_id, expense.category.name}
     end)
