@@ -50,7 +50,7 @@ defmodule Benjamin.FinansesTest do
     test "get_previous_budget!/1 returns the budget before give" do
       prev_budget_1 = Factory.insert!(:budget, [month: 7, year: 2017, begin_at: ~D[2017-07-01], end_at: ~D[2017-07-26]])
       prev_budget_2 = Factory.insert!(:budget, [month: 6, year: 2017, begin_at: ~D[2017-06-01], end_at: ~D[2017-06-30]])
-      prev_budget_3 = Factory.insert!(:budget, [month: 9, year: 2017, begin_at: ~D[2017-09-01], end_at: ~D[2017-09-30]])
+      Factory.insert!(:budget, [month: 9, year: 2017, begin_at: ~D[2017-09-01], end_at: ~D[2017-09-30]])
       prev_budget_4 = Factory.insert!(:budget, [month: 6, year: 2016, begin_at: ~D[2016-06-01], end_at: ~D[2016-06-30]])
 
       result = Finanses.get_previous_budget(prev_budget_1)
@@ -197,7 +197,7 @@ defmodule Benjamin.FinansesTest do
       assert prev_budget_3.begin_at == ~D[2017-09-01]
       assert prev_budget_3.end_at == ~D[2017-09-30]
 
-      {:ok, current_budget} = Finanses.update_budget(current_budget, %{begin_at: ~D[2017-07-28]})
+      Finanses.update_budget(current_budget, %{begin_at: ~D[2017-07-28]})
       prev_budget_1 = Finanses.get_budget!(prev_budget_1.id)
       assert prev_budget_1.begin_at == ~D[2017-07-01]
       assert prev_budget_1.end_at == ~D[2017-07-27]

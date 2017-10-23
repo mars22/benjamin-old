@@ -7,8 +7,10 @@ defmodule Benjamin.Finanses do
   alias Ecto.Multi
   alias Benjamin.Repo
 
-  alias Benjamin.Finanses.{Bill, Budget, ExpenseBudget, Transaction}
-  alias Benjamin.Finanses.{Saving, Transaction}
+  alias Benjamin.Finanses.{
+    Bill, Budget, ExpenseBudget, Transaction, Income,
+    Saving, Transaction
+  }
 
   @doc """
   Returns the list of budgets.
@@ -77,10 +79,16 @@ defmodule Benjamin.Finanses do
 
   """
   def get_budget_with_related!(id) do
-    Budget
-    |> Repo.get!(id)
-    |> Repo.preload(:incomes)
-    |> Repo.preload([bills: [:category]])
+    budget =
+      Budget
+      |> Repo.get!(id)
+      |> Repo.preload(:incomes)
+      |> Repo.preload([bills: [:category]])
+
+    incomes =
+      budget.incomes
+      |> Enum.map(&(Income.add_taxes(&1)))
+    %Budget{budget | incomes: incomes}
   end
 
   @doc """
@@ -250,8 +258,6 @@ defmodule Benjamin.Finanses do
       balance: balance,
     }
   end
-
-  alias Benjamin.Finanses.Income
 
   @doc """
   Returns the list of incomes.

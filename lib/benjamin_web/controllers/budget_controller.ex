@@ -2,7 +2,7 @@ defmodule BenjaminWeb.BudgetController do
   use BenjaminWeb, :controller
 
   alias Benjamin.Finanses
-  alias Benjamin.Finanses.Budget
+  alias Benjamin.Finanses.{Budget, Income}
 
   def index(conn, _params) do
     budgets = Finanses.list_budgets()
@@ -47,6 +47,7 @@ defmodule BenjaminWeb.BudgetController do
     expenses_budgets = Finanses.list_expenses_budgets_for_budget(budget)
     transactions = Finanses.list_transactions(budget.begin_at, budget.end_at)
     budget = %Budget{budget | expenses_budgets: expenses_budgets}
+
     kpi = Finanses.calculate_budget_kpi(budget, transactions)
     render(
       conn, "show.html",
