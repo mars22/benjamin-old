@@ -15,8 +15,8 @@ use Mix.Config
 # which you typically run after static files are built.
 config :benjamin, BenjaminWeb.Endpoint,
   load_from_system_env: true,
-  url: [scheme: "https", host: "benjamin-2017.herokuapp.com/", port: 443],
-  force_ssl: [rewrite_on: [:x_forwarded_proto]],
+  url: [scheme: "http", host: "ec2-35-156-32-245.eu-central-1.compute.amazonaws.com", port: 80],
+  #force_ssl: [rewrite_on: [:x_forwarded_proto]],
   cache_static_manifest: "priv/static/cache_manifest.json",
   secret_key_base: Map.fetch!(System.get_env(), "SECRET_KEY_BASE")
 
