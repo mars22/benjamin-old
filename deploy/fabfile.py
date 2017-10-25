@@ -3,7 +3,7 @@ import contextlib
 from fabric import api
 from fabric.contrib.files import exists
 
-
+api.env.use_ssh_config = True
 api.env.roledefs = {
     'PROD': ['aws'],
 }
