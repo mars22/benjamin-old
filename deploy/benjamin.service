@@ -1,0 +1,18 @@
+[Unit]
+Description=Benjamin daemon
+After=network.target
+
+[Service]
+User=ubuntu
+Restart=on-failure
+Environment=MIX_ENV=prod "PORT=4000"
+Environment=SECRET_KEY_BASE=<<SECRET>>
+Environment=DATABASE_URL=<<DATABASE_URL>>
+Environment=LANG=en_US.UTF-8
+
+RemainAfterExit=yes
+WorkingDirectory=/home/ubuntu/app/benjamin
+ExecStart=/usr/local/bin/mix phx.server
+
+[Install]
+WantedBy=multi-user.target

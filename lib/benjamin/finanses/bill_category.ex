@@ -7,7 +7,6 @@ defmodule Benjamin.Finanses.BillCategory do
   schema "bill_categories" do
     field :deleted, :boolean, default: false
     field :name, :string
-    has_many :bills, Bill
 
     timestamps()
   end
