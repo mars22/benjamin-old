@@ -42,9 +42,9 @@ defmodule BenjaminWeb.BillControllerTest do
     test "redirects to budget show when data is valid", %{conn: conn, budget: budget, bill_category: bill_category} do
       create_attrs = Map.put(@create_attrs, :category_id, bill_category.id)
       conn = post conn, budget_bill_path(conn, :create, budget), bill: create_attrs
-      assert redirected_to(conn) == budget_path(conn, :show, budget)
+      assert redirected_to(conn) == budget_path(conn, :show, budget, tab: :bills)
 
-      conn = get conn, budget_path(conn, :show, budget)
+      conn = get conn, budget_path(conn, :show, budget, tab: :bills)
       response = html_response(conn, 200)
       assert  response =~ "120,5"
       assert  response =~ "category 1"
@@ -71,9 +71,9 @@ defmodule BenjaminWeb.BillControllerTest do
 
     test "redirects to budget show when data is valid", %{conn: conn, budget: budget, bill: bill} do
       conn = put conn, budget_bill_path(conn, :update, budget, bill), bill: @update_attrs
-      assert redirected_to(conn) == budget_path(conn, :show, budget)
+      assert redirected_to(conn) == budget_path(conn, :show, budget, tab: :bills)
 
-      conn = get conn, budget_path(conn, :show, budget)
+      conn = get conn, budget_path(conn, :show, budget, tab: :bills)
       response = html_response(conn, 200)
       assert  response =~ "456,7"
       assert  response =~ "category 1"
@@ -90,7 +90,7 @@ defmodule BenjaminWeb.BillControllerTest do
 
     test "deletes chosen bill", %{conn: conn, budget: budget, bill: bill} do
       conn = delete conn, budget_bill_path(conn, :delete, budget, bill)
-      assert redirected_to(conn) == budget_path(conn, :show, budget)
+      assert redirected_to(conn) == budget_path(conn, :show, budget, tab: :bills)
       assert_error_sent 404, fn ->
         delete conn, budget_bill_path(conn, :delete, budget, bill)
       end

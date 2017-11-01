@@ -57,7 +57,23 @@
     </div>
   </div>
 </div>
+</br>
+<ul class="nav nav-tabs">
+  <li class="nav-item">
+    <a class="nav-link <%= is_active_tab(@conn, :incomes) %>" href="?tab=incomes">Incomes</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link <%= is_active_tab(@conn, :bills) %>" href="?tab=bills">Bills</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link <%= is_active_tab(@conn, :expenses_budgets) %>" href="?tab=expenses_budgets">Expenses budgets</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link <%= is_active_tab(@conn, :savings) %>" href="?tab=savings">Savings</a>
+  </li>
+</ul>
 
+<%= if is_active_tab(@conn, :incomes) == "active" do %>
 <div class="card border border-success">
   <div class="card-header">
     <strong>Incomes</strong> <%= link "New Income", to: budget_income_path(@conn, :new, @budget), class: "btn btn-primary float-right"  %>
@@ -97,8 +113,9 @@
       </table>
   </div>
 </div>
+<% end %>
 
-
+<%= if is_active_tab(@conn, :bills) == "active" do %>
 <div class="card border border-secondary">
   <div class="card-header">
     <strong>Bills</strong> <%= link "New Bill", to: budget_bill_path(@conn, :new, @budget), class: "btn btn-primary float-right"  %>
@@ -131,7 +148,9 @@
     </table>
   </div>
 </div>
+<% end %>
 
+<%= if is_active_tab(@conn, :expenses_budgets) == "active" do %>
 <div class="card border border-secondary">
   <div class="card-header">
     <strong>Expenses budgets</strong> <%= link "New Budget", to: budget_expense_budget_path(@conn, :new, @budget), class: "btn btn-primary float-right"  %>
@@ -163,7 +182,9 @@
     </table>
   </div>
 </div>
+<% end %>
 
+<%= if is_active_tab(@conn, :savings) == "active" do %>
 <div class="card border border-secondary">
   <div class="card-header">
     <strong>Savings</strong>
@@ -197,7 +218,7 @@
     </table>
   </div>
 </div>
-
+<% end %>
 
 <%= for {{category_id, category_name}, expenses} <- @expenses do %>
   <div id="<%= category_id %>" class="modal" tabindex="-1" role="dialog">

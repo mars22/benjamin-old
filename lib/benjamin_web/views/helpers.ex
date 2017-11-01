@@ -9,6 +9,18 @@ defmodule BenjaminWeb.ViewHelpers do
     end
   end
 
+  def is_active_tab(%Plug.Conn{} = conn, current) do
+    current = Atom.to_string(current)
+    case String.split(conn.query_string, "=") do
+      ["tab", tab] when tab == current -> "active"
+      ["tab", ""] when current == "incomes" -> "active"
+      ["tab"] when current == "incomes" -> "active"
+      [""] when current == "incomes" -> "active"
+      _ -> ""
+    end
+  end
+
+
   def format_amount(amount), do: number_to_currency amount, unit: "zl"
 
   def selected_value(nil, _id), do: ""

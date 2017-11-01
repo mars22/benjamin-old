@@ -35,7 +35,7 @@ defmodule BenjaminWeb.IncomeControllerTest do
       conn = post conn, budget_income_path(conn, :create, budget.id), income: @create_attrs
 
       assert %{id: id} = redirected_params(conn)
-      assert redirected_to(conn) == budget_path(conn, :show, id)
+      assert redirected_to(conn) == budget_path(conn, :show, id, tab: :incomes)
 
       conn = get conn, budget_path(conn, :show, id)
       budget_response = html_response(conn, 200)
@@ -62,7 +62,7 @@ defmodule BenjaminWeb.IncomeControllerTest do
 
     test "redirects when data is valid", %{conn: conn, budget: budget, income: income} do
       conn = put conn, budget_income_path(conn, :update, budget, income), income: @update_attrs
-      assert redirected_to(conn) == budget_path(conn, :show, budget)
+      assert redirected_to(conn) == budget_path(conn, :show, budget, tab: :incomes)
 
       conn = get conn, budget_path(conn, :show, budget)
       budget_response = html_response(conn, 200)
@@ -81,7 +81,7 @@ defmodule BenjaminWeb.IncomeControllerTest do
 
     test "deletes chosen income", %{conn: conn, budget: budget, income: income} do
       conn = delete conn, budget_income_path(conn, :delete, budget, income)
-      assert redirected_to(conn) == budget_path(conn, :show, budget)
+      assert redirected_to(conn) == budget_path(conn, :show, budget, tab: :incomes)
       assert_error_sent 404, fn ->
         get conn, budget_income_path(conn, :edit, budget, income)
       end

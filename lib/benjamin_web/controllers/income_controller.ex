@@ -21,7 +21,7 @@ defmodule BenjaminWeb.IncomeController do
       {:ok, income} ->
         conn
         |> put_flash(:info, "Income created successfully.")
-        |> redirect(to: budget_path(conn, :show, income.budget_id))
+        |> redirect(to: budget_path(conn, :show, income.budget_id, tab: :incomes))
       {:error, %Ecto.Changeset{} = changeset} ->
         render(conn, "new.html", changeset: changeset)
     end
@@ -39,7 +39,7 @@ defmodule BenjaminWeb.IncomeController do
       {:ok, income} ->
         conn
         |> put_flash(:info, "Income update successfully.")
-        |> redirect(to: budget_path(conn, :show, income.budget_id))
+        |> redirect(to: budget_path(conn, :show, income.budget_id, tab: :incomes))
       {:error, %Ecto.Changeset{} = changeset} ->
         render(conn, "edit.html", changeset: changeset, income: income)
     end
@@ -50,7 +50,7 @@ defmodule BenjaminWeb.IncomeController do
     {:ok, _income} = Finanses.delete_income(income)
     conn
     |> put_flash(:info, "Income deleted successfully.")
-    |> redirect(to: budget_path(conn, :show, income.budget_id))
+    |> redirect(to: budget_path(conn, :show, income.budget_id, tab: :incomes))
   end
 
   def assign_types(conn, _opts) do

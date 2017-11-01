@@ -24,7 +24,7 @@ defmodule BenjaminWeb.ExpenseBudgetControllerTest do
 
       conn = post conn, budget_expense_budget_path(conn, :create, budget.id), expense_budget: attrs
 
-      assert redirected_to(conn) == budget_path(conn, :show, budget.id)
+      assert redirected_to(conn) == budget_path(conn, :show, budget.id, tab: :expenses_budgets)
 
       conn = get conn, budget_path(conn, :show, budget.id)
       assert html_response(conn, 200) =~ "Expenses budgets"
@@ -51,7 +51,7 @@ defmodule BenjaminWeb.ExpenseBudgetControllerTest do
     test "redirects when data is valid", %{conn: conn, budget: budget, expense_budget: expense_budget} do
       attrs = %{planned_expenses: "456.7"}
       conn = put conn, budget_expense_budget_path(conn, :update, budget, expense_budget), expense_budget: attrs
-      assert redirected_to(conn) == budget_path(conn, :show, budget)
+      assert redirected_to(conn) == budget_path(conn, :show, budget, tab: :expenses_budgets)
     end
 
     test "renders errors when data is invalid", %{conn: conn, budget: budget, expense_budget: expense_budget} do
@@ -64,8 +64,8 @@ defmodule BenjaminWeb.ExpenseBudgetControllerTest do
     setup [:create_expense_budget]
 
     test "deletes chosen expense_budget", %{conn: conn, budget: budget, expense_budget: expense_budget} do
-      conn = delete conn, budget_expense_budget_path(conn, :delete, budget, expense_budget)
-      assert redirected_to(conn) == budget_path(conn, :show, budget)
+      conn = delete conn, budget_expense_budget_path(conn, :delete, budget, expense_budget, tab: :expenses_budgets)
+      assert redirected_to(conn) == budget_path(conn, :show, budget, tab: :expenses_budgets)
       assert_error_sent 404, fn ->
         delete conn, budget_expense_budget_path(conn, :delete, budget, expense_budget)
       end
