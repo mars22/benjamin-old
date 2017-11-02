@@ -663,7 +663,7 @@ defmodule Benjamin.Finanses do
   def list_expenses do
     query = from e in Expense,
             where: is_nil(e.parent_id),
-            order_by: [desc: e.date],
+            order_by: [desc: e.date, desc: e.id],
             preload: [:category]
     Repo.all(query)
   end
