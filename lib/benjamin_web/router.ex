@@ -57,7 +57,7 @@ defmodule BenjaminWeb.Router do
           |> Phoenix.Controller.put_flash(:error, "Login required")
           |> Phoenix.Controller.redirect(to: "/auth/sessions/new")
           |> halt()
-        user_id ->
+        _ ->
           assign(conn, :current_user, "TODO")
       end
     end

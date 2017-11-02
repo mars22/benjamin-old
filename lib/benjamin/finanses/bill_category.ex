@@ -1,7 +1,7 @@
 defmodule Benjamin.Finanses.BillCategory do
   use Ecto.Schema
   import Ecto.Changeset
-  alias Benjamin.Finanses.{Bill, BillCategory}
+  alias Benjamin.Finanses.BillCategory
 
 
   schema "bill_categories" do

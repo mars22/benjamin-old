@@ -26,7 +26,7 @@ defmodule Benjamin.Finanses.Bill do
 
   def copy(%Bill{} = bill) do
     extra = %{inserted_at: Ecto.DateTime.utc, updated_at: Ecto.DateTime.utc}
-    copied = %{budget_id: bill.budget_id, planned_amount: bill.planned_amount, amount: Decimal.new(0) , category_id: bill.category_id}
+    copied = %{budget_id: bill.budget_id, planned_amount: bill.amount, amount: Decimal.new(0) , category_id: bill.category_id}
     Map.merge(copied, extra)
   end
 end

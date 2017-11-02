@@ -157,7 +157,8 @@ defmodule Benjamin.Finanses do
   end
 
   defp copy_expenses_budgets(source_budget_id, %{budget: budget}) do
-    case list_expenses_budgets_for_budget(source_budget_id) do
+    source_budget = get_budget!(source_budget_id)
+    case list_expenses_budgets_for_budget(source_budget) do
       [_|_] = expenses_budgets ->
         new_expenses_budgets =
           expenses_budgets

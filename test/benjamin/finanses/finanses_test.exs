@@ -70,14 +70,22 @@ defmodule Benjamin.FinansesTest do
 
     test "create_budget/1 copy planned bills and exepenses budgets from previose one if exists." do
       attrs = %{month: 10, year: 2017, begin_at: ~D[2017-10-01], end_at: ~D[2017-10-31]}
-      assert {:ok, %Budget{}=budget} = Finanses.create_budget(attrs)
+      assert {:ok, %Budget{} = budget} = Finanses.create_budget(attrs)
       assert %Budget{bills: []} = Finanses.get_budget_with_related!(budget.id)
       assert [] == Finanses.list_expenses_budgets_for_budget(budget)
 
       {:ok, bill_cat} = Finanses.create_bill_category(%{name: "Cat"})
       {:ok, expense_cat} = Finanses.create_expense_category(%{name: "ExpCat"})
 
-      Finanses.create_bill(%{budget_id: budget.id, category_id: bill_cat.id, planned_amount: "100", real_amount: "98"})
+      Finanses.create_bill(
+        %{
+          budget_id: budget.id,
+          category_id: bill_cat.id,
+          planned_amount: "100",
+          amount: "98"
+        }
+      )
+
       Finanses.create_expense_budget(
         %{
           budget_id: budget.id,
@@ -85,17 +93,24 @@ defmodule Benjamin.FinansesTest do
           planned_expenses: "300"
         }
       )
+      Finanses.create_expense(
+        %{
+          date: budget.begin_at,
+          amount: "54",
+          category_id: expense_cat.id
+        }
+      )
 
       attrs = %{month: 11, year: 2017, begin_at: ~D[2017-11-01], end_at: ~D[2017-11-30], copy_from: budget.id}
-      assert {:ok, %Budget{}=budget} = Finanses.create_budget(attrs)
+      assert {:ok, %Budget{} = budget} = Finanses.create_budget(attrs)
       assert %Budget{bills: [bill]} = Finanses.get_budget_with_related!(budget.id)
       assert bill.category_id == bill_cat.id
-      assert bill.planned_amount == Decimal.new(100)
+      assert bill.planned_amount == Decimal.new(98)
       assert bill.amount == Decimal.new(0)
 
       assert [expense_budget] = Finanses.list_expenses_budgets_for_budget(budget)
       assert expense_budget.expense_category_id == expense_cat.id
-      assert expense_budget.planned_expenses == Decimal.new(300)
+      assert expense_budget.planned_expenses == Decimal.new(54)
       assert expense_budget.real_expenses == nil
 
     end

@@ -15,7 +15,7 @@ defmodule BenjaminWeb.TransactionController do
   def create(conn, %{"transaction" => transaction_params, "saving_id" => saving_id}) do
     transaction_params = Map.put(transaction_params, "saving_id", saving_id)
     case Finanses.create_transaction(transaction_params) do
-      {:ok, transaction} ->
+      {:ok, _} ->
         conn
         |> put_flash(:info, "Transaction created successfully.")
         |> redirect(to: saving_path(conn, :show, saving_id))

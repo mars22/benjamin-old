@@ -16,7 +16,7 @@ defmodule BenjaminWeb.ExpenseCategoryController do
 
   def create(conn, %{"expense_category" => expense_category_params}) do
     case Finanses.create_expense_category(expense_category_params) do
-      {:ok, expense_category} ->
+      {:ok, _} ->
         conn
         |> put_flash(:info, "Expense category created successfully.")
         |> redirect(to: expense_category_path(conn, :index))
@@ -35,7 +35,7 @@ defmodule BenjaminWeb.ExpenseCategoryController do
     expense_category = Finanses.get_expense_category!(id)
 
     case Finanses.update_expense_category(expense_category, expense_category_params) do
-      {:ok, expense_category} ->
+      {:ok, _} ->
         conn
         |> put_flash(:info, "Expense category updated successfully.")
         |> redirect(to: expense_category_path(conn, :index))
