@@ -768,7 +768,7 @@ defmodule Benjamin.FinansesTest do
   end
 
   describe "transactions" do
-    alias Benjamin.Finanses.Transaction
+    alias Benjamin.Finanses.{Budget, Transaction}
 
     @valid_attrs %{amount: "120.5", date: ~D[2010-04-17], description: "some description", type: "deposit"}
     @update_attrs %{amount: "456.7", date: ~D[2011-05-18], description: "some updated description", type: "withdraw"}
@@ -799,11 +799,33 @@ defmodule Benjamin.FinansesTest do
 
     test "create_transaction/1 with valid data creates a transaction", %{saving: saving} do
       attrs = Map.put(@valid_attrs, :saving_id, saving.id)
-      assert {:ok, %Transaction{} = transaction} = Finanses.create_transaction(attrs)
+      assert {:ok, %Transaction{} = transaction} =
+        Finanses.create_transaction(attrs)
       assert transaction.amount == Decimal.new("120.5")
       assert transaction.date == ~D[2010-04-17]
       assert transaction.description == "some description"
       assert transaction.type == "deposit"
+    end
+
+    test "create_transaction/1 with type deposit creates income in budget", %{saving: saving} do
+      budget = Factory.insert!(:budget)
+      attrs = %{
+        amount: "120.5",
+        date: budget.begin_at,
+        description: "some description",
+        type: "withdraw",
+        saving_id: saving.id
+      }
+      assert {:ok, %Transaction{} = transaction} = Finanses.create_transaction(attrs)
+      assert transaction.amount == Decimal.new("120.5")
+      assert transaction.date == budget.begin_at
+      assert transaction.description == "some description"
+      assert transaction.type == "withdraw"
+
+      %Budget{incomes: [income]} = Finanses.get_budget_with_related!(budget.id)
+      assert income.type == "savings"
+      assert income.description == "some description"
+      assert income.amount == Decimal.new("120.5")
     end
 
     test "create_transaction/1 with invalid data returns error changeset" do
