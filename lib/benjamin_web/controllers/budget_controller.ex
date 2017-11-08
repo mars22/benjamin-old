@@ -41,6 +41,14 @@ defmodule BenjaminWeb.BudgetController do
     end
   end
 
+  def current(conn, _params) do
+    budget = Finanses.get_budget_by_date(Date.utc_today)
+    case budget do
+      %Budget{id: id} -> show(conn, %{"id" => id})
+      nil -> redirect(conn, to: budget_path(conn, :index))
+    end
+  end
+
   def show(conn, %{"id" => id}) do
     budget = Finanses.get_budget_with_related!(id)
     expenses = Finanses.list_expenses_for_budget(budget)

@@ -61,6 +61,29 @@ defmodule BenjaminWeb.BudgetControllerTest do
     end
   end
 
+  describe "current budget" do
+
+    test "renders current budget details ", %{conn: conn} do
+      today = Date.utc_today
+      Factory.insert!(
+        :budget,
+        month: today.month,
+        year: today.year,
+      )
+
+      conn = get conn, budget_path(conn, :current)
+      response = html_response(conn, 200)
+      assert response =~ "Budget"
+      assert response =~ "Incomes"
+      assert response =~ "Bills"
+    end
+
+    test "redirect to index when current budget not exist", %{conn: conn} do
+      conn = get conn, budget_path(conn, :current)
+      assert redirected_to(conn) == budget_path(conn, :index)
+    end
+  end
+
   describe "edit budget" do
     setup [:create_budget]
 

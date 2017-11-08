@@ -38,6 +38,9 @@
 
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
+          <li class="nav-item <%= is_active(@conn, :budget_path, :current) %>">
+            <a class="nav-link" href="<%= budget_path @conn, :current %>">Current Budget</a>
+          </li>
           <li class="nav-item <%= is_active(@conn, :budget_path, :index) %>">
             <a class="nav-link" href="<%= budget_path @conn, :index %>">Budgets</a>
           </li>

@@ -74,7 +74,7 @@
 </ul>
 
 <%= if is_active_tab(@conn, :incomes) == "active" do %>
-<div class="card border border-success">
+<div class="card border">
   <div class="card-header">
     <strong>Incomes</strong> <%= link "New Income", to: budget_income_path(@conn, :new, @budget), class: "btn btn-primary float-right"  %>
   </div>
@@ -116,7 +116,7 @@
 <% end %>
 
 <%= if is_active_tab(@conn, :bills) == "active" do %>
-<div class="card border border-secondary">
+<div class="card border">
   <div class="card-header">
     <strong>Bills</strong> <%= link "New Bill", to: budget_bill_path(@conn, :new, @budget), class: "btn btn-primary float-right"  %>
   </div>
@@ -151,7 +151,7 @@
 <% end %>
 
 <%= if is_active_tab(@conn, :expenses_budgets) == "active" do %>
-<div class="card border border-secondary">
+<div class="card border">
   <div class="card-header">
     <strong>Expenses budgets</strong> <%= link "New Budget", to: budget_expense_budget_path(@conn, :new, @budget), class: "btn btn-primary float-right"  %>
   </div>
@@ -185,7 +185,7 @@
 <% end %>
 
 <%= if is_active_tab(@conn, :savings) == "active" do %>
-<div class="card border border-secondary">
+<div class="card border">
   <div class="card-header">
     <strong>Savings</strong>
   </div>
