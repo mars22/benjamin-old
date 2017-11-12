@@ -5,7 +5,7 @@ defmodule Benjamin.Finanses.Factory do
     Expense, ExpenseCategory, ExpenseBudget, Saving, Transaction
   }
 
-  alias Benjamin.Accounts.{Credential, User}
+  alias Benjamin.Accounts.{Account, Credential, User}
 
   # Factories
 
@@ -141,11 +141,29 @@ defmodule Benjamin.Finanses.Factory do
     }
   end
 
-  def build(:user_with_credential) do
+  def build(:account) do
+    %Account{
+      name: "Test account",
+      currency_name: "zl"
+    }
+  end
+
+  def build(:user_with_account_and_credential) do
+    account = insert!(:account)
     %User{
       name: "name #{System.unique_integer()}",
       username: "user name #{System.unique_integer()}",
-      credential: build(:credential)
+      credential: build(:credential),
+      account_id: account.id
+    }
+  end
+
+  def build(:user_with_account) do
+    account = insert!(:account)
+    %User{
+      name: "name #{System.unique_integer()}",
+      username: "user name #{System.unique_integer()}",
+      account_id: account.id
     }
   end
 

@@ -30,3 +30,10 @@ def update():
         api.run('MIX_ENV=prod mix phx.digest')
         api.sudo('systemctl restart benjamin.service')
 
+
+@api.roles('PROD')
+def migrate():
+    with contextlib.nested(
+        api.cd('%(project_src)s' % api.env),
+    ):
+        api.run('MIX_ENV=prod mix ecto.migrate')

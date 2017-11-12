@@ -10,7 +10,7 @@ defmodule BenjaminWeb.SessionControllerTest do
     end
 
     test "redirects to home when login successfully", %{conn: conn} do
-      user_credential =  Factory.insert!(:user_with_credential)
+      user_credential =  Factory.insert!(:user_with_account_and_credential)
       user = %{email: user_credential.credential.email, password: "passwd"}
       conn = post conn, session_path(conn, :create), user: user
 
@@ -19,7 +19,7 @@ defmodule BenjaminWeb.SessionControllerTest do
 
     @tag :skip
     test "redirects to login when login unsuccessfully", %{conn: conn} do
-      user_credential =  Factory.insert!(:user_with_credential)
+      user_credential =  Factory.insert!(:user_with_account_and_credential)
       user = %{email: user_credential.credential.email, password: "pas"}
       conn = post conn, session_path(conn, :create), user: user
 

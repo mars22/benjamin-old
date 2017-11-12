@@ -12,8 +12,10 @@ defmodule Benjamin.AccountsTest do
     @invalid_attrs %{name: nil, username: nil}
 
     def user_fixture(attrs \\ %{}) do
+      account = Factory.insert!(:account)
       {:ok, user} =
         attrs
+        |> Enum.into(%{account_id: account.id})
         |> Enum.into(@valid_attrs)
         |> Accounts.create_user()
 
@@ -31,7 +33,9 @@ defmodule Benjamin.AccountsTest do
     end
 
     test "create_user/1 with valid data creates a user" do
-      assert {:ok, %User{} = user} = Accounts.create_user(@valid_attrs)
+      account = Factory.insert!(:account)
+      attrs = Map.put(@valid_attrs, :account_id, account.id)
+      assert {:ok, %User{} = user} = Accounts.create_user(attrs)
       assert user.name == "some name"
       assert user.username == "some username"
     end
@@ -73,7 +77,7 @@ defmodule Benjamin.AccountsTest do
     @invalid_attrs %{email: nil, password: nil}
 
     setup do
-      user = Factory.insert!(:user)
+      user = Factory.insert!(:user_with_account)
       [user: user]
     end
 
