@@ -807,7 +807,7 @@ defmodule Benjamin.FinansesTest do
       assert transaction.type == "deposit"
     end
 
-    test "create_transaction/1 with type deposit creates income in budget", %{saving: saving} do
+    test "create_transaction/1 with type withdraw creates income in budget", %{saving: saving} do
       budget = Factory.insert!(:budget)
       attrs = %{
         amount: "120.5",
@@ -826,6 +826,25 @@ defmodule Benjamin.FinansesTest do
       assert income.type == "savings"
       assert income.description == "some description"
       assert income.amount == Decimal.new("120.5")
+    end
+
+    test "create_transaction/1 with type deposit doesn't creates income in budget", %{saving: saving} do
+      budget = Factory.insert!(:budget)
+      attrs = %{
+        amount: "10000",
+        date: budget.begin_at,
+        description: "Deposit description",
+        type: "deposit",
+        saving_id: saving.id
+      }
+      assert {:ok, %Transaction{} = transaction} = Finanses.create_transaction(attrs)
+      assert transaction.amount == Decimal.new("10000")
+      assert transaction.date == budget.begin_at
+      assert transaction.description == "Deposit description"
+      assert transaction.type == "deposit"
+
+
+      %Budget{incomes: []} = Finanses.get_budget_with_related!(budget.id)
     end
 
     test "create_transaction/1 with invalid data returns error changeset" do

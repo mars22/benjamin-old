@@ -1089,27 +1089,31 @@ defmodule Benjamin.Finanses do
   def create_transaction(attrs \\ %{}) do
     Multi.new
     |> Multi.insert(:transaction, Transaction.changeset(%Transaction{}, attrs))
-    |> Multi.run(:income, fn (%{transaction: transaction}) ->
-      case get_budget_by_date(transaction.date) do
-        %Budget{id: budget_id} ->
-          attrs = %{
-            date: transaction.date,
-            budget_id: budget_id,
-            amount: transaction.amount,
-            description: transaction.description,
-            type: "savings"
-          }
-          create_income(attrs)
-
-        nil -> {:ok, :noop}
-      end
-    end)
+    |> Multi.run(:income, &create_income_for_transaction/1)
     |> Repo.transaction
     |> case do
       {:error, :transaction, %Ecto.Changeset{} = changeset, _} -> {:error, changeset}
       {:ok, %{transaction: transaction}} -> {:ok, transaction}
     end
   end
+
+  defp create_income_for_transaction(%{transaction: %Transaction{type: "withdraw"} = transaction}) do
+    case get_budget_by_date(transaction.date) do
+      %Budget{id: budget_id} ->
+        attrs = %{
+          date: transaction.date,
+          budget_id: budget_id,
+          amount: transaction.amount,
+          description: transaction.description,
+          type: "savings"
+        }
+        create_income(attrs)
+
+      nil -> {:ok, :noop}
+    end
+  end
+  defp create_income_for_transaction(%{transaction: transaction}), do: {:ok, :noop}
+
 
   @doc """
   Updates a transaction.
