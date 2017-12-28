@@ -98,7 +98,7 @@ defmodule Benjamin.Finanses.Budget do
 
   def sum_planned_expenses(%{expenses_budgets: expenses_budgets}) do
     expenses_budgets
-    |> Enum.reduce(Decimal.new(0), &(Decimal.add(&1.planned_expenses, &2)))
+    |> Enum.reduce(Decimal.new(0), &(Decimal.add(&1.planned_expenses || Decimal.new(0), &2)))
   end
 
 

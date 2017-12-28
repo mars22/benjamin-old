@@ -28,11 +28,15 @@ defmodule Benjamin.Finanses do
   end
 
 
-  def get_previous_budget(current_budget) do
+  def get_previous_budget(%Budget{id: id, year: year, month: month}) do
+    if month == 1 do
+      month = 12
+      year = year - 1
+    end
     query = from  b in Budget,
-            where: b.id != ^current_budget.id,
-            where: b.year <= ^current_budget.year,
-            where: b.month <= ^current_budget.month,
+            where: b.id != ^id,
+            where: b.year <= ^year,
+            where: b.month <= ^month,
             order_by: [desc: :year, desc: :month],
             limit: 1
     Repo.one(query)
