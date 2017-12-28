@@ -9,13 +9,14 @@ defmodule BenjaminWeb.ViewHelpers do
     end
   end
 
-  def is_active_tab(%Plug.Conn{} = conn, current) do
+  def is_active_tab(%Plug.Conn{} = conn, current \\ :empty) do
     current = Atom.to_string(current)
     case String.split(conn.query_string, "=") do
       ["tab", tab] when tab == current -> "active"
       ["tab", ""] when current == "incomes" -> "active"
       ["tab"] when current == "incomes" -> "active"
       [""] when current == "incomes" -> "active"
+      [""] when current == "empty" -> "active"
       _ -> ""
     end
   end

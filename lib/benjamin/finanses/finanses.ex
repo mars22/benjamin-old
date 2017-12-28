@@ -651,6 +651,21 @@ defmodule Benjamin.Finanses do
 
   alias Benjamin.Finanses.Expense
 
+
+  defp base_expenses_query do
+    from e in Expense,
+    where: is_nil(e.parent_id),
+    order_by: [desc: e.date, desc: e.id],
+    preload: [:category]
+  end
+
+  defp expenses_for_date_range(begin_at, end_at) do
+    from e in base_expenses_query(),
+    where: e.date >= ^begin_at,
+    where: e.date <= ^end_at
+  end
+
+
   @doc """
   Returns the list of parent expenses.
 
@@ -661,10 +676,29 @@ defmodule Benjamin.Finanses do
 
   """
   def list_expenses do
-    query = from e in Expense,
-            where: is_nil(e.parent_id),
-            order_by: [desc: e.date, desc: e.id],
-            preload: [:category]
+    base_expenses_query()
+    |> Repo.all()
+  end
+
+  @doc """
+  Returns the list of parent expenses.
+
+  ## Examples
+
+      iex> expenses_for_period()
+      [%Expense{}, ...]
+
+  """
+  def expenses_for_period(period) do
+    today = Date.utc_today()
+    {begin_at, end_at} = Budget.date_range(today.year, today.month)
+
+    query =
+      case period do
+        "current_month" -> expenses_for_date_range(begin_at, end_at)
+        "all" -> base_expenses_query()
+        _ -> expenses_for_date_range(today, today)
+      end
     Repo.all(query)
   end
 

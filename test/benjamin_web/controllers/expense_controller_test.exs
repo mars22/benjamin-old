@@ -41,7 +41,7 @@ defmodule BenjaminWeb.ExpenseControllerTest do
 
       assert redirected_to(conn) == expense_path(conn, :index)
 
-      conn = get conn, expense_path(conn, :index)
+      conn = get conn, expense_path(conn, :index, %{"tab" => "all"})
       html = html_response(conn, 200)
       assert html =~ "Expense"
       assert html =~ "12,50 zl"
@@ -74,7 +74,7 @@ defmodule BenjaminWeb.ExpenseControllerTest do
 
       assert redirected_to(conn) == expense_path(conn, :index)
 
-      conn = get conn, expense_path(conn, :index)
+      conn = get conn, expense_path(conn, :index, %{"tab" => "all"})
       html = html_response(conn, 200)
       assert html =~ "Expense"
       assert html =~ "20,50 zl"

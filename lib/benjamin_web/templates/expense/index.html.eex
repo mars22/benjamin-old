@@ -1,6 +1,25 @@
 <h2>Expenses</h2>
 <%= link "New expense", to: expense_path(@conn, :new) , class: "btn btn-primary btn-xs"%>
 
+
+<ul class="nav nav-tabs" style="padding-top: 10px">
+  <li class="nav-item">
+    <a class="nav-link <%= is_active_tab(@conn) %>" href="<%= expense_path(@conn, :index)%>">Today</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link <%= is_active_tab(@conn, :current_month) %>" href="?tab=current_month">Current Month</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link <%= is_active_tab(@conn, :all) %>" href="?tab=all">All</a>
+  </li>
+</ul>
+
+<div class="card border">
+  <div class="card-body">
+    <strong>Total amount: </strong> <%= format_amount @sum_amount %>
+  </div>
+</div>
+
 <table class="table table-responsive">
 
   <thead class="thead-inverse">

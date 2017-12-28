@@ -4,10 +4,10 @@ defmodule BenjaminWeb.ExpenseController do
   alias Benjamin.Finanses
   alias Benjamin.Finanses.Expense
 
-  def index(conn, _params) do
-    expenses = Finanses.list_expenses()
-
-    render(conn, "index.html", expenses: expenses)
+  def index(conn, params) do
+    expenses = Finanses.expenses_for_period(Map.get(params, "tab"))
+    sum_amount = Expense.sum_amount(expenses)
+    render(conn, "index.html", expenses: expenses, sum_amount: sum_amount )
   end
 
   def new(conn, _params) do

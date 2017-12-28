@@ -36,4 +36,10 @@ defmodule Benjamin.Finanses.Expense do
       changeset
     end
   end
+
+  def sum_amount(expenses) when is_list(expenses) do
+    expenses
+    |> Enum.reduce(Decimal.new(0), &(Decimal.add(&1.amount, &2)))
+  end
+
 end
