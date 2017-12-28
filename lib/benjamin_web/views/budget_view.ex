@@ -1,6 +1,8 @@
 defmodule BenjaminWeb.BudgetView do
   use BenjaminWeb, :view
 
+  alias Benjamin.Finanses.Budget
+
   @months %{
     1 => "January",
     2 => "February",
@@ -34,6 +36,6 @@ defmodule BenjaminWeb.BudgetView do
 
   def year_to_select() do
     current_year = Date.utc_today.year + 1
-    Enum.reverse (current_year - 5)..current_year
+    Enum.reverse Budget.year_range
   end
 end

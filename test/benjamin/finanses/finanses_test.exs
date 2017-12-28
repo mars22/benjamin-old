@@ -134,7 +134,7 @@ defmodule Benjamin.FinansesTest do
     end
 
     test "create_budget/1 with invalid year returns error changeset" do
-      next_year = Date.utc_today.year + 1
+      next_year = Date.utc_today.year + 2
       for invalid_year <- [-1, 0, next_year] do
         invalid_attrs = %{ @valid_attrs | year: invalid_year}
         assert {:error, %Ecto.Changeset{}=changeset} = Finanses.create_budget(invalid_attrs)
@@ -154,10 +154,10 @@ defmodule Benjamin.FinansesTest do
 
     test "update_budget/2 with new month or year updates the budget date range" do
       org_budget = Factory.insert!(:budget, @valid_attrs)
-      attrs = %{@valid_attrs | year: 2008}
+      attrs = %{@valid_attrs | year: org_budget.year + 1}
       assert {:ok, budget} = Finanses.update_budget(org_budget, attrs)
-      assert budget.begin_at.year == 2008
-      assert budget.end_at.year == 2008
+      assert budget.begin_at.year == org_budget.year + 1
+      assert budget.end_at.year == org_budget.year + 1
 
       attrs = %{@valid_attrs | month: 1}
       assert {:ok, budget} = Finanses.update_budget(org_budget, attrs)

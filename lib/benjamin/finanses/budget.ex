@@ -39,9 +39,9 @@ defmodule Benjamin.Finanses.Budget do
     |> update_date_range
   end
 
-  defp year_range() do
-    current_year = Date.utc_today.year
-    (current_year - 10)..current_year
+  def year_range() do
+    current_year = Date.utc_today.year + 1
+    (current_year - 5)..current_year
   end
 
   def date_range(year, month) do
