@@ -3,7 +3,7 @@ defmodule BenjaminWeb.ViewHelpersTest do
   alias BenjaminWeb.ViewHelpers
 
   test "format_amount/1 return formatted as currency decimal number" do
-    assert ViewHelpers.format_amount(Decimal.new(12.3)) == "12,30 zl"
+    assert ViewHelpers.format_amount(Decimal.new(12.3), "zł") == "12,30 zł"
   end
 
   describe "selected_value" do

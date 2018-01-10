@@ -4,7 +4,7 @@
       <h2>Expense</h2>
       <p><strong>Contractor: </strong><%= @expense.contractor %></p>
       <p><strong>Date: </strong><%= @expense.date %></p>
-      <p><strong>Amount: </strong><%= format_amount @expense.amount %></p>
+      <p><strong>Amount: </strong><%= format_amount @expense.amount, @user_account.currency_name %></p>
       <p><strong>Category: </strong><%= selected_value @categories, @expense.category_id %></p>
 
       <%= link "Edit", to: expense_path(@conn, :edit, @expense), class: "btn btn-primary" %>

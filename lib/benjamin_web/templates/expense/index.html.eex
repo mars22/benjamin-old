@@ -16,7 +16,7 @@
 
 <div class="card border">
   <div class="card-body">
-    <strong>Total amount: </strong> <%= format_amount @sum_amount %>
+    <strong>Total amount: </strong> <%= format_amount @sum_amount, @user_account.currency_name %>
   </div>
 </div>
 
@@ -36,7 +36,7 @@
 <%= for expense <- @expenses do %>
     <tr>
       <td><%= expense.category.name %></td>
-      <td><%= format_amount expense.amount %></td>
+      <td><%= format_amount expense.amount, @user_account.currency_name %></td>
       <td><%= expense.date %></td>
       <td><%= expense.contractor %></td>
       <td><%= expense.description %></td>

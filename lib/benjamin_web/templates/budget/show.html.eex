@@ -30,27 +30,27 @@
           <tr>
             <th scope="row">Incomes</th>
             <td>--------</td>
-            <td><%= format_amount @kpi.total_incomes %></td>
+            <td><%= format_amount @kpi.total_incomes, @user_account.currency_name %></td>
           <tr>
           <tr>
             <th scope="row">Bills</th>
-            <td><%= format_amount @kpi.bills_planned %></td>
-            <td><%= format_amount @kpi.bills %></td>
+            <td><%= format_amount @kpi.bills_planned, @user_account.currency_name %></td>
+            <td><%= format_amount @kpi.bills, @user_account.currency_name %></td>
           <tr>
           <tr>
             <th scope="row">Expenses</th>
-            <td><%= format_amount @kpi.expenses_budgets_planned %></td>
-            <td><%= format_amount @kpi.expenses_budgets %></td>
+            <td><%= format_amount @kpi.expenses_budgets_planned, @user_account.currency_name %></td>
+            <td><%= format_amount @kpi.expenses_budgets, @user_account.currency_name %></td>
           <tr>
           <tr>
             <th scope="row">Saves</th>
-            <td><%= format_amount @kpi.saves_planned %></td>
-            <td><%= format_amount @kpi.saved %></td>
+            <td><%= format_amount @kpi.saves_planned, @user_account.currency_name %></td>
+            <td><%= format_amount @kpi.saved, @user_account.currency_name %></td>
           <tr>
           <tr>
             <th scope="row">In the bank</th>
             <td>--------</td>
-            <td><%= format_amount @kpi.balance %></td>
+            <td><%= format_amount @kpi.balance, @user_account.currency_name %></td>
           <tr>
         </tbody>
       </table>
@@ -98,9 +98,9 @@
           <tr>
             <td><%= format_date income.date %></td>
             <td><%= income.type %></td>
-            <td><%= format_amount income.amount %></td>
-            <td><%= format_amount income.vat_amount %></td>
-            <td><%= format_amount income.tax_amount %></td>
+            <td><%= format_amount income.amount, @user_account.currency_name %></td>
+            <td><%= format_amount income.vat_amount, @user_account.currency_name %></td>
+            <td><%= format_amount income.tax_amount, @user_account.currency_name %></td>
             <td><%= income.description %></td>
 
             <td class="text-right">
@@ -135,8 +135,8 @@
     <%= for bill <- @budget.bills do %>
         <tr>
           <td><%= bill.category.name %></td>
-          <td><%= format_amount bill.planned_amount %></td>
-          <td><%= format_amount bill.amount %></td>
+          <td><%= format_amount bill.planned_amount, @user_account.currency_name %></td>
+          <td><%= format_amount bill.amount, @user_account.currency_name %></td>
           <td><%= bill.description %></td>
           <td class="text-right">
             <span><%= link "Edit", to: budget_bill_path(@conn, :edit, @budget, bill), class: "btn btn-default btn-sm" %></span>
@@ -169,8 +169,8 @@
     <%= for budget <- @budget.expenses_budgets do %>
         <tr data-expense-category-id=<%=budget.expense_category_id %>>
           <td class="clickable"><%= budget.expense_category.name %></td>
-          <td class="clickable"><%= format_amount budget.planned_expenses %></td>
-          <td class="clickable"><%= format_amount budget.real_expenses %></td>
+          <td class="clickable"><%= format_amount budget.planned_expenses, @user_account.currency_name %></td>
+          <td class="clickable"><%= format_amount budget.real_expenses, @user_account.currency_name %></td>
           <td class="text-right">
             <span><%= link "Edit", to: budget_expense_budget_path(@conn, :edit, @budget, budget), class: "btn btn-default btn-sm" %></span>
             <span><%= link "Delete", to: budget_expense_budget_path(@conn, :delete, @budget, budget), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger btn-sm" %></span>
@@ -205,7 +205,7 @@
     <%= for transaction <- @transactions do %>
         <tr>
           <td><%= transaction.date %></td>
-          <td><%= format_amount transaction.amount %></td>
+          <td><%= format_amount transaction.amount, @user_account.currency_name %></td>
           <td><%= transaction.type %></td>
           <td><%= transaction.description %></td>
 
@@ -244,7 +244,7 @@
           <%= for expense <- expenses do %>
               <tr>
                 <td><%= expense.date %></td>
-                <td><%= format_amount expense.amount %></td>
+                <td><%= format_amount expense.amount, @user_account.currency_name %></td>
                 <td><%= expense.contractor %></td>
                 <td><%= expense.description %></td>
               </tr>

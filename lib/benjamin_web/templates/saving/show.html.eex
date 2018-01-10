@@ -4,7 +4,7 @@
       <h2>Saving: <%= @saving.name %></h2>
       <p>
         <strong>Total savings:</strong>
-        <%= format_amount @saving.total_amount %>
+        <%= format_amount @saving.total_amount, @user_account.currency_name %>
       </p>
 
       <p>

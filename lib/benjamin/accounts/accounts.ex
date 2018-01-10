@@ -38,6 +38,15 @@ defmodule Benjamin.Accounts do
   def get_user!(id), do: Repo.get!(User, id)
 
   @doc """
+  Gets a single user with account.
+  """
+  def get_user_with_account!(id) do
+    User 
+    |> Repo.get!(id)
+    |> Repo.preload(:account)
+  end
+
+  @doc """
   Creates a user.
 
   ## Examples

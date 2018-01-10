@@ -7,7 +7,7 @@ defmodule Benjamin.Accounts.Account do
   schema "accounts" do
     field :currency_name, :string
     field :name, :string
-    # has_many :users, User
+    has_many :users, User
     timestamps()
   end
 

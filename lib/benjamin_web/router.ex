@@ -50,7 +50,10 @@ defmodule BenjaminWeb.Router do
 
   defp authenticate_user(conn, _) do
     if Mix.env == :test do
+      account_stub = %{currency_name: "zl"}
       conn
+      |> assign(:current_user, "TODO")
+      |> assign(:user_account, account_stub)
     else
       case get_session(conn, :user_id) do
         nil ->
@@ -58,8 +61,11 @@ defmodule BenjaminWeb.Router do
           |> Phoenix.Controller.put_flash(:error, "Login required")
           |> Phoenix.Controller.redirect(to: "/auth/sessions/new")
           |> halt()
-        _ ->
-          assign(conn, :current_user, "TODO")
+        user_id ->
+          user = Benjamin.Accounts.get_user_with_account!(user_id)
+          conn
+          |> assign(:current_user, "TODO")
+          |> assign(:user_account, user.account)
       end
     end
   end

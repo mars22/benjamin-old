@@ -22,7 +22,7 @@ defmodule BenjaminWeb.ViewHelpers do
   end
 
 
-  def format_amount(amount), do: number_to_currency amount, unit: "zl"
+  def format_amount(amount, currency \\ "$"), do: number_to_currency amount, unit: currency
 
   def selected_value(nil, _id), do: ""
   def selected_value([], _id), do: ""

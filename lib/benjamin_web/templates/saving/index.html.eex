@@ -1,5 +1,5 @@
 <h2>Savings</h2>
-<strong class="float-right">Total of all savings: <%= format_amount @saved %></strong>
+<strong class="float-right">Total of all savings: <%= format_amount @saved, @user_account.currency_name %></strong>
 <span><%= link "New Saving", to: saving_path(@conn, :new), class: "btn btn-primary btn-xs" %></span>
 <table class="table table-responsive">
   <thead class="thead-inverse">
@@ -16,8 +16,8 @@
 <%= for saving <- @savings do %>
     <tr>
       <td><%= saving.name %></td>
-      <td><%= format_amount saving.total_amount %></td>
-      <td><%= format_amount saving.goal_amount %></td>
+      <td><%= format_amount saving.total_amount, @user_account.currency_name %></td>
+      <td><%= format_amount saving.goal_amount, @user_account.currency_name %></td>
       <td><%= saving.end_at %></td>
 
       <td class="text-right">
