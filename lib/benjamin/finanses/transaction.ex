@@ -1,6 +1,8 @@
 defmodule Benjamin.Finanses.Transaction do
   use Ecto.Schema
   import Ecto.Changeset
+  alias Benjamin.Accounts.Account
+
   alias Benjamin.Finanses.{Saving, Transaction}
 
   @types ~w(deposit withdraw)
@@ -11,6 +13,7 @@ defmodule Benjamin.Finanses.Transaction do
     field :description, :string
     field :type, :string
     belongs_to :saving, Saving
+    belongs_to :account, Account
 
     timestamps()
   end

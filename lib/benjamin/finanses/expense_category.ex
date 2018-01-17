@@ -1,6 +1,8 @@
 defmodule Benjamin.Finanses.ExpenseCategory do
   use Ecto.Schema
   import Ecto.Changeset
+  alias Benjamin.Accounts.Account
+  
   alias Benjamin.Finanses.ExpenseCategory
 
 
@@ -8,6 +10,7 @@ defmodule Benjamin.Finanses.ExpenseCategory do
     field :is_deleted, :boolean, default: false
     field :required_description, :boolean, default: false
     field :name, :string
+    belongs_to :account, Account
 
     timestamps()
   end

@@ -1,6 +1,8 @@
 defmodule Benjamin.Finanses.ExpenseBudget do
   use Ecto.Schema
   import Ecto.Changeset
+  alias Benjamin.Accounts.Account
+  
   alias Benjamin.Finanses.{Budget, ExpenseCategory, ExpenseBudget}
 
 
@@ -9,6 +11,7 @@ defmodule Benjamin.Finanses.ExpenseBudget do
     field :real_expenses, :decimal, virtual: true
     belongs_to :expense_category, ExpenseCategory
     belongs_to :budget, Budget
+    belongs_to :account, Account
 
     timestamps()
   end

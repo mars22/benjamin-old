@@ -1,6 +1,7 @@
 defmodule Benjamin.Finanses.Bill do
   use Ecto.Schema
   import Ecto.Changeset
+  alias Benjamin.Accounts.Account
   alias Benjamin.Finanses.{Bill, BillCategory, Budget}
 
 
@@ -11,6 +12,7 @@ defmodule Benjamin.Finanses.Bill do
     field :paid_at, :date, default: nil
     belongs_to :budget, Budget
     belongs_to :category, BillCategory, source: :category_id
+    belongs_to :account, Account
 
     timestamps()
   end

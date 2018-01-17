@@ -12,6 +12,8 @@ defmodule Benjamin.Finanses.Budget do
   """
   use Ecto.Schema
   import Ecto.Changeset
+  alias Benjamin.Accounts.Account
+
   alias Benjamin.Finanses.{Budget, Bill, Income, ExpenseBudget}
 
 
@@ -24,7 +26,8 @@ defmodule Benjamin.Finanses.Budget do
     has_many :incomes, Income
     has_many :bills, Bill
     has_many :expenses_budgets, ExpenseBudget
-
+    belongs_to :account, Account
+    
     timestamps()
   end
 

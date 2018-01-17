@@ -1,6 +1,8 @@
 defmodule Benjamin.Finanses.Income do
   use Ecto.Schema
   import Ecto.Changeset
+  alias Benjamin.Accounts.Account
+
   alias Benjamin.Finanses.{Income, Budget}
 
   @types ~w(salary invoice savings other)
@@ -16,6 +18,7 @@ defmodule Benjamin.Finanses.Income do
     field :vat_amount, :decimal, virtual: true
     field :tax_amount, :decimal, virtual: true
     belongs_to :budget, Budget
+    belongs_to :account, Account
 
     timestamps()
   end

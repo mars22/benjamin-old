@@ -1,13 +1,15 @@
 defmodule Benjamin.Finanses.BillCategory do
   use Ecto.Schema
   import Ecto.Changeset
+  alias Benjamin.Accounts.Account
+  
   alias Benjamin.Finanses.BillCategory
-
+  
 
   schema "bill_categories" do
     field :deleted, :boolean, default: false
     field :name, :string
-
+    belongs_to :account, Account
     timestamps()
   end
 

@@ -1,6 +1,8 @@
 defmodule Benjamin.Finanses.Expense do
   use Ecto.Schema
   import Ecto.Changeset
+  alias Benjamin.Accounts.Account
+
   alias Benjamin.Finanses
   alias Benjamin.Finanses.{Expense, ExpenseCategory}
 
@@ -13,6 +15,7 @@ defmodule Benjamin.Finanses.Expense do
     belongs_to :category, ExpenseCategory, source: :category_id
     belongs_to :parent, Expense
     has_many :parts, Expense, foreign_key: :parent_id
+    belongs_to :account, Account
     timestamps()
   end
 

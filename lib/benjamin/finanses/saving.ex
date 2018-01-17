@@ -1,6 +1,8 @@
 defmodule Benjamin.Finanses.Saving do
   use Ecto.Schema
   import Ecto.Changeset
+  alias Benjamin.Accounts.Account
+
   alias Benjamin.Finanses.{Saving, Transaction}
 
 
@@ -10,6 +12,7 @@ defmodule Benjamin.Finanses.Saving do
     field :total_amount, :decimal, virtual: true
     field :name, :string
     has_many :transactions, Transaction
+    belongs_to :account, Account
 
     timestamps()
   end
