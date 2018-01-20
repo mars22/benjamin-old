@@ -16,7 +16,7 @@ defmodule Benjamin.Finanses.BillCategory do
   @doc false
   def changeset(%BillCategory{} = bill_category, attrs) do
     bill_category
-    |> cast(attrs, [:name, :deleted])
+    |> cast(attrs, [:name, :deleted, :account_id])
     |> validate_required([:name])
     |> unique_constraint(:name)
   end

@@ -20,8 +20,8 @@ defmodule Benjamin.Finanses.Saving do
   @doc false
   def changeset(%Saving{} = saving, attrs) do
     saving
-    |> cast(attrs, [:name, :goal_amount, :end_at])
-    |> validate_required([:name])
+    |> cast(attrs, [:name, :goal_amount, :end_at, :account_id])
+    |> validate_required([:name, :account_id])
     |> unique_constraint(:name)
   end
 

@@ -21,8 +21,8 @@ defmodule Benjamin.Finanses.Transaction do
   @doc false
   def changeset(%Transaction{} = transaction, attrs) do
     transaction
-    |> cast(attrs, [:date, :amount, :type, :description, :saving_id])
-    |> validate_required([:date, :amount, :type, :saving_id])
+    |> cast(attrs, [:date, :amount, :type, :description, :saving_id, :account_id])
+    |> validate_required([:date, :amount, :type, :saving_id, :account_id])
     |> validate_inclusion(:type, @types)
   end
 

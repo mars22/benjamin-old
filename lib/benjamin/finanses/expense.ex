@@ -22,8 +22,8 @@ defmodule Benjamin.Finanses.Expense do
   @doc false
   def changeset(%Expense{} = expense, attrs) do
     expense
-    |> cast(attrs, [:amount, :date, :parent_id, :category_id, :contractor, :description])
-    |> validate_required([:amount, :date, :category_id])
+    |> cast(attrs, [:amount, :date, :parent_id, :category_id, :contractor, :description, :account_id])
+    |> validate_required([:amount, :date, :category_id, :account_id])
     |> validatate_description
   end
 

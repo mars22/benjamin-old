@@ -8,122 +8,142 @@ defmodule Benjamin.Finanses.Factory do
   alias Benjamin.Accounts.{Account, Credential, User}
 
   # Factories
-
-  def build(:budget) do
+  
+  def build(:budget, account_id: account_id) do
     current_date = Date.utc_today()
     {begin_at, end_at} = Budget.date_range(current_date.year, current_date.month)
     %Budget{
       month: current_date.month,
       year: current_date.year,
       begin_at: begin_at,
-      end_at: end_at
+      end_at: end_at,
+      account_id: account_id
+    }
+  end
+  def build(:budget, account_id: account_id, current_date: current_date) do
+    {begin_at, end_at} = Budget.date_range(current_date.year, current_date.month)
+    %Budget{
+      month: current_date.month,
+      year: current_date.year,
+      begin_at: begin_at,
+      end_at: end_at,
+      account_id: account_id
     }
   end
 
-  def build(:budget_with_related) do
+  def build(:budget_with_related, account_id: account_id) do
     build(:budget,
+      account_id: account_id,
       bills: [
-        build(:bill)
+        build(:bill, account_id: account_id)
       ],
       incomes: [
-        build(:income)
+        build(:income, account_id: account_id)
       ]
     )
-
   end
 
-  def build(:budget_with_all_related) do
+  def build(:budget_with_all_related, account_id: account_id) do
     build(:budget,
+      account_id: account_id,
       bills: [
-        build(:bill)
+        build(:bill, account_id: account_id)
       ],
       incomes: [
-        build(:income)
+        build(:income, account_id: account_id)
       ],
       expenses_budgets: [
-        build(:expense_budget)
+        build(:expense_budget, account_id: account_id)
       ]
     )
   end
 
 
-  def build(:budget_with_income) do
+  def build(:budget_with_income, account_id: account_id) do
     build(:budget,
+      account_id: account_id,
       incomes: [
-        build(:income)
+        build(:income, account_id: account_id)
       ]
     )
   end
 
-  def build(:budget_with_bill) do
+  def build(:budget_with_bill, account_id: account_id) do
     build(:budget,
+      account_id: account_id,
       bills: [
-        build(:bill)
+        build(:bill, account_id: account_id)
       ]
     )
   end
 
 
-  def build(:bill_category) do
-    %BillCategory{name: "category 1"}
+  def build(:bill_category, account_id: account_id) do
+    %BillCategory{name: "category 1", account_id: account_id}
   end
 
-  def build(:bill) do
+  def build(:bill, account_id: account_id) do
     %Bill{
       planned_amount: Decimal.new(12.5),
       amount: Decimal.new(12.5),
-      category: build(:bill_category)
+      category: build(:bill_category, account_id: account_id),
+      account_id: account_id
     }
   end
 
-  def build(:income) do
+  def build(:income, account_id: account_id) do
     %Income{
       amount: Decimal.new(123),
       date: Date.utc_today(),
       type: "salary",
       vat: Decimal.new(23),
-      tax: Decimal.new(18)
+      tax: Decimal.new(18),
+      account_id: account_id
     }
   end
 
-  def build(:expense) do
+  def build(:expense, account_id: account_id) do
     %Expense{
       amount: Decimal.new(123),
       date: Date.utc_today,
-      category: build(:expense_category)
+      account_id: account_id,
+      category: build(:expense_category, account_id: account_id)
     }
   end
 
-  def build(:expense_with_parts) do
+  def build(:expense_with_parts, account_id: account_id) do
     %Expense{
       amount: Decimal.new(123),
       date: Date.utc_today,
-      category: build(:expense_category, name: "expense #{System.unique_integer()}"),
+      account_id: account_id,
+      category: build(:expense_category, account_id: account_id, name: "expense #{System.unique_integer()}"),
       parts: [
-        build(:expense)
+        build(:expense, account_id: account_id)
       ]
     }
   end
 
-  def build(:expense_category) do
-    %ExpenseCategory{name: "expense #{System.unique_integer()}"}
+  def build(:expense_category, account_id: account_id) do
+    %ExpenseCategory{name: "expense #{System.unique_integer()}", account_id: account_id}
   end
 
-  def build(:expense_budget) do
+  def build(:expense_budget, account_id: account_id) do
     %ExpenseBudget {
-      expense_category: build(:expense_category),
-      planned_expenses: Decimal.new(12.5)
+      expense_category: build(:expense_category, account_id: account_id),
+      planned_expenses: Decimal.new(12.5),
+      account_id: account_id
     }
   end
 
-  def build(:saving) do
-    %Saving{name: "Goal #{System.unique_integer()}"}
+  def build(:saving, account_id: account_id) do
+    %Saving{name: "Goal #{System.unique_integer()}", account_id: account_id}
   end
 
-  def build(:transaction) do
+  def build(:transaction, account_id: account_id) do
     %Transaction{
       amount: Decimal.new(200),
-      date: Date.utc_today
+      date: Date.utc_today,
+      account_id: account_id
     }
   end
 
@@ -169,11 +189,17 @@ defmodule Benjamin.Finanses.Factory do
 
 
   # Convenience API
+  def build(factory_name, [{:account_id, account_id} | attributes]) do
+    build(factory_name, account_id: account_id) |> struct(attributes)
+  end
+  
   def build(factory_name, attributes) do
     factory_name |> build() |> struct(attributes)
   end
 
+
   def insert!(factory_name, attributes \\ []) do
-      Repo.insert! build(factory_name, attributes)
+    build(factory_name, attributes)
+    |> Repo.insert! 
   end
 end

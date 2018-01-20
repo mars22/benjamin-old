@@ -18,7 +18,7 @@ defmodule Benjamin.Finanses.ExpenseCategory do
   @doc false
   def changeset(%ExpenseCategory{} = expense_category, attrs) do
     expense_category
-    |> cast(attrs, [:name, :is_deleted, :required_description])
+    |> cast(attrs, [:name, :is_deleted, :required_description, :account_id])
     |> validate_required([:name])
     |> unique_constraint(:name)
   end

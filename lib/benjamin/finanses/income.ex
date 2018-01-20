@@ -30,8 +30,8 @@ defmodule Benjamin.Finanses.Income do
   @doc false
   def changeset(%Income{} = income, attrs) do
     income
-    |> cast(attrs, [:amount, :date, :description, :budget_id, :type, :vat, :tax])
-    |> validate_required([:amount, :budget_id, :date, :type])
+    |> cast(attrs, [:amount, :date, :description, :budget_id, :type, :vat, :tax, :account_id])
+    |> validate_required([:amount, :budget_id, :date, :type, :account_id])
     |> validate_number(:amount, greater_than_or_equal_to: 0)
     |> validate_inclusion(:type, @types)
     |> foreign_key_constraint(:budget_id)

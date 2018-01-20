@@ -29,10 +29,12 @@ defmodule Benjamin.Finanses do
 
 
   def get_previous_budget(%Budget{id: id, year: year, month: month}) do
-    if month == 1 do
-      month = 12
-      year = year - 1
-    end
+    {month, year} = 
+      case month do
+        1 -> {12, year - 1} 
+        _ -> {month, year}
+      end
+    
     query = from  b in Budget,
             where: b.id != ^id,
             where: b.year <= ^year,
@@ -776,13 +778,13 @@ defmodule Benjamin.Finanses do
 
   defp get_budget(%{expense: %Expense{category_id: category_id, date: date}}) do
     case get_budget_by_date(date) do
-      %Budget{id: id} -> {:ok, %{category_id: category_id, budget_id: id}}
+      %Budget{id: id, account_id: account_id} -> {:ok, %{category_id: category_id, budget_id: id, account_id: account_id}}
       nil -> {:ok, :noop}
     end
   end
 
   defp multi_create_expense_budget(%{budget: :noop}), do: {:ok, :noop}
-  defp multi_create_expense_budget(%{budget: %{category_id: category_id, budget_id: budget_id}}) do
+  defp multi_create_expense_budget(%{budget: %{category_id: category_id, budget_id: budget_id, account_id: account_id}}) do
     query = from b in ExpenseBudget,
             where: b.budget_id == ^budget_id,
             where: b.expense_category_id == ^category_id
@@ -793,7 +795,8 @@ defmodule Benjamin.Finanses do
               %{
                 expense_category_id: category_id,
                 budget_id: budget_id,
-                planned_expenses: 0
+                planned_expenses: 0,
+                account_id: account_id
               }
             )
     end
@@ -1137,20 +1140,21 @@ defmodule Benjamin.Finanses do
 
   defp create_income_for_transaction(%{transaction: %Transaction{type: "withdraw"} = transaction}) do
     case get_budget_by_date(transaction.date) do
-      %Budget{id: budget_id} ->
+      %Budget{id: budget_id, account_id: account_id} ->
         attrs = %{
           date: transaction.date,
           budget_id: budget_id,
           amount: transaction.amount,
           description: transaction.description,
-          type: "savings"
+          type: "savings",
+          account_id: account_id
         }
         create_income(attrs)
 
       nil -> {:ok, :noop}
     end
   end
-  defp create_income_for_transaction(%{transaction: transaction}), do: {:ok, :noop}
+  defp create_income_for_transaction(%{transaction: _}), do: {:ok, :noop}
 
 
   @doc """

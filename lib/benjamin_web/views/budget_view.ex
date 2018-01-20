@@ -35,7 +35,6 @@ defmodule BenjaminWeb.BudgetView do
   end
 
   def year_to_select() do
-    current_year = Date.utc_today.year + 1
     Enum.reverse Budget.year_range
   end
 end

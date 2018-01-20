@@ -50,4 +50,10 @@ defmodule Benjamin.DataCase do
       end)
     end)
   end
+
+  setup do
+    account =  Benjamin.Finanses.Factory.insert!(:account)
+    {:ok, account: account}
+  end
+
 end
