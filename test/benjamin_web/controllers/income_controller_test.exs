@@ -9,10 +9,12 @@ defmodule BenjaminWeb.IncomeControllerTest do
   @invalid_attrs %{amount: "", description: "some description"}
   @valid_attrs %{amount: "120.5", date: Date.utc_today, description: "some description", type: "salary"}
 
-  setup do
-    budget = Factory.insert!(:budget)
-    [budget: budget]
+  setup %{user: user} do
+    budget = Factory.insert!(:budget, account_id: user.account_id)
+    {:ok, budget: budget}
   end
+
+  setup :login_user
 
   def fixture(attrs \\ %{}) do
     {:ok, income} =
@@ -50,8 +52,8 @@ defmodule BenjaminWeb.IncomeControllerTest do
   end
 
   describe "edit income" do
-    test "renders form for editing chosen income", %{conn: conn, budget: budget} do
-      income = fixture(%{budget_id: budget.id})
+    test "renders form for editing chosen income", %{conn: conn, user: user, budget: budget} do
+      income = fixture(%{account_id: user.account_id, budget_id: budget.id})
       conn = get conn, budget_income_path(conn, :edit, budget.id, income.id)
       assert html_response(conn, 200) =~ "Edit Income"
     end
@@ -89,8 +91,8 @@ defmodule BenjaminWeb.IncomeControllerTest do
     end
   end
 
-  defp create_fixtures(%{budget: budget}) do
-    income = fixture(%{budget_id: budget.id})
+  defp create_fixtures(%{budget: budget, user: user}) do
+    income = fixture(%{account_id: user.account_id, budget_id: budget.id})
     {:ok, income: income}
   end
 end

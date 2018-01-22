@@ -6,9 +6,7 @@ defmodule BenjaminWeb.BudgetControllerTest do
   @update_attrs %{description: "some updated description", month: 12, begin_at: ~D[2017-12-01], end_at: ~D[2017-12-31]}
   @invalid_attrs %{description: nil, month: nil}
 
-  def fixture(:budget) do
-    Factory.insert!(:budget)
-  end
+  setup :login_user
 
   describe "index" do
     setup [:create_budget]
@@ -62,13 +60,14 @@ defmodule BenjaminWeb.BudgetControllerTest do
   end
 
   describe "current budget" do
-
-    test "renders current budget details ", %{conn: conn} do
+    setup :login_user
+    test "renders current budget details ", %{conn: conn, user: user} do
       today = Date.utc_today
       Factory.insert!(
         :budget,
+        account_id: user.account_id,
         month: today.month,
-        year: today.year,
+        year: today.year
       )
 
       conn = get conn, budget_path(conn, :current)
@@ -122,8 +121,8 @@ defmodule BenjaminWeb.BudgetControllerTest do
     end
   end
 
-  defp create_budget(_) do
-    budget = fixture(:budget)
+  defp create_budget(%{user: user}) do
+    budget = Factory.insert!(:budget, account_id: user.account_id)
     {:ok, budget: budget}
   end
 end

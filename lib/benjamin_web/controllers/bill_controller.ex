@@ -16,6 +16,7 @@ defmodule BenjaminWeb.BillController do
 
   def create(conn, %{"bill" => bill_params, "budget_id" => budget_id}) do
     bill_params = Map.put(bill_params, "budget_id", budget_id)
+    bill_params = assign_account(conn, bill_params)
     case Finanses.create_bill(bill_params) do
       {:ok, bill} ->
         conn

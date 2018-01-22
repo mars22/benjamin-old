@@ -19,6 +19,7 @@ defmodule BenjaminWeb.BudgetController do
   def create(conn, %{"budget" => budget_params}) do
     budget_params = for {k, v} <- budget_params, do: {String.to_atom(k), v}
     budget_params = Enum.into(budget_params, %{})
+    budget_params = assign_account(conn, budget_params)
     budget_params =
       case Map.get(budget_params, :copy_from) do
         "" -> Map.drop(budget_params, [:copy_from])

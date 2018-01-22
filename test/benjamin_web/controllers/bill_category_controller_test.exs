@@ -7,10 +7,7 @@ defmodule BenjaminWeb.BillCategoryControllerTest do
   @update_attrs %{deleted: false, name: "some updated name"}
   @invalid_attrs %{deleted: nil, name: nil}
 
-  def fixture(:bill_category) do
-    {:ok, bill_category} = Finanses.create_bill_category(@create_attrs)
-    bill_category
-  end
+  setup :login_user
 
   describe "index" do
     test "lists all bill_categories", %{conn: conn} do
@@ -36,8 +33,8 @@ defmodule BenjaminWeb.BillCategoryControllerTest do
       assert html_response(conn, 200) =~ @create_attrs.name
     end
 
-    test "renders errors when name is no unique", %{conn: conn} do
-      fixture(:bill_category)
+    test "renders errors when name is no unique", %{conn: conn, user: user} do
+      fixture(user)
       conn = post conn, bill_category_path(conn, :create), bill_category: @create_attrs
       assert html_response(conn, 200) =~ "has already been taken"
     end
@@ -86,8 +83,14 @@ defmodule BenjaminWeb.BillCategoryControllerTest do
     end
   end
 
-  defp create_bill_category(_) do
-    bill_category = fixture(:bill_category)
+  def fixture(%{account_id: account_id}) do
+    attrs = Map.put(@create_attrs, :account_id, account_id)
+    {:ok, bill_category} = Finanses.create_bill_category(attrs)
+    bill_category
+  end
+
+  defp create_bill_category(%{user: user}) do
+    bill_category = fixture(user)
     {:ok, bill_category: bill_category}
   end
 end

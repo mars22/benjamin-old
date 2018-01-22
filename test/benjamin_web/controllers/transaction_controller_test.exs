@@ -1,22 +1,18 @@
 defmodule BenjaminWeb.TransactionControllerTest do
   use BenjaminWeb.ConnCase
 
-  alias Benjamin.Finanses
   alias Benjamin.Finanses.Factory
 
   @create_attrs %{amount: "120.5", date: ~D[2010-04-17], description: "some description", type: "deposit"}
   @update_attrs %{amount: "456.7", date: ~D[2011-05-18], description: "some updated description", type: "withdraw"}
   @invalid_attrs %{amount: nil, date: nil, description: nil, type: nil}
 
-  setup do
-    saving = Factory.insert!(:saving)
-    [saving: saving]
+  setup %{user: user}do
+    saving = Factory.insert!(:saving, account_id: user.account_id)
+    {:ok, saving: saving}
   end
 
-  def fixture(:transaction) do
-    {:ok, transaction} = Finanses.create_transaction(@create_attrs)
-    transaction
-  end
+  setup :login_user
 
   describe "new transaction" do
     test "renders form", %{conn: conn, saving: saving} do
@@ -81,8 +77,8 @@ defmodule BenjaminWeb.TransactionControllerTest do
     end
   end
 
-  defp create_transaction(%{saving: saving}) do
-    transaction = Factory.insert!(:transaction, saving: saving)
+  defp create_transaction(%{saving: saving, user: user}) do
+    transaction = Factory.insert!(:transaction, account_id: user.account_id, saving: saving)
     {:ok, transaction: transaction}
   end
 end

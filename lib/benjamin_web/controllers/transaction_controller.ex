@@ -14,6 +14,7 @@ defmodule BenjaminWeb.TransactionController do
 
   def create(conn, %{"transaction" => transaction_params, "saving_id" => saving_id}) do
     transaction_params = Map.put(transaction_params, "saving_id", saving_id)
+    transaction_params = assign_account(conn, transaction_params)
     case Finanses.create_transaction(transaction_params) do
       {:ok, _} ->
         conn

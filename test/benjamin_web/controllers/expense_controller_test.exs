@@ -3,16 +3,18 @@ defmodule BenjaminWeb.ExpenseControllerTest do
 
   alias Benjamin.Finanses.Factory
 
-  setup do
-    category = Factory.insert!(:expense_category)
-    [category: category]
+  setup %{user: user} do
+    category = Factory.insert!(:expense_category, account_id: user.account_id)
+    {:ok, category: category}
   end
 
+  setup :login_user
+
   describe "list of expenses" do
-    test "render only parent expenses", %{conn: conn} do
-      expense1 = Factory.insert!(:expense_with_parts)
-      expense2 = Factory.insert!(:expense_with_parts)
-      expense3 = Factory.insert!(:expense)
+    test "render only parent expenses", %{conn: conn, user: user} do
+      expense1 = create_expense(:expense_with_parts, user)
+      expense2 = create_expense(:expense_with_parts, user)
+      expense3 = create_expense(:expense, user)
       conn = get conn, expense_path(conn, :index)
       html = html_response(conn, 200)
       assert html =~ "Expenses"
@@ -57,8 +59,8 @@ defmodule BenjaminWeb.ExpenseControllerTest do
   end
 
   describe "update expense" do
-    test "render edit form", %{conn: conn} do
-      expense = Factory.insert!(:expense, amount: Decimal.new(30))
+    test "render edit form", %{conn: conn, user: user} do
+      expense = Factory.insert!(:expense, account_id: user.account_id, amount: Decimal.new(30))
       conn = get conn, expense_path(conn, :edit, expense.id)
       response = html_response(conn, 200)
       assert response =~ "Edit Expense"
@@ -67,8 +69,8 @@ defmodule BenjaminWeb.ExpenseControllerTest do
 
     end
 
-    test "redirects to index when update succesfuly", %{conn: conn, category: category} do
-      expense = Factory.insert!(:expense)
+    test "redirects to index when update succesfuly", %{conn: conn, user: user,category: category} do
+      expense = create_expense(:expense, user)
       attrs = %{amount: "20.5", date: ~D[2017-09-09], category_id: category.id}
       conn = put conn, expense_path(conn, :update, expense.id), expense: attrs
 
@@ -82,8 +84,8 @@ defmodule BenjaminWeb.ExpenseControllerTest do
       assert html =~ category.name
     end
 
-    test "render form when data are invalid", %{conn: conn, category: category} do
-      expense = Factory.insert!(:expense)
+    test "render form when data are invalid", %{conn: conn, user: user, category: category} do
+      expense = create_expense(:expense, user)
       attrs = %{amount: "", category_id: category.id}
       conn = put conn, expense_path(conn, :update, expense.id), expense: attrs
       assert html_response(conn, 200) =~ "Oops, something went wrong! Please check the errors below."
@@ -91,8 +93,8 @@ defmodule BenjaminWeb.ExpenseControllerTest do
   end
 
   describe "delete expense" do
-    test "redirects to index when delete succesfuly", %{conn: conn} do
-      expense = Factory.insert!(:expense)
+    test "redirects to index when delete succesfuly", %{conn: conn, user: user} do
+      expense = create_expense(:expense, user)
       conn = delete conn, expense_path(conn, :delete, expense.id)
       assert redirected_to(conn) == expense_path(conn, :index)
       assert_error_sent 404, fn ->
@@ -100,5 +102,9 @@ defmodule BenjaminWeb.ExpenseControllerTest do
       end
 
     end
+  end
+
+  defp create_expense(build_name, user) do
+    Factory.insert!(build_name, account_id: user.account_id)
   end
 end

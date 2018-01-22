@@ -34,7 +34,7 @@ defmodule Benjamin.FinansesTest do
       assert Finanses.get_budget_by_date(Date.utc_today()) == budget
     end
 
-    test "get_budget_by_date/1 returns nil if not find", %{budget: budget} do
+    test "get_budget_by_date/1 returns nil if not find"do
       assert Finanses.get_budget_by_date(~D[2016-12-01]) == nil
     end
 
@@ -350,9 +350,9 @@ defmodule Benjamin.FinansesTest do
       bill =
         Factory.build(
         :bill,
-          account_id: account.id,
+        account_id: account.id,
         planned_amount: Decimal.new(200),
-          amount: Decimal.new(220),
+        amount: Decimal.new(220)
       )
 
       income = Factory.build(:income, account_id: account.id, amount: Decimal.new(1000))
@@ -537,12 +537,12 @@ defmodule Benjamin.FinansesTest do
       assert bill_from_db.id == bill.id
     end
 
-    test "get_bill!/1 returns the bill with given id", %{budget: budget, bill: bill} do
+    test "get_bill!/1 returns the bill with given id", %{bill: bill} do
       assert Finanses.get_bill!(bill.id).id == bill.id
     end
 
     test "create_bill/1 can't create the same bill twice", %{
-      account: account, budget: budget, bill: bill, bill_category: bill_category
+      account: account, budget: budget, bill_category: bill_category
     } do
       attrs=
         @valid_attrs
@@ -557,7 +557,7 @@ defmodule Benjamin.FinansesTest do
     end
 
     test "create_bill/1 with planned_amount set to 0 or less then 0 returns error changeset", %{
-      account: account, budget: budget, bill: bill, bill_category: bill_category
+      account: account, budget: budget, bill_category: bill_category
     } do
       attrs = %{
         planned_amount: "-10",
@@ -741,7 +741,7 @@ defmodule Benjamin.FinansesTest do
       assert expense_budget.expense_category_id == category.id
     end
 
-    test "create_expense/1 description is required when category force it.", %{account: account, category: category} do
+    test "create_expense/1 description is required when category force it.", %{account: account} do
       category = Factory.insert!(:expense_category, account_id: account.id, required_description: true)
       attrs = %{amount: "120.5", date: Date.utc_today(), category_id: category.id, account_id: account.id}
       assert {:error, %Ecto.Changeset{}} = Finanses.create_expense(attrs)
@@ -768,7 +768,7 @@ defmodule Benjamin.FinansesTest do
     end
 
     test "list_expenses_for_budget/1 returns all expenses that should belong to budget grouped by category", %{
-      account: account, expense: expense, expense_with_parts: expense_with_parts, budget: budget
+      account: account, budget: budget
     } do
       Factory.insert!(:expense, account_id: account.id, date: ~D[1900-12-12])
       

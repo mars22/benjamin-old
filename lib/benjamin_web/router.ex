@@ -42,31 +42,24 @@ defmodule BenjaminWeb.Router do
   end
 
   scope "/settings", BenjaminWeb do
-    pipe_through :browser # Use the default browser stack
+    pipe_through [:browser, :authenticate_user]
     resources "/bill_categories", BillCategoryController, except: [:show]
     resources "/expenses_categories", ExpenseCategoryController, except: [:show]
   end
 
 
   defp authenticate_user(conn, _) do
-    if Mix.env == :test do
-      account_stub = %{currency_name: "zl"}
-      conn
-      |> assign(:current_user, "TODO")
-      |> assign(:user_account, account_stub)
-    else
-      case get_session(conn, :user_id) do
-        nil ->
-          conn
-          |> Phoenix.Controller.put_flash(:error, "Login required")
-          |> Phoenix.Controller.redirect(to: "/auth/sessions/new")
-          |> halt()
-        user_id ->
-          user = Benjamin.Accounts.get_user_with_account!(user_id)
-          conn
-          |> assign(:current_user, "TODO")
-          |> assign(:user_account, user.account)
-      end
+    case get_session(conn, :user_id) do
+      nil ->
+        conn
+        |> Phoenix.Controller.put_flash(:error, "Login required")
+        |> Phoenix.Controller.redirect(to: "/auth/sessions/new")
+        |> halt()
+      user_id ->
+        user = Benjamin.Accounts.get_user_with_account!(user_id)
+        conn
+        |> assign(:current_user, "TODO")
+        |> assign(:user_account, user.account)
     end
   end
 end

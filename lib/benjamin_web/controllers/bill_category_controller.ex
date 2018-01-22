@@ -15,6 +15,7 @@ defmodule BenjaminWeb.BillCategoryController do
   end
 
   def create(conn, %{"bill_category" => bill_category_params}) do
+    bill_category_params = assign_account(conn, bill_category_params)
     case Finanses.create_bill_category(bill_category_params) do
       {:ok, _} ->
         conn

@@ -23,6 +23,7 @@ defmodule BenjaminWeb do
       import Plug.Conn
       import BenjaminWeb.Router.Helpers
       import BenjaminWeb.Gettext
+      import BenjaminWeb.Controller.Helpers
     end
   end
 

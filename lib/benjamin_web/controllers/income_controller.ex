@@ -17,6 +17,7 @@ defmodule BenjaminWeb.IncomeController do
 
   def create(conn, %{"income" => income_params, "budget_id" => budget_id}) do
     income_params = Map.put(income_params, "budget_id", budget_id)
+    income_params = assign_account(conn, income_params)
     case Finanses.create_income(income_params) do
       {:ok, income} ->
         conn

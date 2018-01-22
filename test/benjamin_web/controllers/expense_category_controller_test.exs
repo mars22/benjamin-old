@@ -7,6 +7,8 @@ defmodule BenjaminWeb.ExpenseCategoryControllerTest do
   @update_attrs %{is_deleted: false, name: "some updated name"}
   @invalid_attrs %{is_deleted: nil, name: nil}
 
+  setup :login_user
+
   describe "index" do
     test "lists all expenses_categories", %{conn: conn} do
       conn = get conn, expense_category_path(conn, :index)
@@ -75,8 +77,8 @@ defmodule BenjaminWeb.ExpenseCategoryControllerTest do
     end
   end
 
-  defp create_expense_category(_) do
-    expense_category = Factory.insert!(:expense_category)
+  defp create_expense_category(%{user: user}) do
+    expense_category = Factory.insert!(:expense_category, account_id: user.account_id)
     {:ok, expense_category: expense_category}
   end
 end

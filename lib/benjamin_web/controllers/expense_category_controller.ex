@@ -15,6 +15,7 @@ defmodule BenjaminWeb.ExpenseCategoryController do
   end
 
   def create(conn, %{"expense_category" => expense_category_params}) do
+    expense_category_params = assign_account(conn, expense_category_params)
     case Finanses.create_expense_category(expense_category_params) do
       {:ok, _} ->
         conn

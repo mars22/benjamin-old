@@ -7,10 +7,7 @@ defmodule BenjaminWeb.SavingControllerTest do
   @update_attrs %{end_at: ~D[2011-05-18], goal_amount: "456.7", name: "some updated name"}
   @invalid_attrs %{end_at: nil, goal_amount: nil, name: nil}
 
-  def fixture(:saving) do
-    {:ok, saving} = Finanses.create_saving(@create_attrs)
-    saving
-  end
+  setup :login_user
 
   describe "index" do
     test "lists all savings", %{conn: conn} do
@@ -81,8 +78,9 @@ defmodule BenjaminWeb.SavingControllerTest do
     end
   end
 
-  defp create_saving(_) do
-    saving = fixture(:saving)
+  defp create_saving(%{user: user}) do
+    attrs = Map.put(@create_attrs, :account_id, user.account_id)
+    {:ok, saving} = Finanses.create_saving(attrs)
     {:ok, saving: saving}
   end
 end

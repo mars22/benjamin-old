@@ -163,7 +163,7 @@ defmodule Benjamin.Finanses.Factory do
 
   def build(:account) do
     %Account{
-      name: "Test account",
+      name: "Test account #{System.unique_integer()}",
       currency_name: "zl"
     }
   end

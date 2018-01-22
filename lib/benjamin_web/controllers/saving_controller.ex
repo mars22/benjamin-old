@@ -16,6 +16,7 @@ defmodule BenjaminWeb.SavingController do
   end
 
   def create(conn, %{"saving" => saving_params}) do
+    saving_params = assign_account(conn, saving_params)
     case Finanses.create_saving(saving_params) do
       {:ok, saving} ->
         conn

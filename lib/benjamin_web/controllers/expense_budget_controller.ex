@@ -15,7 +15,10 @@ defmodule BenjaminWeb.ExpenseBudgetController do
   end
 
   def create(conn, %{"expense_budget" => expense_budget_params, "budget_id" => budget_id}) do
-    expense_budget_params = Map.put(expense_budget_params, "budget_id", budget_id)
+    expense_budget_params =
+      expense_budget_params 
+        |> Map.put("budget_id", budget_id)
+        |> Map.put("account_id", conn.assigns[:user_account].id)
     case Finanses.create_expense_budget(expense_budget_params) do
       {:ok, _} ->
         conn

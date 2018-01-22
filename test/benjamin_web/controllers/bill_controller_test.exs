@@ -9,11 +9,13 @@ defmodule BenjaminWeb.BillControllerTest do
   @invalid_attrs %{planned_amount: nil, description: nil, paid_at: nil}
 
 
-  setup do
-    budget = Factory.insert!(:budget)
-    bill_category = Factory.insert!(:bill_category)
-    [budget: budget, bill_category: bill_category]
+  setup %{user: user} do
+    budget = Factory.insert!(:budget, account_id: user.account_id)
+    bill_category = Factory.insert!(:bill_category, account_id: user.account_id)
+    {:ok, budget: budget, bill_category: bill_category}
   end
+
+  setup :login_user
 
   def fixture(attrs \\ %{}) do
     {:ok, bill} =
@@ -23,8 +25,8 @@ defmodule BenjaminWeb.BillControllerTest do
     bill
   end
 
-  defp create_fixtures(%{budget: budget, bill_category: bill_category}) do
-    bill = fixture(%{budget_id: budget.id, category_id: bill_category.id})
+  defp create_fixtures(%{user: user, budget: budget, bill_category: bill_category}) do
+    bill = fixture(%{account_id: user.account_id, budget_id: budget.id, category_id: bill_category.id})
     {:ok, bill: bill}
   end
 

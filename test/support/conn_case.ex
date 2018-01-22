@@ -14,7 +14,7 @@ defmodule BenjaminWeb.ConnCase do
   """
 
   use ExUnit.CaseTemplate
-
+  
   using do
     quote do
       # Import conveniences for testing with connections
@@ -23,9 +23,22 @@ defmodule BenjaminWeb.ConnCase do
 
       # The default endpoint for testing
       @endpoint BenjaminWeb.Endpoint
+
+      def login(conn, user) do
+        conn
+        |> bypass_through(BenjaminWeb.Router, :browser)
+        |> get("/")
+        |> put_session(:user_id, user.id)
+        |> send_resp(:ok, "")
+        |> recycle()
+      end
+
+      def login_user(%{conn: conn, user: user}) do
+        conn = login(conn, user)
+        {:ok, conn: conn , user: user}
+      end
     end
   end
-
 
   setup tags do
     :ok = Ecto.Adapters.SQL.Sandbox.checkout(Benjamin.Repo)
@@ -33,6 +46,11 @@ defmodule BenjaminWeb.ConnCase do
       Ecto.Adapters.SQL.Sandbox.mode(Benjamin.Repo, {:shared, self()})
     end
     {:ok, conn: Phoenix.ConnTest.build_conn()}
+  end
+
+  setup do
+    user = Benjamin.Finanses.Factory.insert!(:user_with_account)
+    {:ok, user: user}
   end
 
 end
