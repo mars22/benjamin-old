@@ -22,20 +22,23 @@ defmodule Benjamin.FinansesTest do
     @update_attrs %{description: "some updated description", month: 12, year: 2017}
     @invalid_attrs %{description: nil, month: nil}
 
-    test "list_budgets/0 returns all budgets", %{budget: budget} do
-      assert Finanses.list_budgets() == [budget]
+    test "list_budgets/1 returns all budgets", %{budget: budget, account: account} do
+      assert Finanses.list_budgets(account.id) == [budget]
     end
 
-    test "get_budget!/1 returns the budget with given id", %{budget: budget} do
-      assert Finanses.get_budget!(budget.id) == budget
+    test "get_budget!/1 returns the budget with given id", %{account: account, budget: budget} do
+      assert Finanses.get_budget!(account.id, budget.id) == budget
     end
 
-    test "get_budget_by_date/1 returns the budget that contains date", %{budget: budget} do
-      assert Finanses.get_budget_by_date(Date.utc_today()) == budget
+    test "get_budget_by_date/1 returns the budget that contains date", %{
+      account: account,
+      budget: budget
+    } do
+      assert Finanses.get_budget_by_date(account.id, Date.utc_today()) == budget
     end
 
-    test "get_budget_by_date/1 returns nil if not find"do
-      assert Finanses.get_budget_by_date(~D[2016-12-01]) == nil
+    test "get_budget_by_date/1 returns nil if not find", %{account: account} do
+      assert Finanses.get_budget_by_date(account.id, ~D[2016-12-01]) == nil
     end
 
     test "budget_default_changese/0 returns default value for empty changes" do
@@ -112,35 +115,45 @@ defmodule Benjamin.FinansesTest do
       assert budget.end_at == ~D[2017-12-31]
     end
 
-    test "create_budget/1 copy planned bills and exepenses budgets from previose one if exists.", %{account: account} do
-      attrs = %{month: 10, year: 2017, begin_at: ~D[2017-10-01], end_at: ~D[2017-10-31], account_id: account.id}
+    test "create_budget/1 copy planned bills and exepenses budgets from previose one if exists.",
+         %{account: account} do
+      attrs = %{
+        month: 10,
+        year: 2017,
+        begin_at: ~D[2017-10-01],
+        end_at: ~D[2017-10-31],
+        account_id: account.id
+      }
+
       assert {:ok, %Budget{} = budget} = Finanses.create_budget(attrs)
       assert %Budget{bills: []} = Finanses.get_budget_with_related!(budget.id)
       assert [] == Finanses.list_expenses_budgets_for_budget(budget)
 
       {:ok, bill_cat} = Finanses.create_bill_category(%{name: "Cat", account_id: account.id})
-      {:ok, expense_cat} = Finanses.create_expense_category(%{name: "ExpCat", account_id: account.id})
+
+      {:ok, expense_cat} =
+        Finanses.create_expense_category(%{name: "ExpCat", account_id: account.id})
 
       Finanses.create_bill(%{
-          budget_id: budget.id,
-          category_id: bill_cat.id,
-          planned_amount: "100",
-          amount: "98",
-          account_id: account.id
+        budget_id: budget.id,
+        category_id: bill_cat.id,
+        planned_amount: "100",
+        amount: "98",
+        account_id: account.id
       })
 
       Finanses.create_expense_budget(%{
-          budget_id: budget.id,
-          expense_category_id: expense_cat.id,
-          planned_expenses: "300",
-          account_id: account.id
+        budget_id: budget.id,
+        expense_category_id: expense_cat.id,
+        planned_expenses: "300",
+        account_id: account.id
       })
 
       Finanses.create_expense(%{
-          date: budget.begin_at,
-          amount: "54",
-          category_id: expense_cat.id,
-          account_id: account.id
+        date: budget.begin_at,
+        amount: "54",
+        category_id: expense_cat.id,
+        account_id: account.id
       })
 
       attrs = %{
@@ -150,7 +163,7 @@ defmodule Benjamin.FinansesTest do
         end_at: ~D[2017-11-30],
         copy_from: budget.id,
         account_id: account.id
-        }
+      }
 
       assert {:ok, %Budget{} = budget} = Finanses.create_budget(attrs)
       assert %Budget{bills: [bill]} = Finanses.get_budget_with_related!(budget.id)
@@ -177,6 +190,7 @@ defmodule Benjamin.FinansesTest do
 
     test "create_budget/1 with invalid month returns error changeset", %{account: account} do
       attrs = Map.put(@valid_attrs, :account_id, account.id)
+
       for invalid_month <- [-1, 0, 13] do
         invalid_attrs = %{attrs | month: invalid_month}
         assert {:error, %Ecto.Changeset{} = changeset} = Finanses.create_budget(invalid_attrs)
@@ -187,7 +201,7 @@ defmodule Benjamin.FinansesTest do
     test "create_budget/1 with invalid year returns error changeset", %{account: account} do
       next_year = Date.utc_today().year + 2
       attrs = Map.put(@valid_attrs, :account_id, account.id)
-      
+
       for invalid_year <- [-1, 0, next_year] do
         invalid_attrs = %{attrs | year: invalid_year}
         assert {:error, %Ecto.Changeset{} = changeset} = Finanses.create_budget(invalid_attrs)
@@ -214,14 +228,18 @@ defmodule Benjamin.FinansesTest do
       account: account
     } do
       valid_attrs = Map.put(@valid_attrs, :account_id, account.id)
-      org_budget = Factory.insert!(:budget, 
-        account_id: account.id,
-        description: "some description",
-        month: 12,
-        year: 2017,
-        begin_at: ~D[2017-12-01],
-        end_at: ~D[2017-12-31]
-      )
+
+      org_budget =
+        Factory.insert!(
+          :budget,
+          account_id: account.id,
+          description: "some description",
+          month: 12,
+          year: 2017,
+          begin_at: ~D[2017-12-01],
+          end_at: ~D[2017-12-31]
+        )
+
       attrs = %{valid_attrs | year: org_budget.year + 1}
       assert {:ok, budget} = Finanses.update_budget(org_budget, attrs)
       assert budget.begin_at.year == org_budget.year + 1
@@ -233,14 +251,17 @@ defmodule Benjamin.FinansesTest do
       assert budget.end_at.month == 1
     end
 
-    test "update_budget/2 with invalid data returns error changeset", %{budget: budget} do
+    test "update_budget/2 with invalid data returns error changeset", %{
+      account: account,
+      budget: budget
+    } do
       assert {:error, %Ecto.Changeset{}} = Finanses.update_budget(budget, @invalid_attrs)
-      assert budget == Finanses.get_budget!(budget.id)
+      assert budget == Finanses.get_budget!(account.id, budget.id)
     end
 
-    test "delete_budget/1 deletes the budget", %{budget: budget} do
+    test "delete_budget/1 deletes the budget", %{account: account, budget: budget} do
       assert {:ok, %Budget{}} = Finanses.delete_budget(budget)
-      assert_raise Ecto.NoResultsError, fn -> Finanses.get_budget!(budget.id) end
+      assert_raise Ecto.NoResultsError, fn -> Finanses.get_budget!(account.id, budget.id) end
     end
 
     test "change_budget/1 returns a budget changeset", %{budget: budget} do
@@ -267,7 +288,7 @@ defmodule Benjamin.FinansesTest do
           account_id: account.id
         })
 
-      prev_budget = Finanses.get_budget!(prev_budget.id)
+      prev_budget = Finanses.get_budget!(account.id, prev_budget.id)
 
       assert prev_budget.begin_at == ~D[2017-07-01]
       assert prev_budget.end_at == ~D[2017-07-26]
@@ -316,28 +337,28 @@ defmodule Benjamin.FinansesTest do
         )
 
       {:ok, current_budget} = Finanses.update_budget(current_budget, %{begin_at: ~D[2017-07-25]})
-      prev_budget_1 = Finanses.get_budget!(prev_budget_1.id)
+      prev_budget_1 = Finanses.get_budget!(account.id, prev_budget_1.id)
       assert prev_budget_1.begin_at == ~D[2017-07-01]
       assert prev_budget_1.end_at == ~D[2017-07-24]
 
-      prev_budget_2 = Finanses.get_budget!(prev_budget_2.id)
+      prev_budget_2 = Finanses.get_budget!(account.id, prev_budget_2.id)
       assert prev_budget_2.begin_at == ~D[2017-06-01]
       assert prev_budget_2.end_at == ~D[2017-06-30]
 
-      prev_budget_3 = Finanses.get_budget!(prev_budget_3.id)
+      prev_budget_3 = Finanses.get_budget!(account.id, prev_budget_3.id)
       assert prev_budget_3.begin_at == ~D[2017-09-01]
       assert prev_budget_3.end_at == ~D[2017-09-30]
 
       Finanses.update_budget(current_budget, %{begin_at: ~D[2017-07-28]})
-      prev_budget_1 = Finanses.get_budget!(prev_budget_1.id)
+      prev_budget_1 = Finanses.get_budget!(account.id, prev_budget_1.id)
       assert prev_budget_1.begin_at == ~D[2017-07-01]
       assert prev_budget_1.end_at == ~D[2017-07-27]
 
-      prev_budget_2 = Finanses.get_budget!(prev_budget_2.id)
+      prev_budget_2 = Finanses.get_budget!(account.id, prev_budget_2.id)
       assert prev_budget_2.begin_at == ~D[2017-06-01]
       assert prev_budget_2.end_at == ~D[2017-06-30]
 
-      prev_budget_3 = Finanses.get_budget!(prev_budget_3.id)
+      prev_budget_3 = Finanses.get_budget!(account.id, prev_budget_3.id)
       assert prev_budget_3.begin_at == ~D[2017-09-01]
       assert prev_budget_3.end_at == ~D[2017-09-30]
     end
@@ -349,11 +370,11 @@ defmodule Benjamin.FinansesTest do
     test "calculate_budget_kpi/1 returns kpi related with given budget", %{account: account} do
       bill =
         Factory.build(
-        :bill,
-        account_id: account.id,
-        planned_amount: Decimal.new(200),
-        amount: Decimal.new(220)
-      )
+          :bill,
+          account_id: account.id,
+          planned_amount: Decimal.new(200),
+          amount: Decimal.new(220)
+        )
 
       income = Factory.build(:income, account_id: account.id, amount: Decimal.new(1000))
 
@@ -363,13 +384,23 @@ defmodule Benjamin.FinansesTest do
           account_id: account.id,
           bills: [bill],
           incomes: [income]
-      )
+        )
 
       expense_budget_1 =
-        Factory.insert!(:expense_budget,  account_id: account.id, budget_id: budget.id, planned_expenses: Decimal.new(100))
+        Factory.insert!(
+          :expense_budget,
+          account_id: account.id,
+          budget_id: budget.id,
+          planned_expenses: Decimal.new(100)
+        )
 
       expense_budget_2 =
-        Factory.insert!(:expense_budget,  account_id: account.id, budget_id: budget.id, planned_expenses: Decimal.new(0))
+        Factory.insert!(
+          :expense_budget,
+          account_id: account.id,
+          budget_id: budget.id,
+          planned_expenses: Decimal.new(0)
+        )
 
       Finanses.create_expense(%{
         amount: Decimal.new(20),
@@ -399,7 +430,7 @@ defmodule Benjamin.FinansesTest do
           amount: Decimal.new(200),
           type: "deposit",
           date: budget.begin_at
-      )
+        )
 
       transaction_withdraw =
         Factory.insert!(
@@ -450,7 +481,6 @@ defmodule Benjamin.FinansesTest do
       {:ok, budget: budget, income: income}
     end
 
-
     test "list_incomes/0 returns all incomes", %{income: income} do
       assert Finanses.list_incomes() == [income]
     end
@@ -467,7 +497,7 @@ defmodule Benjamin.FinansesTest do
       assert income.description == "some description"
     end
 
-    test "update_income/2 with valid data updates the income", %{income: income}do
+    test "update_income/2 with valid data updates the income", %{income: income} do
       assert {:ok, income} = Finanses.update_income(income, @update_attrs)
       assert %Income{} = income
       assert income.amount == Decimal.new("456.7")
@@ -522,7 +552,8 @@ defmodule Benjamin.FinansesTest do
     setup %{account: account} do
       budget = Factory.insert!(:budget, account_id: account.id)
       bill_category = Factory.insert!(:bill_category, account_id: account.id)
-      attrs=
+
+      attrs =
         @valid_attrs
         |> Map.put(:budget_id, budget.id)
         |> Map.put(:category_id, bill_category.id)
@@ -542,13 +573,16 @@ defmodule Benjamin.FinansesTest do
     end
 
     test "create_bill/1 can't create the same bill twice", %{
-      account: account, budget: budget, bill_category: bill_category
+      account: account,
+      budget: budget,
+      bill_category: bill_category
     } do
-      attrs=
+      attrs =
         @valid_attrs
         |> Map.put(:budget_id, budget.id)
         |> Map.put(:category_id, bill_category.id)
         |> Map.put(:account_id, account.id)
+
       assert {:error, %Ecto.Changeset{} = _} = Finanses.create_bill(attrs)
     end
 
@@ -557,7 +591,9 @@ defmodule Benjamin.FinansesTest do
     end
 
     test "create_bill/1 with planned_amount set to 0 or less then 0 returns error changeset", %{
-      account: account, budget: budget, bill_category: bill_category
+      account: account,
+      budget: budget,
+      bill_category: bill_category
     } do
       attrs = %{
         planned_amount: "-10",
@@ -604,10 +640,10 @@ defmodule Benjamin.FinansesTest do
     @invalid_attrs %{deleted: nil, name: nil}
 
     setup %{account: account} do
-      attrs=
+      attrs =
         @valid_attrs
         |> Map.put(:account_id, account.id)
-      
+
       {:ok, bill_category} = Finanses.create_bill_category(attrs)
       {:ok, bill_category: bill_category}
     end
@@ -616,7 +652,9 @@ defmodule Benjamin.FinansesTest do
       assert Finanses.list_bill_categories() == [bill_category]
     end
 
-    test "get_bill_category!/1 returns the bill_category with given id", %{bill_category: bill_category} do
+    test "get_bill_category!/1 returns the bill_category with given id", %{
+      bill_category: bill_category
+    } do
       assert Finanses.get_bill_category!(bill_category.id) == bill_category
     end
 
@@ -624,14 +662,18 @@ defmodule Benjamin.FinansesTest do
       assert {:error, %Ecto.Changeset{}} = Finanses.create_bill_category(@invalid_attrs)
     end
 
-    test "update_bill_category/2 with valid data updates the bill_category", %{bill_category: bill_category} do
+    test "update_bill_category/2 with valid data updates the bill_category", %{
+      bill_category: bill_category
+    } do
       assert {:ok, bill_category} = Finanses.update_bill_category(bill_category, @update_attrs)
       assert %BillCategory{} = bill_category
       assert bill_category.deleted == false
       assert bill_category.name == "some updated name"
     end
 
-    test "update_bill_category/2 with invalid data returns error changeset", %{bill_category: bill_category} do
+    test "update_bill_category/2 with invalid data returns error changeset", %{
+      bill_category: bill_category
+    } do
       assert {:error, %Ecto.Changeset{}} =
                Finanses.update_bill_category(bill_category, @invalid_attrs)
 
@@ -643,7 +685,9 @@ defmodule Benjamin.FinansesTest do
       assert_raise Ecto.NoResultsError, fn -> Finanses.get_bill_category!(bill_category.id) end
     end
 
-    test "change_bill_category/1 returns a bill_category changeset", %{bill_category: bill_category} do
+    test "change_bill_category/1 returns a bill_category changeset", %{
+      bill_category: bill_category
+    } do
       assert %Ecto.Changeset{} = Finanses.change_bill_category(bill_category)
     end
   end
@@ -656,20 +700,23 @@ defmodule Benjamin.FinansesTest do
     @invalid_attrs %{is_deleted: nil, name: nil}
 
     setup %{account: account} do
-      attrs=
+      attrs =
         @valid_attrs
         |> Map.put(:account_id, account.id)
-      
+
       {:ok, expense_category} = Finanses.create_expense_category(attrs)
       {:ok, expense_category: expense_category}
     end
 
-
-    test "list_expenses_categories/0 returns all expenses_categories", %{expense_category: expense_category} do
+    test "list_expenses_categories/0 returns all expenses_categories", %{
+      expense_category: expense_category
+    } do
       assert Finanses.list_expenses_categories() == [expense_category]
     end
 
-    test "get_expense_category!/1 returns the expense_category with given id", %{expense_category: expense_category} do
+    test "get_expense_category!/1 returns the expense_category with given id", %{
+      expense_category: expense_category
+    } do
       assert Finanses.get_expense_category!(expense_category.id) == expense_category
     end
 
@@ -677,7 +724,9 @@ defmodule Benjamin.FinansesTest do
       assert {:error, %Ecto.Changeset{}} = Finanses.create_expense_category(@invalid_attrs)
     end
 
-    test "update_expense_category/2 with valid data updates the expense_category", %{expense_category: expense_category} do
+    test "update_expense_category/2 with valid data updates the expense_category", %{
+      expense_category: expense_category
+    } do
       assert {:ok, expense_category} =
                Finanses.update_expense_category(expense_category, @update_attrs)
 
@@ -686,14 +735,18 @@ defmodule Benjamin.FinansesTest do
       assert expense_category.name == "some updated name"
     end
 
-    test "update_expense_category/2 with invalid data returns error changeset", %{expense_category: expense_category} do
+    test "update_expense_category/2 with invalid data returns error changeset", %{
+      expense_category: expense_category
+    } do
       assert {:error, %Ecto.Changeset{}} =
                Finanses.update_expense_category(expense_category, @invalid_attrs)
 
       assert expense_category == Finanses.get_expense_category!(expense_category.id)
     end
 
-    test "delete_expense_category/1 deletes the expense_category", %{expense_category: expense_category} do
+    test "delete_expense_category/1 deletes the expense_category", %{
+      expense_category: expense_category
+    } do
       assert {:ok, %ExpenseCategory{}} = Finanses.delete_expense_category(expense_category)
 
       assert_raise Ecto.NoResultsError, fn ->
@@ -701,7 +754,9 @@ defmodule Benjamin.FinansesTest do
       end
     end
 
-    test "change_expense_category/1 returns a expense_category changeset", %{expense_category: expense_category} do
+    test "change_expense_category/1 returns a expense_category changeset", %{
+      expense_category: expense_category
+    } do
       assert %Ecto.Changeset{} = Finanses.change_expense_category(expense_category)
     end
   end
@@ -717,10 +772,18 @@ defmodule Benjamin.FinansesTest do
       expense = Factory.insert!(:expense, account_id: account.id)
       expense_with_parts = Factory.insert!(:expense_with_parts, account_id: account.id)
       {:ok, category} = Finanses.create_expense_category(%{name: "Cat1", account_id: account.id})
-      {:ok, budget: budget, expense: expense, expense_with_parts: expense_with_parts, category: category}
+
+      {:ok,
+       budget: budget,
+       expense: expense,
+       expense_with_parts: expense_with_parts,
+       category: category}
     end
 
-    test "list_expenses/0 returns all parent expenses", %{expense: expense, expense_with_parts: expense_with_parts} do
+    test "list_expenses/0 returns all parent expenses", %{
+      expense: expense,
+      expense_with_parts: expense_with_parts
+    } do
       [expense1, expense2] = Finanses.list_expenses()
       assert expense2.id == expense.id
       assert expense1.id == expense_with_parts.id
@@ -730,10 +793,20 @@ defmodule Benjamin.FinansesTest do
       assert Finanses.get_expense!(expense.id) == expense
     end
 
-    test "create_expense/1 add expense budget if not exist", %{account: account, budget: budget, category: category} do
+    test "create_expense/1 add expense budget if not exist", %{
+      account: account,
+      budget: budget,
+      category: category
+    } do
       assert [] = Finanses.list_expenses_budgets_for_budget(budget)
 
-      attrs = %{amount: "120.5", date: Date.utc_today(), category_id: category.id, account_id: account.id}
+      attrs = %{
+        amount: "120.5",
+        date: Date.utc_today(),
+        category_id: category.id,
+        account_id: account.id
+      }
+
       Finanses.create_expense(attrs)
       assert [expense_budget] = Finanses.list_expenses_budgets_for_budget(budget)
       assert expense_budget.real_expenses == Decimal.new(120.5)
@@ -742,8 +815,16 @@ defmodule Benjamin.FinansesTest do
     end
 
     test "create_expense/1 description is required when category force it.", %{account: account} do
-      category = Factory.insert!(:expense_category, account_id: account.id, required_description: true)
-      attrs = %{amount: "120.5", date: Date.utc_today(), category_id: category.id, account_id: account.id}
+      category =
+        Factory.insert!(:expense_category, account_id: account.id, required_description: true)
+
+      attrs = %{
+        amount: "120.5",
+        date: Date.utc_today(),
+        category_id: category.id,
+        account_id: account.id
+      }
+
       assert {:error, %Ecto.Changeset{}} = Finanses.create_expense(attrs)
     end
 
@@ -767,13 +848,15 @@ defmodule Benjamin.FinansesTest do
       assert_raise Ecto.NoResultsError, fn -> Finanses.get_expense!(expense.id) end
     end
 
-    test "list_expenses_for_budget/1 returns all expenses that should belong to budget grouped by category", %{
-      account: account, budget: budget
-    } do
+    test "list_expenses_for_budget/1 returns all expenses that should belong to budget grouped by category",
+         %{
+           account: account,
+           budget: budget
+         } do
       Factory.insert!(:expense, account_id: account.id, date: ~D[1900-12-12])
-      
+
       expenses = Finanses.list_expenses_for_budget(budget)
-      
+
       assert 2 == Enum.count(expenses)
     end
   end
@@ -786,22 +869,32 @@ defmodule Benjamin.FinansesTest do
 
     setup %{account: account} do
       budget = Factory.insert!(:budget, account_id: account.id)
-      expense_budget = Factory.insert!(:expense_budget, account_id: account.id, budget_id: budget.id)
+
+      expense_budget =
+        Factory.insert!(:expense_budget, account_id: account.id, budget_id: budget.id)
+
       {:ok, budget: budget, expense_budget: expense_budget}
     end
 
-    test "list_expenses_budgets_for_budget/0 returns all expense_categories_budgets", %{budget: budget} do
+    test "list_expenses_budgets_for_budget/0 returns all expense_categories_budgets", %{
+      budget: budget
+    } do
       expenses_budgets = Finanses.list_expenses_budgets_for_budget(budget)
       [expense_budget] = expenses_budgets
       assert expense_budget.real_expenses == nil
     end
 
-    test "get_expense_budget!/1 returns the expense_budget with given id", %{expense_budget: expense_budget} do
+    test "get_expense_budget!/1 returns the expense_budget with given id", %{
+      expense_budget: expense_budget
+    } do
       from_db = Finanses.get_expense_budget!(expense_budget.id)
       assert from_db.id == expense_budget.id
     end
 
-    test "create_expense_budget/1 with valid data creates a expense_budget", %{account: account, budget: budget} do
+    test "create_expense_budget/1 with valid data creates a expense_budget", %{
+      account: account,
+      budget: budget
+    } do
       expenses_category = Factory.insert!(:expense_category, account_id: account.id)
 
       attr = %{
@@ -823,13 +916,17 @@ defmodule Benjamin.FinansesTest do
       assert {:error, %Ecto.Changeset{}} = Finanses.create_expense_budget(@invalid_attrs)
     end
 
-    test "update_expense_budget/2 with valid data updates the expense_budget", %{expense_budget: expense_budget} do
+    test "update_expense_budget/2 with valid data updates the expense_budget", %{
+      expense_budget: expense_budget
+    } do
       assert {:ok, expense_budget} = Finanses.update_expense_budget(expense_budget, @update_attrs)
       assert %ExpenseBudget{} = expense_budget
       assert expense_budget.planned_expenses == Decimal.new("456.7")
     end
 
-    test "update_expense_budget/2 with invalid data returns error changeset", %{expense_budget: expense_budget} do
+    test "update_expense_budget/2 with invalid data returns error changeset", %{
+      expense_budget: expense_budget
+    } do
       assert {:error, %Ecto.Changeset{}} =
                Finanses.update_expense_budget(expense_budget, @invalid_attrs)
 
@@ -843,7 +940,9 @@ defmodule Benjamin.FinansesTest do
       assert_raise Ecto.NoResultsError, fn -> Finanses.get_expense_budget!(expense_budget.id) end
     end
 
-    test "change_expense_budget/1 returns a expense_budget changeset", %{expense_budget: expense_budget} do
+    test "change_expense_budget/1 returns a expense_budget changeset", %{
+      expense_budget: expense_budget
+    } do
       assert %Ecto.Changeset{} = Finanses.change_expense_budget(expense_budget)
     end
   end
@@ -860,9 +959,9 @@ defmodule Benjamin.FinansesTest do
         %{account_id: account.id}
         |> Enum.into(@valid_attrs)
         |> Finanses.create_saving()
+
       {:ok, saving: saving}
     end
-
 
     test "list_savings/0 returns all savings", %{saving: saving} do
       [from_db] = Finanses.list_savings()
@@ -947,10 +1046,13 @@ defmodule Benjamin.FinansesTest do
       assert Finanses.get_transaction!(transaction.id) == transaction
     end
 
-    test "create_transaction/1 with valid data creates a transaction", %{account: account, saving: saving} do
+    test "create_transaction/1 with valid data creates a transaction", %{
+      account: account,
+      saving: saving
+    } do
       attrs = Map.put(@valid_attrs, :saving_id, saving.id)
       attrs = Map.put(attrs, :account_id, account.id)
-      
+
       assert {:ok, %Transaction{} = transaction} = Finanses.create_transaction(attrs)
       assert transaction.amount == Decimal.new("120.5")
       assert transaction.date == ~D[2010-04-17]
@@ -958,7 +1060,10 @@ defmodule Benjamin.FinansesTest do
       assert transaction.type == "deposit"
     end
 
-    test "create_transaction/1 with type withdraw creates income in budget", %{account: account, saving: saving} do
+    test "create_transaction/1 with type withdraw creates income in budget", %{
+      account: account,
+      saving: saving
+    } do
       budget = Factory.insert!(:budget, account_id: account.id)
 
       attrs = %{

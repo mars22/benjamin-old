@@ -6,10 +6,15 @@ defmodule Benjamin.Finanses do
   import Ecto.Query, warn: false
   alias Ecto.Multi
   alias Benjamin.Repo
-  
+
   alias Benjamin.Finanses.{
-    Bill, Budget, ExpenseBudget, Transaction, Income,
-    Saving, Transaction
+    Bill,
+    Budget,
+    ExpenseBudget,
+    Transaction,
+    Income,
+    Saving,
+    Transaction
   }
 
   @doc """
@@ -21,51 +26,74 @@ defmodule Benjamin.Finanses do
       [%Budget{}, ...]
 
   """
-  def list_budgets do
+  def list_budgets(account_id) do
     Budget
-    |> order_by([desc: :year, desc: :month])
+    |> order_by(desc: :year, desc: :month)
+    |> where(account_id: ^account_id)
     |> Repo.all()
   end
 
-
-  def get_previous_budget(%Budget{id: id, year: year, month: month}) do
-    {month, year} = 
+  def get_previous_budget(%Budget{id: id, year: year, month: month, account_id: account_id}) do
+    {month, year} =
       case month do
-        1 -> {12, year - 1} 
+        1 -> {12, year - 1}
         _ -> {month, year}
       end
-    
-    query = from  b in Budget,
-            where: b.id != ^id,
-            where: b.year <= ^year,
-            where: b.month <= ^month,
-            order_by: [desc: :year, desc: :month],
-            limit: 1
+
+    query =
+      from(
+        b in Budget,
+        where: b.id != ^id,
+        where: b.year <= ^year,
+        where: b.month <= ^month,
+        where: b.account_id <= ^account_id,
+        order_by: [desc: :year, desc: :month],
+        limit: 1
+      )
+
     Repo.one(query)
   end
 
-
   @doc """
-  Gets a single budget.
+  Gets a single budget for account.
 
   Raises `Ecto.NoResultsError` if the Budget does not exist.
 
   ## Examples
 
-      iex> get_budget!(123)
+      iex> get_budget!(123, 123)
       %Budget{}
 
-      iex> get_budget!(456)
+      iex> get_budget!(456, 123)
       ** (Ecto.NoResultsError)
 
   """
-  def get_budget!(id), do: Repo.get!(Budget, id)
+  def get_budget!(account_id, id) do
+    Budget
+    |> where(account_id: ^account_id)
+    |> where(id: ^id)
+    |> Repo.one!()
+  end
 
+  def get_budget_by_date(account_id, date) do
+    query =
+      from(
+        b in Budget,
+        where: b.account_id == ^account_id,
+        where: b.begin_at <= ^date,
+        where: b.end_at >= ^date
+      )
 
-  def get_budget_by_date(date) do
-    query = from b in Budget,
-            where: b.begin_at <= ^date,
-            where: b.end_at >= ^date
+    Repo.one(query)
+  end
+
+  defp get_budget_by_date(date) do
+    query =
+      from(
+        b in Budget,
+        where: b.begin_at <= ^date,
+        where: b.end_at >= ^date
+      )
 
     Repo.one(query)
   end
@@ -77,10 +105,10 @@ defmodule Benjamin.Finanses do
 
   ## Examples
 
-      iex> get_budget_with_related!(123)
+      iex> get_budget_with_related!(1, 123)
       %Budget{}
 
-      iex> get_budget_with_related!(456)
+      iex> get_budget_with_related!(1, 456)
       ** (Ecto.NoResultsError)
 
   """
@@ -89,11 +117,12 @@ defmodule Benjamin.Finanses do
       Budget
       |> Repo.get!(id)
       |> Repo.preload(:incomes)
-      |> Repo.preload([bills: [:category]])
+      |> Repo.preload(bills: [:category])
 
     incomes =
       budget.incomes
-      |> Enum.map(&(Income.add_taxes(&1)))
+      |> Enum.map(&Income.add_taxes(&1))
+
     %Budget{budget | incomes: incomes}
   end
 
@@ -115,8 +144,8 @@ defmodule Benjamin.Finanses do
     Multi.new()
     |> Multi.insert(:budget, Budget.changeset(%Budget{}, attrs))
     |> Multi.run(:update_prev, &update_prev_budget_end_at/1)
-    |> Multi.run(:bills, &(copy_bills(source_budget_id, &1)))
-    |> Multi.run(:expenses_budgets, &(copy_expenses_budgets(source_budget_id, &1)))
+    |> Multi.run(:bills, &copy_bills(source_budget_id, &1))
+    |> Multi.run(:expenses_budgets, &copy_expenses_budgets(source_budget_id, &1))
     |> Repo.transaction()
     |> handle_budget_creation
   end
@@ -143,13 +172,15 @@ defmodule Benjamin.Finanses do
           diff when diff == -1 -> {:ok, :noop}
           _ -> update_budget(budget, %{end_at: Date.add(current_budget.begin_at, -1)})
         end
-      nil -> {:ok, :noop}
+
+      nil ->
+        {:ok, :noop}
     end
   end
 
   defp copy_bills(source_budget_id, %{budget: %Budget{id: id}}) do
     case list_bills_for_budget(source_budget_id) do
-      [_|_] = bills ->
+      [_ | _] = bills ->
         new_bills =
           bills
           |> Enum.map(&Bill.copy/1)
@@ -157,15 +188,17 @@ defmodule Benjamin.Finanses do
 
         Repo.insert_all(Bill, new_bills)
         {:ok, :noop}
+
       [] ->
         {:ok, :noop}
     end
   end
 
   defp copy_expenses_budgets(source_budget_id, %{budget: budget}) do
-    source_budget = get_budget!(source_budget_id)
+    source_budget = Repo.get!(Budget, source_budget_id)
+
     case list_expenses_budgets_for_budget(source_budget) do
-      [_|_] = expenses_budgets ->
+      [_ | _] = expenses_budgets ->
         new_expenses_budgets =
           expenses_budgets
           |> Enum.map(&ExpenseBudget.copy/1)
@@ -173,6 +206,7 @@ defmodule Benjamin.Finanses do
 
         Repo.insert_all(ExpenseBudget, new_expenses_budgets)
         {:ok, :noop}
+
       [] ->
         {:ok, :noop}
     end
@@ -230,12 +264,14 @@ defmodule Benjamin.Finanses do
   def budget_default_changese() do
     current_date = Date.utc_today()
     {begin_at, end_at} = Budget.date_range(current_date.year, current_date.month)
+
     budget = %Budget{
       year: current_date.year,
       month: current_date.month,
       begin_at: begin_at,
-      end_at: end_at,
+      end_at: end_at
     }
+
     Budget.changeset(budget, %{})
   end
 
@@ -262,7 +298,7 @@ defmodule Benjamin.Finanses do
       bills: bills,
       expenses_budgets_planned: expenses_budgets_planned,
       expenses_budgets: expenses_budgets,
-      balance: balance,
+      balance: balance
     }
   end
 
@@ -389,7 +425,7 @@ defmodule Benjamin.Finanses do
       ** (Ecto.NoResultsError)
 
   """
-  def get_bill!(id)  do
+  def get_bill!(id) do
     Bill
     |> Repo.get!(id)
     |> Repo.preload(:category)
@@ -556,7 +592,6 @@ defmodule Benjamin.Finanses do
     BillCategory.changeset(bill_category, %{})
   end
 
-
   alias Benjamin.Finanses.ExpenseCategory
 
   @doc """
@@ -586,7 +621,7 @@ defmodule Benjamin.Finanses do
       ** (Ecto.NoResultsError)
 
   """
-  def get_expense_category!(id)  do
+  def get_expense_category!(id) do
     Repo.get!(ExpenseCategory, id)
   end
 
@@ -657,20 +692,22 @@ defmodule Benjamin.Finanses do
 
   alias Benjamin.Finanses.Expense
 
-
   defp base_expenses_query do
-    from e in Expense,
-    where: is_nil(e.parent_id),
-    order_by: [desc: e.date, desc: e.id],
-    preload: [:category]
+    from(
+      e in Expense,
+      where: is_nil(e.parent_id),
+      order_by: [desc: e.date, desc: e.id],
+      preload: [:category]
+    )
   end
 
   defp expenses_for_date_range(begin_at, end_at) do
-    from e in base_expenses_query(),
-    where: e.date >= ^begin_at,
-    where: e.date <= ^end_at
+    from(
+      e in base_expenses_query(),
+      where: e.date >= ^begin_at,
+      where: e.date <= ^end_at
+    )
   end
-
 
   @doc """
   Returns the list of parent expenses.
@@ -705,6 +742,7 @@ defmodule Benjamin.Finanses do
         "all" -> base_expenses_query()
         _ -> expenses_for_date_range(today, today)
       end
+
     Repo.all(query)
   end
 
@@ -737,13 +775,15 @@ defmodule Benjamin.Finanses do
       [%Expense{},..]
   """
   def list_expenses_for_budget(%Budget{} = budget) do
-
-    query = from e in Expense,
-      where: is_nil(e.parent_id),
-      where: e.date >= ^budget.begin_at,
-      where: e.date <= ^budget.end_at,
-      order_by: [desc: e.date],
-      preload: [:category]
+    query =
+      from(
+        e in Expense,
+        where: is_nil(e.parent_id),
+        where: e.date >= ^budget.begin_at,
+        where: e.date <= ^budget.end_at,
+        order_by: [desc: e.date],
+        preload: [:category]
+      )
 
     query
     |> Repo.all()
@@ -765,11 +805,11 @@ defmodule Benjamin.Finanses do
 
   """
   def create_expense(attrs \\ %{}) do
-    Multi.new
+    Multi.new()
     |> Multi.insert(:expense, Expense.changeset(%Expense{}, attrs))
     |> Multi.run(:budget, &get_budget/1)
     |> Multi.run(:expense_budget, &multi_create_expense_budget/1)
-    |> Repo.transaction
+    |> Repo.transaction()
     |> case do
       {:error, :expense, %Ecto.Changeset{} = changeset, %{}} -> {:error, changeset}
       {:ok, %{expense: expense}} -> {:ok, expense}
@@ -778,27 +818,37 @@ defmodule Benjamin.Finanses do
 
   defp get_budget(%{expense: %Expense{category_id: category_id, date: date}}) do
     case get_budget_by_date(date) do
-      %Budget{id: id, account_id: account_id} -> {:ok, %{category_id: category_id, budget_id: id, account_id: account_id}}
-      nil -> {:ok, :noop}
+      %Budget{id: id, account_id: account_id} ->
+        {:ok, %{category_id: category_id, budget_id: id, account_id: account_id}}
+
+      nil ->
+        {:ok, :noop}
     end
   end
 
   defp multi_create_expense_budget(%{budget: :noop}), do: {:ok, :noop}
-  defp multi_create_expense_budget(%{budget: %{category_id: category_id, budget_id: budget_id, account_id: account_id}}) do
-    query = from b in ExpenseBudget,
-            where: b.budget_id == ^budget_id,
-            where: b.expense_category_id == ^category_id
+
+  defp multi_create_expense_budget(%{
+         budget: %{category_id: category_id, budget_id: budget_id, account_id: account_id}
+       }) do
+    query =
+      from(
+        b in ExpenseBudget,
+        where: b.budget_id == ^budget_id,
+        where: b.expense_category_id == ^category_id
+      )
 
     case Repo.one(query) do
-      %ExpenseBudget{}  -> {:ok, :noop}
-      nil -> create_expense_budget(
-              %{
-                expense_category_id: category_id,
-                budget_id: budget_id,
-                planned_expenses: 0,
-                account_id: account_id
-              }
-            )
+      %ExpenseBudget{} ->
+        {:ok, :noop}
+
+      nil ->
+        create_expense_budget(%{
+          expense_category_id: category_id,
+          budget_id: budget_id,
+          planned_expenses: 0,
+          account_id: account_id
+        })
     end
   end
 
@@ -849,7 +899,6 @@ defmodule Benjamin.Finanses do
     Expense.changeset(expense, %{})
   end
 
-
   @doc """
   Returns the list of expense_budgets for given budget with filled real_expenses.
 
@@ -861,29 +910,32 @@ defmodule Benjamin.Finanses do
   """
   def list_expenses_budgets_for_budget(budget_id) when is_integer(budget_id) do
     ExpenseBudget
-    |> where([budget_id: ^budget_id])
-    |> Repo.all
+    |> where(budget_id: ^budget_id)
+    |> Repo.all()
   end
 
   def list_expenses_budgets_for_budget(%Budget{} = budget) do
-    query = from budget in ExpenseBudget,
-            left_join: expense in Expense,
-            on: budget.expense_category_id == expense.category_id,
-            on: expense.date >= ^budget.begin_at,
-            on: expense.date <= ^budget.end_at,
-            where: budget.budget_id == ^budget.id,
-            group_by: budget.id,
-            select: %ExpenseBudget{budget | real_expenses: sum(expense.amount)}
+    query =
+      from(
+        budget in ExpenseBudget,
+        left_join: expense in Expense,
+        on: budget.expense_category_id == expense.category_id,
+        on: expense.date >= ^budget.begin_at,
+        on: expense.date <= ^budget.end_at,
+        where: budget.budget_id == ^budget.id,
+        group_by: budget.id,
+        select: %ExpenseBudget{budget | real_expenses: sum(expense.amount)}
+      )
 
     query
-      |> list_expenses_budgets
+    |> list_expenses_budgets
   end
 
   def list_expenses_budgets(querable \\ ExpenseBudget) do
     querable
     |> Repo.all()
     |> Repo.preload([:expense_category])
-    |> Enum.sort_by(&(&1.real_expenses), &>=/2)
+    |> Enum.sort_by(& &1.real_expenses, &>=/2)
   end
 
   @doc """
@@ -978,13 +1030,13 @@ defmodule Benjamin.Finanses do
   """
   def list_savings do
     Saving
-    |> Repo.all
+    |> Repo.all()
     |> Repo.preload(:transactions)
     |> Enum.map(&%Saving{&1 | total_amount: Saving.sum_transactions(&1.transactions)})
   end
 
   def saved(savings) do
-    Enum.reduce(savings, Decimal.new(0), &(Decimal.add(&1.total_amount, &2)))
+    Enum.reduce(savings, Decimal.new(0), &Decimal.add(&1.total_amount, &2))
   end
 
   @doc """
@@ -1091,9 +1143,13 @@ defmodule Benjamin.Finanses do
   end
 
   def list_transactions(from, to) do
-    query = from t in Transaction,
-            where: t.date >= ^from,
-            where: t.date <= ^to
+    query =
+      from(
+        t in Transaction,
+        where: t.date >= ^from,
+        where: t.date <= ^to
+      )
+
     query
     |> Repo.all()
     |> Repo.preload(:saving)
@@ -1128,10 +1184,10 @@ defmodule Benjamin.Finanses do
 
   """
   def create_transaction(attrs \\ %{}) do
-    Multi.new
+    Multi.new()
     |> Multi.insert(:transaction, Transaction.changeset(%Transaction{}, attrs))
     |> Multi.run(:income, &create_income_for_transaction/1)
-    |> Repo.transaction
+    |> Repo.transaction()
     |> case do
       {:error, :transaction, %Ecto.Changeset{} = changeset, _} -> {:error, changeset}
       {:ok, %{transaction: transaction}} -> {:ok, transaction}
@@ -1149,13 +1205,15 @@ defmodule Benjamin.Finanses do
           type: "savings",
           account_id: account_id
         }
+
         create_income(attrs)
 
-      nil -> {:ok, :noop}
+      nil ->
+        {:ok, :noop}
     end
   end
-  defp create_income_for_transaction(%{transaction: _}), do: {:ok, :noop}
 
+  defp create_income_for_transaction(%{transaction: _}), do: {:ok, :noop}
 
   @doc """
   Updates a transaction.
