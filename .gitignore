@@ -8,6 +8,7 @@
 *.pyc
 # Generated on crash by the VM
 erl_crash.dump
+.vscode
 
 # Generated on crash by NPM
 npm-debug.log
