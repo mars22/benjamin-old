@@ -55,7 +55,7 @@ defmodule Benjamin.FinansesTest do
       account: account
     } do
       budget = Factory.insert!(:budget_with_related, account_id: account.id)
-      result_budget = Finanses.get_budget_with_related!(budget.id)
+      result_budget = Finanses.get_budget_with_related!(account.id, budget.id)
       assert budget == result_budget
     end
 
@@ -126,7 +126,7 @@ defmodule Benjamin.FinansesTest do
       }
 
       assert {:ok, %Budget{} = budget} = Finanses.create_budget(attrs)
-      assert %Budget{bills: []} = Finanses.get_budget_with_related!(budget.id)
+      assert %Budget{bills: []} = Finanses.get_budget_with_related!(account.id, budget.id)
       assert [] == Finanses.list_expenses_budgets_for_budget(budget)
 
       {:ok, bill_cat} = Finanses.create_bill_category(%{name: "Cat", account_id: account.id})
@@ -166,7 +166,7 @@ defmodule Benjamin.FinansesTest do
       }
 
       assert {:ok, %Budget{} = budget} = Finanses.create_budget(attrs)
-      assert %Budget{bills: [bill]} = Finanses.get_budget_with_related!(budget.id)
+      assert %Budget{bills: [bill]} = Finanses.get_budget_with_related!(account.id, budget.id)
       assert bill.category_id == bill_cat.id
       assert bill.planned_amount == Decimal.new(98)
       assert bill.amount == Decimal.new(0)
@@ -1081,7 +1081,7 @@ defmodule Benjamin.FinansesTest do
       assert transaction.description == "some description"
       assert transaction.type == "withdraw"
 
-      %Budget{incomes: [income]} = Finanses.get_budget_with_related!(budget.id)
+      %Budget{incomes: [income]} = Finanses.get_budget_with_related!(account.id, budget.id)
       assert income.type == "savings"
       assert income.description == "some description"
       assert income.amount == Decimal.new("120.5")
@@ -1108,7 +1108,7 @@ defmodule Benjamin.FinansesTest do
       assert transaction.description == "Deposit description"
       assert transaction.type == "deposit"
 
-      %Budget{incomes: []} = Finanses.get_budget_with_related!(budget.id)
+      %Budget{incomes: []} = Finanses.get_budget_with_related!(account.id, budget.id)
     end
 
     test "create_transaction/1 with invalid data returns error changeset" do

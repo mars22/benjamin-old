@@ -99,7 +99,7 @@ defmodule Benjamin.Finanses do
   end
 
   @doc """
-  Gets a single budget with related data .
+  Gets a single budget with related data for account.
 
   Raises `Ecto.NoResultsError` if the Budget does not exist.
 
@@ -112,10 +112,9 @@ defmodule Benjamin.Finanses do
       ** (Ecto.NoResultsError)
 
   """
-  def get_budget_with_related!(id) do
+  def get_budget_with_related!(account_id, id) do
     budget =
-      Budget
-      |> Repo.get!(id)
+      get_budget!(account_id, id)
       |> Repo.preload(:incomes)
       |> Repo.preload(bills: [:category])
 
@@ -142,7 +141,7 @@ defmodule Benjamin.Finanses do
 
   def create_budget(%{copy_from: source_budget_id} = attrs) do
     Multi.new()
-    |> Multi.insert(:budget, Budget.changeset(%Budget{}, attrs))
+    |> Multi.insert(:budget, Budget.create_changeset(%Budget{}, attrs))
     |> Multi.run(:update_prev, &update_prev_budget_end_at/1)
     |> Multi.run(:bills, &copy_bills(source_budget_id, &1))
     |> Multi.run(:expenses_budgets, &copy_expenses_budgets(source_budget_id, &1))
@@ -152,7 +151,7 @@ defmodule Benjamin.Finanses do
 
   def create_budget(attrs) do
     Multi.new()
-    |> Multi.insert(:budget, Budget.changeset(%Budget{}, attrs))
+    |> Multi.insert(:budget, Budget.create_changeset(%Budget{}, attrs))
     |> Multi.run(:update_prev, &update_prev_budget_end_at/1)
     |> Repo.transaction()
     |> handle_budget_creation
@@ -226,7 +225,7 @@ defmodule Benjamin.Finanses do
   """
   def update_budget(%Budget{} = budget, attrs) do
     Multi.new()
-    |> Multi.update(:budget, Budget.changeset(budget, attrs))
+    |> Multi.update(:budget, Budget.update_changeset(budget, attrs))
     |> Multi.run(:update_prev, &update_prev_budget_end_at/1)
     |> Repo.transaction()
     |> handle_budget_creation
@@ -258,7 +257,7 @@ defmodule Benjamin.Finanses do
 
   """
   def change_budget(%Budget{} = budget) do
-    Budget.changeset(budget, %{})
+    Budget.create_changeset(budget, %{})
   end
 
   def budget_default_changese() do
@@ -272,7 +271,7 @@ defmodule Benjamin.Finanses do
       end_at: end_at
     }
 
-    Budget.changeset(budget, %{})
+    Budget.create_changeset(budget, %{})
   end
 
   def calculate_budget_kpi(budget, transactions) do
