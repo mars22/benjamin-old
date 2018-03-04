@@ -51,6 +51,7 @@ defmodule Benjamin.FinansesTest do
       assert default_changes.data.end_at == end_at
     end
 
+    @tag :skip
     test "get_budget_with_related!/1 returns the budget with given id and all realated data", %{
       account: account
     } do
