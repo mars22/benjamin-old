@@ -70,10 +70,12 @@ defmodule BenjaminWeb.BudgetController do
 
     expenses = Finanses.list_expenses_for_budget(budget)
     expenses_budgets = Finanses.list_expenses_budgets_for_budget(budget)
-    transactions = Finanses.list_transactions(budget.begin_at, budget.end_at)
+    all_transactions = Finanses.list_transactions(budget.begin_at, budget.end_at)
     budget = %Budget{budget | expenses_budgets: expenses_budgets}
 
-    kpi = Finanses.calculate_budget_kpi(budget, transactions)
+    kpi = Finanses.calculate_budget_kpi(budget, all_transactions)
+
+    transactions = Finanses.deposit_transactions(budget.begin_at, budget.end_at)
 
     render(
       conn,

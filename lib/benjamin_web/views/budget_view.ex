@@ -19,7 +19,7 @@ defmodule BenjaminWeb.BudgetView do
   }
 
   def month_nrb_to_name(month_nbr) when month_nbr in 1..12 do
-    name = Map.get @months, month_nbr
+    name = Map.get(@months, month_nbr)
     "#{name}"
   end
 
@@ -29,12 +29,11 @@ defmodule BenjaminWeb.BudgetView do
     |> Enum.into([{'------', nil}])
   end
 
-
   def month_to_select do
     Enum.map(@months, &{elem(&1, 1), elem(&1, 0)})
   end
 
   def year_to_select() do
-    Enum.reverse Budget.year_range
+    Enum.reverse(Budget.year_range())
   end
 end

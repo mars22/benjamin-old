@@ -23,7 +23,6 @@
 </br>
 
 <h3>Listing transactions</h3>
-<%= link "Add transaction", to: saving_transaction_path(@conn, :new, @saving), class: "btn btn-primary" %>
 </br>
 </br>
 <table class="table">
@@ -46,8 +45,6 @@
       <td><%= transaction.description %></td>
 
       <td class="text-right">
-        <span><%= link "Edit", to: saving_transaction_path(@conn, :edit, @saving, transaction), class: "btn btn-default btn-xs" %></span>
-        <span><%= link "Delete", to: saving_transaction_path(@conn, :delete, @saving, transaction), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger btn-xs" %></span>
       </td>
     </tr>
 <% end %>

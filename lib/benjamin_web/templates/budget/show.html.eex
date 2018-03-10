@@ -76,7 +76,9 @@
 <%= if is_active_tab(@conn, :incomes) == "active" do %>
 <div class="card border">
   <div class="card-header">
-    <strong>Incomes</strong> <%= link "New Income", to: budget_income_path(@conn, :new, @budget), class: "btn btn-primary float-right"  %>
+    <strong>Incomes</strong>
+    <%= link "New Income", to: budget_income_path(@conn, :new, @budget), class: "btn btn-primary float-right"  %>
+    <%= link "Add From Savings", to: budget_transaction_path(@conn, :new, @budget,type: "withdraw"), class: "btn btn-primary float-right"  %>
   </div>
   <div class="card-body">
 
@@ -187,7 +189,7 @@
 <%= if is_active_tab(@conn, :savings) == "active" do %>
 <div class="card border">
   <div class="card-header">
-    <strong>Savings</strong>
+    <strong>Savings</strong><%= link "Add Saving", to: budget_transaction_path(@conn, :new, @budget, type: "deposit"), class: "btn btn-primary float-right"  %>
   </div>
   <div class="card-body">
     <table class="table">
@@ -195,7 +197,7 @@
         <tr>
           <th>Date</th>
           <th>Amount</th>
-          <th>Type</th>
+          <th>Savig</th>
           <th>Description</th>
 
           <th></th>
@@ -206,11 +208,11 @@
         <tr>
           <td><%= transaction.date %></td>
           <td><%= format_amount transaction.amount, @user_account.currency_name %></td>
-          <td><%= transaction.type %></td>
+          <td><%= transaction.saving.name %></td>
           <td><%= transaction.description %></td>
 
           <td class="text-right">
-            <span><%= link "Edit", to: saving_transaction_path(@conn, :edit, transaction.saving, transaction), class: "btn btn-default btn-xs" %></span>
+            <span><%= link "Edit", to: budget_transaction_path(@conn, :edit, @budget, transaction), class: "btn btn-default btn-xs" %></span>
           </td>
         </tr>
     <% end %>

@@ -1154,6 +1154,20 @@ defmodule Benjamin.Finanses do
     |> Repo.preload(:saving)
   end
 
+  def deposit_transactions(from, to) do
+    query =
+      from(
+        t in Transaction,
+        where: t.type == "deposit",
+        where: t.date >= ^from,
+        where: t.date <= ^to
+      )
+
+    query
+    |> Repo.all()
+    |> Repo.preload(:saving)
+  end
+
   @doc """
   Gets a single transaction.
 
