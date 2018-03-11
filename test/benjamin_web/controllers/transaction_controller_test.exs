@@ -81,7 +81,7 @@ defmodule BenjaminWeb.TransactionControllerTest do
       conn =
         put(
           conn,
-          budget_transaction_path(conn, :update, budget, transaction),
+          budget_transaction_path(conn, :update, budget.id, transaction.id),
           transaction: @invalid_attrs
         )
 
@@ -114,7 +114,8 @@ defmodule BenjaminWeb.TransactionControllerTest do
         account_id: user.account_id,
         saving: saving,
         date: budget.begin_at,
-        type: "deposit"
+        type: "deposit",
+        budget_id: budget.id
       )
 
     {:ok, transaction: transaction}

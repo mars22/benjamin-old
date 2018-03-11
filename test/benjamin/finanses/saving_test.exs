@@ -92,7 +92,7 @@ defmodule Benjamin.Finanses.SavingTest do
           budget_id: budget.id
         )
 
-      transaction = Finanses.get_transaction!(transaction.id)
+      transaction = Finanses.get_transaction!(account.id, transaction.id)
       {:ok, saving: saving, budget: budget, transaction: transaction}
     end
 
@@ -100,8 +100,11 @@ defmodule Benjamin.Finanses.SavingTest do
       assert Finanses.list_transactions() == [transaction]
     end
 
-    test "get_transaction!/1 returns the transaction with given id", %{transaction: transaction} do
-      assert Finanses.get_transaction!(transaction.id) == transaction
+    test "get_transaction!/1 returns the transaction with given id", %{
+      account: account,
+      transaction: transaction
+    } do
+      assert Finanses.get_transaction!(account.id, transaction.id) == transaction
     end
 
     test "create_transaction/1 with valid data creates a transaction", %{
@@ -136,17 +139,24 @@ defmodule Benjamin.Finanses.SavingTest do
     end
 
     test "update_transaction/2 with invalid data returns error changeset", %{
-      transaction: transaction
+      transaction: transaction,
+      account: account
     } do
       assert {:error, %Ecto.Changeset{}} =
                Finanses.update_transaction(transaction, @invalid_attrs)
 
-      assert transaction == Finanses.get_transaction!(transaction.id)
+      assert transaction == Finanses.get_transaction!(account.id, transaction.id)
     end
 
-    test "delete_transaction/1 deletes the transaction", %{transaction: transaction} do
+    test "delete_transaction/1 deletes the transaction", %{
+      account: account,
+      transaction: transaction
+    } do
       assert {:ok, %Transaction{}} = Finanses.delete_transaction(transaction)
-      assert_raise Ecto.NoResultsError, fn -> Finanses.get_transaction!(transaction.id) end
+
+      assert_raise Ecto.NoResultsError, fn ->
+        Finanses.get_transaction!(account.id, transaction.id)
+      end
     end
 
     test "change_transaction/1 returns a transaction changeset", %{transaction: transaction} do

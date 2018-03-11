@@ -37,7 +37,8 @@ defmodule BenjaminWeb.TransactionController do
   end
 
   def edit(conn, %{"id" => id, "budget_id" => budget_id}) do
-    transaction = Finanses.get_transaction!(id)
+    account_id = get_account_id(conn)
+    transaction = Finanses.get_transaction!(account_id, id)
     changeset = Finanses.change_transaction(transaction)
     form_data = form_data(conn, budget_id, transaction.type)
 
@@ -49,7 +50,8 @@ defmodule BenjaminWeb.TransactionController do
   end
 
   def update(conn, %{"id" => id, "transaction" => transaction_params, "budget_id" => budget_id}) do
-    transaction = Finanses.get_transaction!(id)
+    account_id = get_account_id(conn)
+    transaction = Finanses.get_transaction!(account_id, id)
 
     case Finanses.update_transaction(transaction, transaction_params) do
       {:ok, transaction} ->
@@ -64,7 +66,8 @@ defmodule BenjaminWeb.TransactionController do
   end
 
   def delete(conn, %{"id" => id, "budget_id" => budget_id}) do
-    transaction = Finanses.get_transaction!(id)
+    account_id = get_account_id(conn)
+    transaction = Finanses.get_transaction!(account_id, id)
     {:ok, _transaction} = Finanses.delete_transaction(transaction)
 
     conn

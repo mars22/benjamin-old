@@ -1171,7 +1171,16 @@ defmodule Benjamin.Finanses do
       ** (Ecto.NoResultsError)
 
   """
-  def get_transaction!(id), do: Repo.get!(Transaction, id)
+  def get_transaction!(account_id, id) do
+    query =
+      from(
+        t in Transaction,
+        where: t.account_id == ^account_id,
+        where: t.id == ^id
+      )
+
+    Repo.one!(query)
+  end
 
   @doc """
   Creates a transaction.
