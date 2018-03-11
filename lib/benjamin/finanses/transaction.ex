@@ -3,17 +3,18 @@ defmodule Benjamin.Finanses.Transaction do
   import Ecto.Changeset
   alias Benjamin.Accounts.Account
 
-  alias Benjamin.Finanses.{Saving, Transaction}
+  alias Benjamin.Finanses.{Budget, Saving, Transaction}
 
   @types ~w(deposit withdraw)
 
   schema "transactions" do
-    field :amount, :decimal
-    field :date, :date
-    field :description, :string
-    field :type, :string
-    belongs_to :saving, Saving
-    belongs_to :account, Account
+    field(:amount, :decimal)
+    field(:date, :date)
+    field(:description, :string)
+    field(:type, :string)
+    belongs_to(:saving, Saving)
+    belongs_to(:budget, Budget)
+    belongs_to(:account, Account)
 
     timestamps()
   end
@@ -33,12 +34,12 @@ defmodule Benjamin.Finanses.Transaction do
   def sum_deposits(transactions) do
     transactions
     |> Enum.filter(&(&1.type == "deposit"))
-    |> Enum.reduce(Decimal.new(0), &(Decimal.add(&1.amount, &2)))
+    |> Enum.reduce(Decimal.new(0), &Decimal.add(&1.amount, &2))
   end
 
   def sum_withdraws(transactions) do
     transactions
     |> Enum.filter(&(&1.type == "withdraw"))
-    |> Enum.reduce(Decimal.new(0), &(Decimal.add(&1.amount, &2)))
+    |> Enum.reduce(Decimal.new(0), &Decimal.add(&1.amount, &2))
   end
 end

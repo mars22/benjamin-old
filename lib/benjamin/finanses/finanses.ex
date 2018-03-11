@@ -113,9 +113,25 @@ defmodule Benjamin.Finanses do
 
   """
   def get_budget_with_related!(account_id, id) do
+    deposits_query =
+      from(
+        t in Transaction,
+        where: t.type == "deposit",
+        preload: [:saving]
+      )
+
+    withdraws_query =
+      from(
+        t in Transaction,
+        where: t.type == "withdraw",
+        preload: [:saving]
+      )
+
     budget =
       get_budget!(account_id, id)
       |> Repo.preload(:incomes)
+      |> Repo.preload(deposits: deposits_query)
+      |> Repo.preload(withdraws: withdraws_query)
       |> Repo.preload(bills: [:category])
 
     incomes =
@@ -274,14 +290,14 @@ defmodule Benjamin.Finanses do
     Budget.create_changeset(budget, %{})
   end
 
-  def calculate_budget_kpi(budget, transactions) do
+  def calculate_budget_kpi(budget) do
     total_incomes = Budget.sum_incomes(budget)
     bills_planned = Budget.sum_planned_bills(budget)
     bills = Budget.sum_real_bills(budget)
     expenses_budgets_planned = Budget.sum_planned_expenses(budget)
     expenses_budgets = Budget.sum_real_expenses(budget)
 
-    sum_deposits = Transaction.sum_deposits(transactions)
+    sum_deposits = Transaction.sum_deposits(budget.deposits)
     all_planned_outcomes = Decimal.add(bills_planned, expenses_budgets_planned)
     saves_planned = Decimal.sub(total_incomes, all_planned_outcomes)
     all_expenses = Decimal.add(bills, expenses_budgets)
@@ -1154,20 +1170,6 @@ defmodule Benjamin.Finanses do
     |> Repo.preload(:saving)
   end
 
-  def deposit_transactions(from, to) do
-    query =
-      from(
-        t in Transaction,
-        where: t.type == "deposit",
-        where: t.date >= ^from,
-        where: t.date <= ^to
-      )
-
-    query
-    |> Repo.all()
-    |> Repo.preload(:saving)
-  end
-
   @doc """
   Gets a single transaction.
 
@@ -1197,36 +1199,10 @@ defmodule Benjamin.Finanses do
 
   """
   def create_transaction(attrs \\ %{}) do
-    Multi.new()
-    |> Multi.insert(:transaction, Transaction.changeset(%Transaction{}, attrs))
-    |> Multi.run(:income, &create_income_for_transaction/1)
-    |> Repo.transaction()
-    |> case do
-      {:error, :transaction, %Ecto.Changeset{} = changeset, _} -> {:error, changeset}
-      {:ok, %{transaction: transaction}} -> {:ok, transaction}
-    end
+    %Transaction{}
+    |> Transaction.changeset(attrs)
+    |> Repo.insert()
   end
-
-  defp create_income_for_transaction(%{transaction: %Transaction{type: "withdraw"} = transaction}) do
-    case get_budget_by_date(transaction.date) do
-      %Budget{id: budget_id, account_id: account_id} ->
-        attrs = %{
-          date: transaction.date,
-          budget_id: budget_id,
-          amount: transaction.amount,
-          description: transaction.description,
-          type: "savings",
-          account_id: account_id
-        }
-
-        create_income(attrs)
-
-      nil ->
-        {:ok, :noop}
-    end
-  end
-
-  defp create_income_for_transaction(%{transaction: _}), do: {:ok, :noop}
 
   @doc """
   Updates a transaction.

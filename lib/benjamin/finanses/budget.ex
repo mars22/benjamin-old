@@ -14,7 +14,7 @@ defmodule Benjamin.Finanses.Budget do
   import Ecto.Changeset
   alias Benjamin.Accounts.Account
 
-  alias Benjamin.Finanses.{Budget, Bill, Income, ExpenseBudget}
+  alias Benjamin.Finanses.{Budget, Bill, Income, ExpenseBudget, Transaction}
 
   schema "budgets" do
     field(:description, :string)
@@ -25,6 +25,8 @@ defmodule Benjamin.Finanses.Budget do
     has_many(:incomes, Income)
     has_many(:bills, Bill)
     has_many(:expenses_budgets, ExpenseBudget)
+    has_many(:deposits, Transaction)
+    has_many(:withdraws, Transaction)
     belongs_to(:account, Account)
 
     timestamps()
@@ -90,9 +92,11 @@ defmodule Benjamin.Finanses.Budget do
     |> put_change(:end_at, end_at)
   end
 
-  def sum_incomes(%{incomes: incomes}) do
-    incomes
-    |> Enum.reduce(Decimal.new(0), &Decimal.add(&1.amount, &2))
+  def sum_incomes(%{incomes: incomes, withdraws: withdraws}) do
+    all_incomes = incomes |> Enum.reduce(Decimal.new(0), &Decimal.add(&1.amount, &2))
+
+    all_withdraws = withdraws |> Enum.reduce(Decimal.new(0), &Decimal.add(&1.amount, &2))
+    Decimal.add(all_incomes, all_withdraws)
   end
 
   def sum_real_bills(%{bills: bills}) do

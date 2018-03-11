@@ -419,8 +419,6 @@ defmodule Benjamin.FinansesTest do
 
       expenses_budgets = Finanses.list_expenses_budgets_for_budget(budget)
 
-      budget = %Budget{budget | expenses_budgets: expenses_budgets}
-
       saving = Factory.insert!(:saving, account_id: account.id)
 
       transaction_deposit =
@@ -430,7 +428,8 @@ defmodule Benjamin.FinansesTest do
           saving_id: saving.id,
           amount: Decimal.new(200),
           type: "deposit",
-          date: budget.begin_at
+          date: budget.begin_at,
+          budget_id: budget.id
         )
 
       transaction_withdraw =
@@ -440,20 +439,23 @@ defmodule Benjamin.FinansesTest do
           saving_id: saving.id,
           amount: Decimal.new(50),
           type: "withdraw",
-          date: budget.begin_at
+          date: budget.begin_at,
+          budget_id: budget.id
         )
 
-      kpi = Finanses.calculate_budget_kpi(budget, [transaction_deposit, transaction_withdraw])
+      budget = Finanses.get_budget_with_related!(account.id, budget.id)
+      budget = %Budget{budget | expenses_budgets: expenses_budgets}
+      kpi = Finanses.calculate_budget_kpi(budget)
 
       expected_kpi = %{
-        total_incomes: Decimal.new(1000),
-        saves_planned: Decimal.new(700),
+        total_incomes: Decimal.new(1050),
+        saves_planned: Decimal.new(750),
         saved: Decimal.new(200),
         bills_planned: Decimal.new(200),
         bills: Decimal.new(220),
         expenses_budgets_planned: Decimal.new(100),
         expenses_budgets: Decimal.new(50),
-        balance: Decimal.new(530)
+        balance: Decimal.new(580)
       }
 
       assert expected_kpi == kpi

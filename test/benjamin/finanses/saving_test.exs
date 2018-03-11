@@ -117,57 +117,6 @@ defmodule Benjamin.Finanses.SavingTest do
       assert transaction.type == "deposit"
     end
 
-    test "create_transaction/1 with type withdraw creates income in budget", %{
-      account: account,
-      saving: saving
-    } do
-      budget = Factory.insert!(:budget, account_id: account.id)
-
-      attrs = %{
-        amount: "120.5",
-        date: budget.begin_at,
-        description: "some description",
-        type: "withdraw",
-        saving_id: saving.id,
-        account_id: account.id
-      }
-
-      assert {:ok, %Transaction{} = transaction} = Finanses.create_transaction(attrs)
-      assert transaction.amount == Decimal.new("120.5")
-      assert transaction.date == budget.begin_at
-      assert transaction.description == "some description"
-      assert transaction.type == "withdraw"
-
-      %Budget{incomes: [income]} = Finanses.get_budget_with_related!(account.id, budget.id)
-      assert income.type == "savings"
-      assert income.description == "some description"
-      assert income.amount == Decimal.new("120.5")
-    end
-
-    test "create_transaction/1 with type deposit doesn't creates income in budget", %{
-      account: account,
-      saving: saving
-    } do
-      budget = Factory.insert!(:budget, account_id: account.id)
-
-      attrs = %{
-        amount: "10000",
-        date: budget.begin_at,
-        description: "Deposit description",
-        type: "deposit",
-        saving_id: saving.id,
-        account_id: account.id
-      }
-
-      assert {:ok, %Transaction{} = transaction} = Finanses.create_transaction(attrs)
-      assert transaction.amount == Decimal.new("10000")
-      assert transaction.date == budget.begin_at
-      assert transaction.description == "Deposit description"
-      assert transaction.type == "deposit"
-
-      %Budget{incomes: []} = Finanses.get_budget_with_related!(account.id, budget.id)
-    end
-
     test "create_transaction/1 with invalid data returns error changeset" do
       assert {:error, %Ecto.Changeset{}} = Finanses.create_transaction(@invalid_attrs)
     end
