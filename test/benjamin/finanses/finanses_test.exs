@@ -421,27 +421,25 @@ defmodule Benjamin.FinansesTest do
 
       saving = Factory.insert!(:saving, account_id: account.id)
 
-      transaction_deposit =
-        Factory.insert!(
-          :transaction,
-          account_id: account.id,
-          saving_id: saving.id,
-          amount: Decimal.new(200),
-          type: "deposit",
-          date: budget.begin_at,
-          budget_id: budget.id
-        )
+      Factory.insert!(
+        :transaction,
+        account_id: account.id,
+        saving_id: saving.id,
+        amount: Decimal.new(200),
+        type: "deposit",
+        date: budget.begin_at,
+        budget_id: budget.id
+      )
 
-      transaction_withdraw =
-        Factory.insert!(
-          :transaction,
-          account_id: account.id,
-          saving_id: saving.id,
-          amount: Decimal.new(50),
-          type: "withdraw",
-          date: budget.begin_at,
-          budget_id: budget.id
-        )
+      Factory.insert!(
+        :transaction,
+        account_id: account.id,
+        saving_id: saving.id,
+        amount: Decimal.new(50),
+        type: "withdraw",
+        date: budget.begin_at,
+        budget_id: budget.id
+      )
 
       budget = Finanses.get_budget_with_related!(account.id, budget.id)
       budget = %Budget{budget | expenses_budgets: expenses_budgets}

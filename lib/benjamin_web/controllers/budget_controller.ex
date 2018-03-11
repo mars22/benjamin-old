@@ -79,6 +79,8 @@ defmodule BenjaminWeb.BudgetController do
       "show.html",
       budget: budget,
       expenses: expenses,
+      deposits: Budget.deposits(budget),
+      withdraws: Budget.withdraws(budget),
       kpi: kpi
     )
   end

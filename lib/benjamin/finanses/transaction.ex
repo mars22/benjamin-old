@@ -22,8 +22,8 @@ defmodule Benjamin.Finanses.Transaction do
   @doc false
   def changeset(%Transaction{} = transaction, attrs) do
     transaction
-    |> cast(attrs, [:date, :amount, :type, :description, :saving_id, :account_id])
-    |> validate_required([:date, :amount, :type, :saving_id, :account_id])
+    |> cast(attrs, [:date, :amount, :type, :description, :saving_id, :budget_id, :account_id])
+    |> validate_required([:date, :amount, :type, :saving_id, :budget_id, :account_id])
     |> validate_inclusion(:type, @types)
   end
 
@@ -31,15 +31,18 @@ defmodule Benjamin.Finanses.Transaction do
     @types
   end
 
+  def deposits(transactions), do: Enum.filter(transactions, &(&1.type == "deposit"))
+  def withdraws(transactions), do: Enum.filter(transactions, &(&1.type == "withdraw"))
+
   def sum_deposits(transactions) do
     transactions
-    |> Enum.filter(&(&1.type == "deposit"))
+    |> deposits
     |> Enum.reduce(Decimal.new(0), &Decimal.add(&1.amount, &2))
   end
 
   def sum_withdraws(transactions) do
     transactions
-    |> Enum.filter(&(&1.type == "withdraw"))
+    |> withdraws
     |> Enum.reduce(Decimal.new(0), &Decimal.add(&1.amount, &2))
   end
 end

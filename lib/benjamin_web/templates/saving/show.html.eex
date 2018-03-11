@@ -16,35 +16,31 @@
         <strong>End at:</strong>
         <%= @saving.end_at %>
       </p>
-      <%= link "Edit", to: saving_path(@conn, :edit, @saving), class: "btn btn-primary" %>
-      <%= link "Delete", to: saving_path(@conn, :delete, @saving), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger btn-xs" %>
   </div>
 </div>
 </br>
 
-<h3>Listing transactions</h3>
+<h3>Transactions history</h3>
 </br>
 </br>
 <table class="table">
   <thead>
     <tr>
       <th>Date</th>
+      <th>Budget</th>
       <th>Amount</th>
       <th>Type</th>
       <th>Description</th>
-
-      <th></th>
     </tr>
   </thead>
   <tbody>
 <%= for transaction <- @saving.transactions do %>
     <tr>
       <td><%= transaction.date %></td>
+      <td> <%= link transaction.budget, to: budget_path(@conn, :show, transaction.budget)%></td>
       <td><%= transaction.amount %></td>
       <td><%= transaction.type %></td>
       <td><%= transaction.description %></td>
-
-      <td class="text-right">
       </td>
     </tr>
 <% end %>

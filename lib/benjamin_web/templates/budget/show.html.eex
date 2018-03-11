@@ -133,7 +133,7 @@
           </tr>
         </thead>
         <tbody>
-      <%= for transaction <- @budget.withdraws do %>
+      <%= for transaction <- @withdraws do %>
           <tr>
             <td><%= format_date transaction.date %></td>
             <td><%= transaction.saving.name %></td>
@@ -240,7 +240,7 @@
         </tr>
       </thead>
       <tbody>
-    <%= for transaction <- @budget.deposits do %>
+    <%= for transaction <- @deposits do %>
         <tr>
           <td><%= transaction.date %></td>
           <td><%= format_amount transaction.amount, @user_account.currency_name %></td>

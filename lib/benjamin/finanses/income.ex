@@ -5,20 +5,19 @@ defmodule Benjamin.Finanses.Income do
 
   alias Benjamin.Finanses.{Income, Budget}
 
-  @types ~w(salary invoice savings other)
-
+  @types ~w(salary invoice other)
 
   schema "incomes" do
-    field :amount, :decimal
-    field :date, :date
-    field :description, :string
-    field :type, :string
-    field :vat, :decimal, default: Decimal.new(23)
-    field :tax, :decimal, default: Decimal.new(18)
-    field :vat_amount, :decimal, virtual: true
-    field :tax_amount, :decimal, virtual: true
-    belongs_to :budget, Budget
-    belongs_to :account, Account
+    field(:amount, :decimal)
+    field(:date, :date)
+    field(:description, :string)
+    field(:type, :string)
+    field(:vat, :decimal, default: Decimal.new(23))
+    field(:tax, :decimal, default: Decimal.new(18))
+    field(:vat_amount, :decimal, virtual: true)
+    field(:tax_amount, :decimal, virtual: true)
+    belongs_to(:budget, Budget)
+    belongs_to(:account, Account)
 
     timestamps()
   end
@@ -68,8 +67,11 @@ defmodule Benjamin.Finanses.Income do
 
   def add_taxes(%Income{} = income) do
     case income.type == "invoice" do
-      true -> %Income{income | vat_amount: calculate_vat(income), tax_amount: calculate_tax(income)}
-      false -> income
+      true ->
+        %Income{income | vat_amount: calculate_vat(income), tax_amount: calculate_tax(income)}
+
+      false ->
+        income
     end
   end
 end

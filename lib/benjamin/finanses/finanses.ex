@@ -113,25 +113,12 @@ defmodule Benjamin.Finanses do
 
   """
   def get_budget_with_related!(account_id, id) do
-    deposits_query =
-      from(
-        t in Transaction,
-        where: t.type == "deposit",
-        preload: [:saving]
-      )
-
-    withdraws_query =
-      from(
-        t in Transaction,
-        where: t.type == "withdraw",
-        preload: [:saving]
-      )
+    budget = get_budget!(account_id, id)
 
     budget =
-      get_budget!(account_id, id)
+      budget
       |> Repo.preload(:incomes)
-      |> Repo.preload(deposits: deposits_query)
-      |> Repo.preload(withdraws: withdraws_query)
+      |> Repo.preload(transactions: [:saving])
       |> Repo.preload(bills: [:category])
 
     incomes =
@@ -297,7 +284,7 @@ defmodule Benjamin.Finanses do
     expenses_budgets_planned = Budget.sum_planned_expenses(budget)
     expenses_budgets = Budget.sum_real_expenses(budget)
 
-    sum_deposits = Transaction.sum_deposits(budget.deposits)
+    sum_deposits = Transaction.sum_deposits(budget.transactions)
     all_planned_outcomes = Decimal.add(bills_planned, expenses_budgets_planned)
     saves_planned = Decimal.sub(total_incomes, all_planned_outcomes)
     all_expenses = Decimal.add(bills, expenses_budgets)
@@ -1072,7 +1059,7 @@ defmodule Benjamin.Finanses do
     saving =
       Saving
       |> Repo.get!(id)
-      |> Repo.preload(:transactions)
+      |> Repo.preload(transactions: [:budget])
 
     %Saving{saving | total_amount: Saving.sum_transactions(saving.transactions)}
   end

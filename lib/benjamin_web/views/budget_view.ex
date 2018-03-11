@@ -1,6 +1,5 @@
 defmodule BenjaminWeb.BudgetView do
   use BenjaminWeb, :view
-
   alias Benjamin.Finanses.Budget
 
   @months %{
@@ -35,5 +34,28 @@ defmodule BenjaminWeb.BudgetView do
 
   def year_to_select() do
     Enum.reverse(Budget.year_range())
+  end
+
+  def months_map(), do: @months
+
+  defimpl Phoenix.HTML.Safe, for: Budget do
+    def to_iodata(budget) do
+      months = %{
+        1 => "January",
+        2 => "February",
+        3 => "March",
+        4 => "April",
+        5 => "May",
+        6 => "June",
+        7 => "July",
+        8 => "August",
+        9 => "September",
+        10 => "October",
+        11 => "November",
+        12 => "December"
+      }
+
+      "#{Map.get(months, budget.month)} - #{budget.year}"
+    end
   end
 end

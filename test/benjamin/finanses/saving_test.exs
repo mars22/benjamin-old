@@ -64,7 +64,7 @@ defmodule Benjamin.Finanses.SavingTest do
   end
 
   describe "transactions" do
-    alias Benjamin.Finanses.{Budget, Transaction}
+    alias Benjamin.Finanses.{Transaction}
 
     @valid_attrs %{
       amount: "120.5",
@@ -82,24 +82,25 @@ defmodule Benjamin.Finanses.SavingTest do
 
     setup %{account: account} do
       saving = Factory.insert!(:saving, account_id: account.id)
-      {:ok, saving: saving}
-    end
+      budget = Factory.insert!(:budget, account_id: account.id, month: 12)
 
-    def transaction_fixture(account_id) do
-      saving = Factory.insert!(:saving, account_id: account_id)
-      transaction = Factory.insert!(:transaction, account_id: account_id, saving: saving)
+      transaction =
+        Factory.insert!(
+          :transaction,
+          account_id: account.id,
+          saving: saving,
+          budget_id: budget.id
+        )
+
       transaction = Finanses.get_transaction!(transaction.id)
-      {:ok, transaction: transaction}
-      transaction
+      {:ok, saving: saving, budget: budget, transaction: transaction}
     end
 
-    test "list_transactions/0 returns all transactions", %{account: account} do
-      transaction = transaction_fixture(account.id)
+    test "list_transactions/0 returns all transactions", %{transaction: transaction} do
       assert Finanses.list_transactions() == [transaction]
     end
 
-    test "get_transaction!/1 returns the transaction with given id", %{account: account} do
-      transaction = transaction_fixture(account.id)
+    test "get_transaction!/1 returns the transaction with given id", %{transaction: transaction} do
       assert Finanses.get_transaction!(transaction.id) == transaction
     end
 
@@ -107,8 +108,10 @@ defmodule Benjamin.Finanses.SavingTest do
       account: account,
       saving: saving
     } do
+      budget = Factory.insert!(:budget, account_id: account.id)
       attrs = Map.put(@valid_attrs, :saving_id, saving.id)
       attrs = Map.put(attrs, :account_id, account.id)
+      attrs = Map.put(attrs, :budget_id, budget.id)
 
       assert {:ok, %Transaction{} = transaction} = Finanses.create_transaction(attrs)
       assert transaction.amount == Decimal.new("120.5")
@@ -121,8 +124,9 @@ defmodule Benjamin.Finanses.SavingTest do
       assert {:error, %Ecto.Changeset{}} = Finanses.create_transaction(@invalid_attrs)
     end
 
-    test "update_transaction/2 with valid data updates the transaction", %{account: account} do
-      transaction = transaction_fixture(account.id)
+    test "update_transaction/2 with valid data updates the transaction", %{
+      transaction: transaction
+    } do
       assert {:ok, transaction} = Finanses.update_transaction(transaction, @update_attrs)
       assert %Transaction{} = transaction
       assert transaction.amount == Decimal.new("456.7")
@@ -131,23 +135,21 @@ defmodule Benjamin.Finanses.SavingTest do
       assert transaction.type == "withdraw"
     end
 
-    test "update_transaction/2 with invalid data returns error changeset", %{account: account} do
-      transaction = transaction_fixture(account.id)
-
+    test "update_transaction/2 with invalid data returns error changeset", %{
+      transaction: transaction
+    } do
       assert {:error, %Ecto.Changeset{}} =
                Finanses.update_transaction(transaction, @invalid_attrs)
 
       assert transaction == Finanses.get_transaction!(transaction.id)
     end
 
-    test "delete_transaction/1 deletes the transaction", %{account: account} do
-      transaction = transaction_fixture(account.id)
+    test "delete_transaction/1 deletes the transaction", %{transaction: transaction} do
       assert {:ok, %Transaction{}} = Finanses.delete_transaction(transaction)
       assert_raise Ecto.NoResultsError, fn -> Finanses.get_transaction!(transaction.id) end
     end
 
-    test "change_transaction/1 returns a transaction changeset", %{account: account} do
-      transaction = transaction_fixture(account.id)
+    test "change_transaction/1 returns a transaction changeset", %{transaction: transaction} do
       assert %Ecto.Changeset{} = Finanses.change_transaction(transaction)
     end
   end

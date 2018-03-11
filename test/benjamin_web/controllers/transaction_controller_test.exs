@@ -3,12 +3,6 @@ defmodule BenjaminWeb.TransactionControllerTest do
 
   alias Benjamin.Finanses.Factory
 
-  @update_attrs %{
-    amount: "456.7",
-    date: ~D[2011-05-18],
-    description: "some updated description",
-    type: "withdraw"
-  }
   @invalid_attrs %{amount: nil, date: nil, description: nil, type: "deposit"}
 
   setup %{user: user} do
@@ -20,7 +14,7 @@ defmodule BenjaminWeb.TransactionControllerTest do
   setup :login_user
 
   describe "new transaction" do
-    test "renders form", %{conn: conn, budget: budget, saving: saving} do
+    test "renders form", %{conn: conn, budget: budget} do
       conn = get(conn, budget_transaction_path(conn, :new, budget, type: "deposit"))
       assert html_response(conn, 200) =~ "Deposit"
     end
@@ -55,7 +49,7 @@ defmodule BenjaminWeb.TransactionControllerTest do
       assert html_response(conn, 200) =~ "Transaction created successfully."
     end
 
-    test "renders errors when data is invalid", %{conn: conn, saving: saving, budget: budget} do
+    test "renders errors when data is invalid", %{conn: conn, budget: budget} do
       conn =
         post(conn, budget_transaction_path(conn, :create, budget), transaction: @invalid_attrs)
 
@@ -68,7 +62,6 @@ defmodule BenjaminWeb.TransactionControllerTest do
 
     test "renders form for editing chosen transaction", %{
       conn: conn,
-      saving: saving,
       budget: budget,
       transaction: transaction
     } do
@@ -82,7 +75,6 @@ defmodule BenjaminWeb.TransactionControllerTest do
 
     test "renders errors when data is invalid", %{
       conn: conn,
-      saving: saving,
       transaction: transaction,
       budget: budget
     } do
@@ -102,7 +94,6 @@ defmodule BenjaminWeb.TransactionControllerTest do
 
     test "deletes chosen transaction", %{
       conn: conn,
-      saving: saving,
       budget: budget,
       transaction: transaction
     } do

@@ -1,7 +1,8 @@
 defmodule BenjaminWeb.ViewHelpers do
   import Number.Currency
 
-  def is_active(%Plug.Conn{} = conn, helper_fun, path) when is_atom(helper_fun) and is_atom(path) do
+  def is_active(%Plug.Conn{} = conn, helper_fun, path)
+      when is_atom(helper_fun) and is_atom(path) do
     if conn.request_path == apply(BenjaminWeb.Router.Helpers, helper_fun, [conn, path]) do
       "active"
     else
@@ -11,6 +12,7 @@ defmodule BenjaminWeb.ViewHelpers do
 
   def is_active_tab(%Plug.Conn{} = conn, current \\ :empty) do
     current = Atom.to_string(current)
+
     case String.split(conn.query_string, "=") do
       ["tab", tab] when tab == current -> "active"
       ["tab", ""] when current == "incomes" -> "active"
@@ -21,12 +23,12 @@ defmodule BenjaminWeb.ViewHelpers do
     end
   end
 
-
-  def format_amount(amount, currency \\ "$"), do: number_to_currency amount, unit: currency
+  def format_amount(amount, currency \\ "$"), do: number_to_currency(amount, unit: currency)
 
   def selected_value(nil, _id), do: ""
   def selected_value([], _id), do: ""
-  def selected_value([_|_] = coll, id, key \\ :name) do
+
+  def selected_value([_ | _] = coll, id, key \\ :name) do
     coll
     |> Enum.find(&(&1.id == id))
     |> case do

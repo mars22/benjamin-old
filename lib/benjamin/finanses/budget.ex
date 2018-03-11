@@ -25,8 +25,7 @@ defmodule Benjamin.Finanses.Budget do
     has_many(:incomes, Income)
     has_many(:bills, Bill)
     has_many(:expenses_budgets, ExpenseBudget)
-    has_many(:deposits, Transaction)
-    has_many(:withdraws, Transaction)
+    has_many(:transactions, Transaction)
     belongs_to(:account, Account)
 
     timestamps()
@@ -92,12 +91,14 @@ defmodule Benjamin.Finanses.Budget do
     |> put_change(:end_at, end_at)
   end
 
-  def sum_incomes(%{incomes: incomes, withdraws: withdraws}) do
+  def sum_incomes(%{incomes: incomes, transactions: transactions}) do
     all_incomes = incomes |> Enum.reduce(Decimal.new(0), &Decimal.add(&1.amount, &2))
-
-    all_withdraws = withdraws |> Enum.reduce(Decimal.new(0), &Decimal.add(&1.amount, &2))
+    all_withdraws = Transaction.sum_withdraws(transactions)
     Decimal.add(all_incomes, all_withdraws)
   end
+
+  def withdraws(%__MODULE__{transactions: transactions}), do: Transaction.withdraws(transactions)
+  def deposits(%__MODULE__{transactions: transactions}), do: Transaction.deposits(transactions)
 
   def sum_real_bills(%{bills: bills}) do
     bills
