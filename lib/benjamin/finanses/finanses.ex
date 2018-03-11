@@ -1026,12 +1026,13 @@ defmodule Benjamin.Finanses do
 
   ## Examples
 
-      iex> list_savings()
+      iex> list_savings(account_id)
       [%Saving{}, ...]
 
   """
-  def list_savings do
+  def list_savings(account_id) do
     Saving
+    |> where(account_id: ^account_id)
     |> Repo.all()
     |> Repo.preload(:transactions)
     |> Enum.map(&%Saving{&1 | total_amount: Saving.sum_transactions(&1.transactions)})
@@ -1048,17 +1049,24 @@ defmodule Benjamin.Finanses do
 
   ## Examples
 
-      iex> get_saving!(123)
+      iex> get_saving!(1, 123)
       %Saving{}
 
-      iex> get_saving!(456)
+      iex> get_saving!(1, 456)
       ** (Ecto.NoResultsError)
 
   """
-  def get_saving!(id) do
+  def get_saving!(account_id, id) do
+    query =
+      from(
+        s in Saving,
+        where: s.account_id == ^account_id,
+        where: s.id == ^id
+      )
+
     saving =
-      Saving
-      |> Repo.get!(id)
+      query
+      |> Repo.one!()
       |> Repo.preload(transactions: [:budget])
 
     %Saving{saving | total_amount: Saving.sum_transactions(saving.transactions)}
@@ -1101,7 +1109,7 @@ defmodule Benjamin.Finanses do
   end
 
   @doc """
-  Deletes a Saving.
+  Deletes a Saving only if doesn't contains any transactions.
 
   ## Examples
 
@@ -1113,7 +1121,11 @@ defmodule Benjamin.Finanses do
 
   """
   def delete_saving(%Saving{} = saving) do
-    Repo.delete(saving)
+    if Enum.empty?(list_transactions(saving)) do
+      Repo.delete(saving)
+    else
+      {:error, "Contains transactions"}
+    end
   end
 
   @doc """
@@ -1140,7 +1152,7 @@ defmodule Benjamin.Finanses do
       [%Transaction{}, ...]
 
   """
-  def list_transactions do
+  def list_transactions() do
     Repo.all(Transaction)
   end
 
@@ -1155,6 +1167,18 @@ defmodule Benjamin.Finanses do
     query
     |> Repo.all()
     |> Repo.preload(:saving)
+  end
+
+  def list_transactions(%Saving{} = saving) do
+    query =
+      from(
+        t in Transaction,
+        where: t.account_id == ^saving.account_id,
+        where: t.saving_id == ^saving.id
+      )
+
+    query
+    |> Repo.all()
   end
 
   @doc """

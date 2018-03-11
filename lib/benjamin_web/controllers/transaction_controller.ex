@@ -98,7 +98,8 @@ defmodule BenjaminWeb.TransactionController do
   end
 
   def assign_list_of_savings(conn, _opts) do
-    assign(conn, :list_of_savings, Finanses.list_savings())
+    accoun_id = get_account_id(conn)
+    assign(conn, :list_of_savings, Finanses.list_savings(accoun_id))
   end
 
   def assing_budget(conn, _opts) do

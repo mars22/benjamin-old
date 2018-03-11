@@ -20,8 +20,8 @@ defmodule Benjamin.Finanses.SavingTest do
       {:ok, saving: saving}
     end
 
-    test "list_savings/0 returns all savings", %{saving: saving} do
-      [from_db] = Finanses.list_savings()
+    test "list_savings/0 returns all savings", %{account: account, saving: saving} do
+      [from_db] = Finanses.list_savings(account.id)
       assert from_db.id == saving.id
     end
 
@@ -47,9 +47,9 @@ defmodule Benjamin.Finanses.SavingTest do
       assert {:error, %Ecto.Changeset{}} = Finanses.update_saving(saving, @invalid_attrs)
     end
 
-    test "delete_saving/1 deletes the saving", %{saving: saving} do
+    test "delete_saving/1 deletes the saving", %{account: account, saving: saving} do
       assert {:ok, %Saving{}} = Finanses.delete_saving(saving)
-      assert_raise Ecto.NoResultsError, fn -> Finanses.get_saving!(saving.id) end
+      assert_raise Ecto.NoResultsError, fn -> Finanses.get_saving!(account.id, saving.id) end
     end
 
     test "sum_transactions return total amout" do
