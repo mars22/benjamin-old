@@ -20,7 +20,7 @@ defmodule BenjaminWeb.SavingController do
     saving_params = assign_account(conn, saving_params)
 
     case Finanses.create_saving(saving_params) do
-      {:ok, saving} ->
+      {:ok, _saving} ->
         conn
         |> put_flash(:info, "Saving created successfully.")
         |> redirect(to: saving_path(conn, :index))
