@@ -63,10 +63,8 @@ defmodule BenjaminWeb.BudgetController do
   end
 
   def show(conn, %{"id" => id}) do
-    budget =
-      conn
-      |> get_account_id
-      |> Finanses.get_budget_with_related!(id)
+    account_id = get_account_id(conn)
+    budget = Finanses.get_budget_with_related!(account_id, id)
 
     expenses = Finanses.list_expenses_for_budget(budget)
     expenses_budgets = Finanses.list_expenses_budgets_for_budget(budget)

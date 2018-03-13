@@ -5,13 +5,13 @@ defmodule BenjaminWeb.ExpenseController do
   alias Benjamin.Finanses.Expense
 
   def index(conn, params) do
-    expenses = Finanses.expenses_for_period(Map.get(params, "tab"))
+    expenses = Finanses.expenses_for_period(get_account_id(conn), Map.get(params, "tab"))
     sum_amount = Expense.sum_amount(expenses)
     render(conn, "index.html", expenses: expenses, sum_amount: sum_amount)
   end
 
   def new(conn, _params) do
-    categories = Finanses.list_expenses_categories()
+    categories = get_expenses_categories(conn)
     changeset = Finanses.change_expense(%Expense{date: Date.utc_today()})
     render(conn, "new.html", changeset: changeset, categories: categories)
   end
@@ -26,26 +26,26 @@ defmodule BenjaminWeb.ExpenseController do
         |> redirect(to: expense_path(conn, :index))
 
       {:error, changeset} ->
-        categories = Finanses.list_expenses_categories()
+        categories = get_expenses_categories(conn)
         render(conn, "new.html", changeset: changeset, categories: categories)
     end
   end
 
   def show(conn, %{"id" => id}) do
-    categories = Finanses.list_expenses_categories()
-    expense = Finanses.get_expense!(id)
+    categories = get_expenses_categories(conn)
+    expense = get_expense(conn, id)
     render(conn, "show.html", expense: expense, categories: categories)
   end
 
   def edit(conn, %{"id" => id}) do
-    categories = Finanses.list_expenses_categories()
-    expense = Finanses.get_expense!(id)
+    categories = get_expenses_categories(conn)
+    expense = get_expense(conn, id)
     changeset = Finanses.change_expense(expense)
     render(conn, "edit.html", changeset: changeset, expense: expense, categories: categories)
   end
 
   def update(conn, %{"id" => id, "expense" => expense_params}) do
-    expense = Finanses.get_expense!(id)
+    expense = get_expense(conn, id)
 
     case Finanses.update_expense(expense, expense_params) do
       {:ok, _} ->
@@ -54,17 +54,25 @@ defmodule BenjaminWeb.ExpenseController do
         |> redirect(to: expense_path(conn, :index))
 
       {:error, %Ecto.Changeset{} = changeset} ->
-        categories = Finanses.list_expenses_categories()
+        categories = get_expenses_categories(conn)
         render(conn, "edit.html", changeset: changeset, expense: expense, categories: categories)
     end
   end
 
   def delete(conn, %{"id" => id}) do
-    expense = Finanses.get_expense!(id)
+    expense = get_expense(conn, id)
     {:ok, _expense} = Finanses.delete_expense(expense)
 
     conn
     |> put_flash(:info, "Expense deleted successfully.")
     |> redirect(to: expense_path(conn, :index))
+  end
+
+  defp get_expense(conn, id) do
+    conn |> get_account_id() |> Finanses.get_expense!(id)
+  end
+
+  defp get_expenses_categories(conn) do
+    Finanses.list_expenses_categories(get_account_id(conn))
   end
 end

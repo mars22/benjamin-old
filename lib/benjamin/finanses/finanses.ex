@@ -399,7 +399,7 @@ defmodule Benjamin.Finanses do
       [%Bill{}, ...]
 
   """
-  def list_bills_for_budget(id) do
+  defp list_bills_for_budget(id) do
     Bill
     |> where(budget_id: ^id)
     |> Repo.all()
@@ -412,16 +412,18 @@ defmodule Benjamin.Finanses do
 
   ## Examples
 
-      iex> get_bill!(123)
+      iex> get_bill!(1,123)
       %Bill{}
 
       iex> get_bill!(456)
       ** (Ecto.NoResultsError)
 
   """
-  def get_bill!(id) do
+  def get_bill!(account_id, id) do
     Bill
-    |> Repo.get!(id)
+    |> where(account_id: ^account_id)
+    |> where(id: ^id)
+    |> Repo.one!()
     |> Repo.preload(:category)
   end
 
@@ -497,12 +499,14 @@ defmodule Benjamin.Finanses do
 
   ## Examples
 
-      iex> list_bill_categories()
+      iex> list_bill_categories(account_id)
       [%BillCategory{}, ...]
 
   """
-  def list_bill_categories do
-    Repo.all(BillCategory)
+  def list_bill_categories(account_id) do
+    BillCategory
+    |> where(account_id: ^account_id)
+    |> Repo.all()
   end
 
   @doc """
@@ -512,14 +516,19 @@ defmodule Benjamin.Finanses do
 
   ## Examples
 
-      iex> get_bill_category!(123)
+      iex> get_bill_category!(1,123)
       %BillCategory{}
 
       iex> get_bill_category!(456)
       ** (Ecto.NoResultsError)
 
   """
-  def get_bill_category!(id), do: Repo.get!(BillCategory, id)
+  def get_bill_category!(account_id, id) do
+    BillCategory
+    |> where(account_id: ^account_id)
+    |> where(id: ^id)
+    |> Repo.one!()
+  end
 
   @doc """
   Creates a bill_category.
@@ -593,12 +602,14 @@ defmodule Benjamin.Finanses do
 
   ## Examples
 
-      iex> list_expenses_categories()
+      iex> list_expenses_categories(acocunt_id)
       [%ExpenseCategory{}, ...]
 
   """
-  def list_expenses_categories do
-    Repo.all(ExpenseCategory)
+  def list_expenses_categories(account_id) do
+    ExpenseCategory
+    |> where(account_id: ^account_id)
+    |> Repo.all()
   end
 
   @doc """
@@ -608,15 +619,18 @@ defmodule Benjamin.Finanses do
 
   ## Examples
 
-      iex> get_expense_category!(123)
+      iex> get_expense_category!(1, 123)
       %ExpenseCategory{}
 
       iex> get_expense_category!(456)
       ** (Ecto.NoResultsError)
 
   """
-  def get_expense_category!(id) do
-    Repo.get!(ExpenseCategory, id)
+  def get_expense_category!(account_id, id) do
+    ExpenseCategory
+    |> where(account_id: ^account_id)
+    |> where(id: ^id)
+    |> Repo.one!()
   end
 
   @doc """
@@ -686,55 +700,33 @@ defmodule Benjamin.Finanses do
 
   alias Benjamin.Finanses.Expense
 
-  defp base_expenses_query do
+  defp base_expenses_query(account_id) do
     from(
       e in Expense,
       where: is_nil(e.parent_id),
+      where: e.account_id == ^account_id,
       order_by: [desc: e.date, desc: e.id],
       preload: [:category]
     )
   end
 
-  defp expenses_for_date_range(begin_at, end_at) do
+  defp expenses_for_date_range(account_id, begin_at, end_at) do
     from(
-      e in base_expenses_query(),
+      e in base_expenses_query(account_id),
       where: e.date >= ^begin_at,
       where: e.date <= ^end_at
     )
   end
 
-  @doc """
-  Returns the list of parent expenses.
-
-  ## Examples
-
-      iex> list_expenses()
-      [%Expense{}, ...]
-
-  """
-  def list_expenses do
-    base_expenses_query()
-    |> Repo.all()
-  end
-
-  @doc """
-  Returns the list of parent expenses.
-
-  ## Examples
-
-      iex> expenses_for_period()
-      [%Expense{}, ...]
-
-  """
-  def expenses_for_period(period) do
+  def expenses_for_period(account_id, period) do
     today = Date.utc_today()
     {begin_at, end_at} = Budget.date_range(today.year, today.month)
 
     query =
       case period do
-        "current_month" -> expenses_for_date_range(begin_at, end_at)
-        "all" -> base_expenses_query()
-        _ -> expenses_for_date_range(today, today)
+        "current_month" -> expenses_for_date_range(account_id, begin_at, end_at)
+        "all" -> base_expenses_query(account_id)
+        _ -> expenses_for_date_range(account_id, today, today)
       end
 
     Repo.all(query)
@@ -747,16 +739,18 @@ defmodule Benjamin.Finanses do
 
   ## Examples
 
-      iex> get_expense!(123)
+      iex> get_expense!(1, 123)
       %Expense{}
 
       iex> get_expense!(456)
       ** (Ecto.NoResultsError)
 
   """
-  def get_expense!(id) do
+  def get_expense!(account_id, id) do
     Expense
-    |> Repo.get!(id)
+    |> where(account_id: ^account_id)
+    |> where(id: ^id)
+    |> Repo.one!()
     |> Repo.preload(:category)
   end
 
@@ -902,12 +896,6 @@ defmodule Benjamin.Finanses do
       [%ExpenseBudget{}, ...]
 
   """
-  def list_expenses_budgets_for_budget(budget_id) when is_integer(budget_id) do
-    ExpenseBudget
-    |> where(budget_id: ^budget_id)
-    |> Repo.all()
-  end
-
   def list_expenses_budgets_for_budget(%Budget{} = budget) do
     query =
       from(
@@ -939,14 +927,19 @@ defmodule Benjamin.Finanses do
 
   ## Examples
 
-      iex> get_expense_budget!(123)
+      iex> get_expense_budget!(1, 123)
       %ExpenseBudget{}
 
       iex> get_expense_budget!(456)
       ** (Ecto.NoResultsError)
 
   """
-  def get_expense_budget!(id), do: Repo.get!(ExpenseBudget, id)
+  def get_expense_budget!(account_id, id) do
+    ExpenseBudget
+    |> where(account_id: ^account_id)
+    |> where(id: ^id)
+    |> Repo.one!()
+  end
 
   @doc """
   Creates a expense_budget.
@@ -1134,32 +1127,6 @@ defmodule Benjamin.Finanses do
   end
 
   alias Benjamin.Finanses.Transaction
-
-  @doc """
-  Returns the list of transactions.
-
-  ## Examples
-
-      iex> list_transactions()
-      [%Transaction{}, ...]
-
-  """
-  def list_transactions() do
-    Repo.all(Transaction)
-  end
-
-  def list_transactions(from, to) do
-    query =
-      from(
-        t in Transaction,
-        where: t.date >= ^from,
-        where: t.date <= ^to
-      )
-
-    query
-    |> Repo.all()
-    |> Repo.preload(:saving)
-  end
 
   def list_transactions(%Saving{} = saving) do
     query =

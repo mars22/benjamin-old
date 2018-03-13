@@ -6,34 +6,51 @@ defmodule Benjamin.Finanses.Expense do
   alias Benjamin.Finanses
   alias Benjamin.Finanses.{Expense, ExpenseCategory}
 
-
   schema "expenses" do
-    field :amount, :decimal
-    field :date, :date
-    field :contractor, :string
-    field :description, :string
-    belongs_to :category, ExpenseCategory, source: :category_id
-    belongs_to :parent, Expense
-    has_many :parts, Expense, foreign_key: :parent_id
-    belongs_to :account, Account
+    field(:amount, :decimal)
+    field(:date, :date)
+    field(:contractor, :string)
+    field(:description, :string)
+    belongs_to(:category, ExpenseCategory, source: :category_id)
+    belongs_to(:parent, Expense)
+    has_many(:parts, Expense, foreign_key: :parent_id)
+    belongs_to(:account, Account)
     timestamps()
   end
 
   @doc false
   def changeset(%Expense{} = expense, attrs) do
     expense
-    |> cast(attrs, [:amount, :date, :parent_id, :category_id, :contractor, :description, :account_id])
+    |> cast(attrs, [
+      :amount,
+      :date,
+      :parent_id,
+      :category_id,
+      :contractor,
+      :description,
+      :account_id
+    ])
     |> validate_required([:amount, :date, :category_id, :account_id])
     |> validatate_description
   end
 
   defp validatate_description(changeset) do
     category_id = get_field(changeset, :category_id)
+    account_id = get_field(changeset, :account_id)
+
     if category_id do
-      category = Finanses.get_expense_category!(category_id)
+      category = Finanses.get_expense_category!(account_id, category_id)
+
       case category.required_description do
-        true -> validate_required(changeset, [:description], message: "Categoty #{category.name} require description!")
-        false -> changeset
+        true ->
+          validate_required(
+            changeset,
+            [:description],
+            message: "Categoty #{category.name} require description!"
+          )
+
+        false ->
+          changeset
       end
     else
       changeset
@@ -42,7 +59,6 @@ defmodule Benjamin.Finanses.Expense do
 
   def sum_amount(expenses) when is_list(expenses) do
     expenses
-    |> Enum.reduce(Decimal.new(0), &(Decimal.add(&1.amount, &2)))
+    |> Enum.reduce(Decimal.new(0), &Decimal.add(&1.amount, &2))
   end
-
 end

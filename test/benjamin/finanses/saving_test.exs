@@ -96,10 +96,6 @@ defmodule Benjamin.Finanses.SavingTest do
       {:ok, saving: saving, budget: budget, transaction: transaction}
     end
 
-    test "list_transactions/0 returns all transactions", %{transaction: transaction} do
-      assert Finanses.list_transactions() == [transaction]
-    end
-
     test "get_transaction!/1 returns the transaction with given id", %{
       account: account,
       transaction: transaction

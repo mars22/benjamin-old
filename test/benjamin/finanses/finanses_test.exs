@@ -491,13 +491,8 @@ defmodule Benjamin.FinansesTest do
       {:ok, budget: budget, bill: bill, bill_category: bill_category}
     end
 
-    test "list_bills/0 returns all bills", %{budget: budget, bill: bill} do
-      [bill_from_db] = Finanses.list_bills_for_budget(budget.id)
-      assert bill_from_db.id == bill.id
-    end
-
-    test "get_bill!/1 returns the bill with given id", %{bill: bill} do
-      assert Finanses.get_bill!(bill.id).id == bill.id
+    test "get_bill!/1 returns the bill with given id", %{bill: bill, account: account} do
+      assert Finanses.get_bill!(account.id, bill.id).id == bill.id
     end
 
     test "create_bill/1 can't create the same bill twice", %{
@@ -545,14 +540,17 @@ defmodule Benjamin.FinansesTest do
       assert updated_bill.description == "some updated description"
     end
 
-    test "update_bill/2 with invalid data returns error changeset", %{bill: bill} do
+    test "update_bill/2 with invalid data returns error changeset", %{
+      bill: bill,
+      account: account
+    } do
       assert {:error, %Ecto.Changeset{}} = Finanses.update_bill(bill, @invalid_attrs)
-      assert bill.id == Finanses.get_bill!(bill.id).id
+      assert bill.id == Finanses.get_bill!(account.id, bill.id).id
     end
 
-    test "delete_bill/1 deletes the bill", %{bill: bill} do
+    test "delete_bill/1 deletes the bill", %{bill: bill, account: account} do
       assert {:ok, %Bill{}} = Finanses.delete_bill(bill)
-      assert_raise Ecto.NoResultsError, fn -> Finanses.get_bill!(bill.id) end
+      assert_raise Ecto.NoResultsError, fn -> Finanses.get_bill!(account.id, bill.id) end
     end
 
     test "change_bill/1 returns a bill changeset", %{bill: bill} do
@@ -576,14 +574,18 @@ defmodule Benjamin.FinansesTest do
       {:ok, bill_category: bill_category}
     end
 
-    test "list_bill_categories/0 returns all bill_categories", %{bill_category: bill_category} do
-      assert Finanses.list_bill_categories() == [bill_category]
+    test "list_bill_categories/0 returns all bill_categories", %{
+      bill_category: bill_category,
+      account: account
+    } do
+      assert Finanses.list_bill_categories(account.id) == [bill_category]
     end
 
     test "get_bill_category!/1 returns the bill_category with given id", %{
-      bill_category: bill_category
+      bill_category: bill_category,
+      account: account
     } do
-      assert Finanses.get_bill_category!(bill_category.id) == bill_category
+      assert Finanses.get_bill_category!(account.id, bill_category.id) == bill_category
     end
 
     test "create_bill_category/1 with invalid data returns error changeset" do
@@ -600,17 +602,24 @@ defmodule Benjamin.FinansesTest do
     end
 
     test "update_bill_category/2 with invalid data returns error changeset", %{
-      bill_category: bill_category
+      bill_category: bill_category,
+      account: account
     } do
       assert {:error, %Ecto.Changeset{}} =
                Finanses.update_bill_category(bill_category, @invalid_attrs)
 
-      assert bill_category == Finanses.get_bill_category!(bill_category.id)
+      assert bill_category == Finanses.get_bill_category!(account.id, bill_category.id)
     end
 
-    test "delete_bill_category/1 deletes the bill_category", %{bill_category: bill_category} do
+    test "delete_bill_category/1 deletes the bill_category", %{
+      bill_category: bill_category,
+      account: account
+    } do
       assert {:ok, %BillCategory{}} = Finanses.delete_bill_category(bill_category)
-      assert_raise Ecto.NoResultsError, fn -> Finanses.get_bill_category!(bill_category.id) end
+
+      assert_raise Ecto.NoResultsError, fn ->
+        Finanses.get_bill_category!(account.id, bill_category.id)
+      end
     end
 
     test "change_bill_category/1 returns a bill_category changeset", %{
@@ -637,15 +646,17 @@ defmodule Benjamin.FinansesTest do
     end
 
     test "list_expenses_categories/0 returns all expenses_categories", %{
-      expense_category: expense_category
+      expense_category: expense_category,
+      account: account
     } do
-      assert Finanses.list_expenses_categories() == [expense_category]
+      assert Finanses.list_expenses_categories(account.id) == [expense_category]
     end
 
     test "get_expense_category!/1 returns the expense_category with given id", %{
-      expense_category: expense_category
+      expense_category: expense_category,
+      account: account
     } do
-      assert Finanses.get_expense_category!(expense_category.id) == expense_category
+      assert Finanses.get_expense_category!(account.id, expense_category.id) == expense_category
     end
 
     test "create_expense_category/1 with invalid data returns error changeset" do
@@ -664,21 +675,23 @@ defmodule Benjamin.FinansesTest do
     end
 
     test "update_expense_category/2 with invalid data returns error changeset", %{
-      expense_category: expense_category
+      expense_category: expense_category,
+      account: account
     } do
       assert {:error, %Ecto.Changeset{}} =
                Finanses.update_expense_category(expense_category, @invalid_attrs)
 
-      assert expense_category == Finanses.get_expense_category!(expense_category.id)
+      assert expense_category == Finanses.get_expense_category!(account.id, expense_category.id)
     end
 
     test "delete_expense_category/1 deletes the expense_category", %{
-      expense_category: expense_category
+      expense_category: expense_category,
+      account: account
     } do
       assert {:ok, %ExpenseCategory{}} = Finanses.delete_expense_category(expense_category)
 
       assert_raise Ecto.NoResultsError, fn ->
-        Finanses.get_expense_category!(expense_category.id)
+        Finanses.get_expense_category!(account.id, expense_category.id)
       end
     end
 
@@ -708,17 +721,8 @@ defmodule Benjamin.FinansesTest do
        category: category}
     end
 
-    test "list_expenses/0 returns all parent expenses", %{
-      expense: expense,
-      expense_with_parts: expense_with_parts
-    } do
-      [expense1, expense2] = Finanses.list_expenses()
-      assert expense2.id == expense.id
-      assert expense1.id == expense_with_parts.id
-    end
-
-    test "get_expense!/1 returns the expense with given id", %{expense: expense} do
-      assert Finanses.get_expense!(expense.id) == expense
+    test "get_expense!/1 returns the expense with given id", %{expense: expense, account: account} do
+      assert Finanses.get_expense!(account.id, expense.id) == expense
     end
 
     test "create_expense/1 add expense budget if not exist", %{
@@ -766,14 +770,17 @@ defmodule Benjamin.FinansesTest do
       assert expense.amount == Decimal.new("456.7")
     end
 
-    test "update_expense/2 with invalid data returns error changeset", %{expense: expense} do
+    test "update_expense/2 with invalid data returns error changeset", %{
+      expense: expense,
+      account: account
+    } do
       assert {:error, %Ecto.Changeset{}} = Finanses.update_expense(expense, @invalid_attrs)
-      assert expense == Finanses.get_expense!(expense.id)
+      assert expense == Finanses.get_expense!(account.id, expense.id)
     end
 
-    test "delete_expense/1 deletes the expense", %{expense: expense} do
+    test "delete_expense/1 deletes the expense", %{expense: expense, account: account} do
       assert {:ok, %Expense{}} = Finanses.delete_expense(expense)
-      assert_raise Ecto.NoResultsError, fn -> Finanses.get_expense!(expense.id) end
+      assert_raise Ecto.NoResultsError, fn -> Finanses.get_expense!(account.id, expense.id) end
     end
 
     test "list_expenses_for_budget/1 returns all expenses that should belong to budget grouped by category",
@@ -813,9 +820,10 @@ defmodule Benjamin.FinansesTest do
     end
 
     test "get_expense_budget!/1 returns the expense_budget with given id", %{
-      expense_budget: expense_budget
+      expense_budget: expense_budget,
+      account: account
     } do
-      from_db = Finanses.get_expense_budget!(expense_budget.id)
+      from_db = Finanses.get_expense_budget!(account.id, expense_budget.id)
       assert from_db.id == expense_budget.id
     end
 
@@ -853,19 +861,26 @@ defmodule Benjamin.FinansesTest do
     end
 
     test "update_expense_budget/2 with invalid data returns error changeset", %{
-      expense_budget: expense_budget
+      expense_budget: expense_budget,
+      account: account
     } do
       assert {:error, %Ecto.Changeset{}} =
                Finanses.update_expense_budget(expense_budget, @invalid_attrs)
 
-      from_db = Finanses.get_expense_budget!(expense_budget.id)
+      from_db = Finanses.get_expense_budget!(account.id, expense_budget.id)
       assert expense_budget.planned_expenses == from_db.planned_expenses
       assert expense_budget.expense_category_id == from_db.expense_category_id
     end
 
-    test "delete_expense_budget/1 deletes the expense_budget", %{expense_budget: expense_budget} do
+    test "delete_expense_budget/1 deletes the expense_budget", %{
+      expense_budget: expense_budget,
+      account: account
+    } do
       assert {:ok, %ExpenseBudget{}} = Finanses.delete_expense_budget(expense_budget)
-      assert_raise Ecto.NoResultsError, fn -> Finanses.get_expense_budget!(expense_budget.id) end
+
+      assert_raise Ecto.NoResultsError, fn ->
+        Finanses.get_expense_budget!(account.id, expense_budget.id)
+      end
     end
 
     test "change_expense_budget/1 returns a expense_budget changeset", %{
