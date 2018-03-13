@@ -5,14 +5,13 @@ defmodule Benjamin.Finanses.Saving do
 
   alias Benjamin.Finanses.{Saving, Transaction}
 
-
   schema "savings" do
-    field :end_at, :date
-    field :goal_amount, :decimal
-    field :total_amount, :decimal, virtual: true
-    field :name, :string
-    has_many :transactions, Transaction
-    belongs_to :account, Account
+    field(:end_at, :date)
+    field(:goal_amount, :decimal)
+    field(:total_amount, :decimal, virtual: true)
+    field(:name, :string)
+    has_many(:transactions, Transaction)
+    belongs_to(:account, Account)
 
     timestamps()
   end
@@ -22,7 +21,7 @@ defmodule Benjamin.Finanses.Saving do
     saving
     |> cast(attrs, [:name, :goal_amount, :end_at, :account_id])
     |> validate_required([:name, :account_id])
-    |> unique_constraint(:name)
+    |> unique_constraint(:name, name: :savings_name_account_id_index)
   end
 
   def sum_transactions(transactions) do
@@ -33,9 +32,6 @@ defmodule Benjamin.Finanses.Saving do
   end
 
   defp sum_all(oparations) do
-    Enum.reduce(oparations, Decimal.new(0), &(Decimal.add(&1.amount, &2)))
+    Enum.reduce(oparations, Decimal.new(0), &Decimal.add(&1.amount, &2))
   end
-
-
-
 end

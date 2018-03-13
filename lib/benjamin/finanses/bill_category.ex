@@ -2,14 +2,13 @@ defmodule Benjamin.Finanses.BillCategory do
   use Ecto.Schema
   import Ecto.Changeset
   alias Benjamin.Accounts.Account
-  
+
   alias Benjamin.Finanses.BillCategory
-  
 
   schema "bill_categories" do
-    field :deleted, :boolean, default: false
-    field :name, :string
-    belongs_to :account, Account
+    field(:deleted, :boolean, default: false)
+    field(:name, :string)
+    belongs_to(:account, Account)
     timestamps()
   end
 
@@ -18,6 +17,6 @@ defmodule Benjamin.Finanses.BillCategory do
     bill_category
     |> cast(attrs, [:name, :deleted, :account_id])
     |> validate_required([:name])
-    |> unique_constraint(:name)
+    |> unique_constraint(:name, name: :bill_categories_name_account_id_index)
   end
 end

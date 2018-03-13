@@ -3,11 +3,10 @@ defmodule Benjamin.Accounts.Account do
   import Ecto.Changeset
   alias Benjamin.Accounts.{Account, User}
 
-
   schema "accounts" do
-    field :currency_name, :string
-    field :name, :string
-    has_many :users, User
+    field(:currency_name, :string)
+    field(:name, :string)
+    has_many(:users, User)
     timestamps()
   end
 
