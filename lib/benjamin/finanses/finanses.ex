@@ -305,33 +305,25 @@ defmodule Benjamin.Finanses do
   end
 
   @doc """
-  Returns the list of incomes.
-
-  ## Examples
-
-      iex> list_incomes()
-      [%Income{}, ...]
-
-  """
-  def list_incomes do
-    Repo.all(Income)
-  end
-
-  @doc """
   Gets a single income.
 
   Raises `Ecto.NoResultsError` if the Income does not exist.
 
   ## Examples
 
-      iex> get_income!(123)
+      iex> get_income!(1,123)
       %Income{}
 
       iex> get_income!(456)
       ** (Ecto.NoResultsError)
 
   """
-  def get_income!(id), do: Repo.get!(Income, id)
+  def get_income!(account_id, id) do
+    Income
+    |> where(account_id: ^account_id)
+    |> where(id: ^id)
+    |> Repo.one!()
+  end
 
   @doc """
   Creates a income.

@@ -26,12 +26,8 @@ defmodule Benjamin.Finanses.IncomeTest do
       {:ok, budget: budget, income: income}
     end
 
-    test "list_incomes/0 returns all incomes", %{income: income} do
-      assert Finanses.list_incomes() == [income]
-    end
-
-    test "get_income!/1 returns the income with given id", %{income: income} do
-      assert Finanses.get_income!(income.id) == income
+    test "get_income!/1 returns the income with given id", %{income: income, account: account} do
+      assert Finanses.get_income!(account.id, income.id) == income
     end
 
     test "create_income/1 with valid data creates a income", %{account: account, budget: budget} do
@@ -49,16 +45,19 @@ defmodule Benjamin.Finanses.IncomeTest do
       assert income.description == "some updated description"
     end
 
-    test "update_income/2 with invalid data returns error changeset", %{income: income} do
+    test "update_income/2 with invalid data returns error changeset", %{
+      income: income,
+      account: account
+    } do
       for invalid_attrs <- @invalid_data do
         assert {:error, %Ecto.Changeset{}} = Finanses.update_income(income, invalid_attrs)
-        assert income == Finanses.get_income!(income.id)
+        assert income == Finanses.get_income!(account.id, income.id)
       end
     end
 
-    test "delete_income/1 deletes the income", %{income: income} do
+    test "delete_income/1 deletes the income", %{income: income, account: account} do
       assert {:ok, %Income{}} = Finanses.delete_income(income)
-      assert_raise Ecto.NoResultsError, fn -> Finanses.get_income!(income.id) end
+      assert_raise Ecto.NoResultsError, fn -> Finanses.get_income!(account.id, income.id) end
     end
 
     test "change_income/1 returns a income changeset", %{income: income} do
