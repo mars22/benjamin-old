@@ -57,7 +57,15 @@
               <a class="dropdown-item" href="<%= expense_category_path @conn, :index %>">Expense Categories</a>
             </div>
           </li>
+
         </ul>
+        <div class="nav-item navbar-right">
+            <%= form_for @conn, session_path(@conn, :delete), [method: :delete, as: :user], fn _ -> %>
+              <div class="form-group">
+                <%= submit "logout" %>
+              </div>
+            <% end %>
+          </div>
       </div>
     </nav>
     <div class="container-fluid">
