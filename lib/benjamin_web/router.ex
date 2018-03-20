@@ -19,6 +19,13 @@ defmodule BenjaminWeb.Router do
     plug(:accepts, ["json"])
   end
 
+  scope "/api", BenjaminWeb do
+    pipe_through(:api)
+    scope "/v1", V1 do
+      resources("/expneses", ExpenseController, only: [:index])
+    end
+  end
+
   scope "/", BenjaminWeb do
     # Use the default browser stack
     pipe_through([:browser, :authenticate_user])
