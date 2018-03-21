@@ -17,12 +17,13 @@ defmodule BenjaminWeb.Router do
 
   pipeline :api do
     plug(:accepts, ["json"])
+    plug(:fetch_session)
   end
 
-  scope "/api", BenjaminWeb do
-    pipe_through(:api)
-    scope "/v1", V1 do
-      resources("/expneses", ExpenseController, only: [:index])
+  scope "/api", BenjaminWeb, as: :api do
+    pipe_through([:api, :api_authenticate_user])
+    scope "/v1", V1, as: :v1 do
+      resources("/expneses", ExpenseController, only: [:index, :create])
     end
   end
 
@@ -75,6 +76,26 @@ defmodule BenjaminWeb.Router do
         conn
         |> assign(:current_user, "TODO")
         |> assign(:user_account, user.account)
+    end
+  end
+
+  defp api_authenticate_user(conn, _) do
+    case get_req_header(conn, "authorization") do
+      [] ->
+        conn
+        |> send_resp(401, "unauthorized")
+        |> halt()
+
+      ["Token " <> token] ->
+        case Phoenix.Token.verify(conn, "user", token, max_age: 86400) do
+          {:ok, user_id} ->
+            user = Benjamin.Accounts.get_user_with_account!(user_id)
+            assign(conn, :user_account, user.account)
+          {:error, _} ->
+            conn
+            |> send_resp(401, "unauthorized")
+            |> halt()
+        end
     end
   end
 end

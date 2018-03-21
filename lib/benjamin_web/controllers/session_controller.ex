@@ -24,6 +24,21 @@ defmodule BenjaminWeb.SessionController do
     end
   end
 
+  def create(conn, %{"email" => email, "password" => password}) do
+    case Accounts.verify(email, password) do
+      {:ok, credential} ->
+        token = Phoenix.Token.sign(conn, "user", credential.user_id)
+        conn
+        |> put_status(200)
+        |> json(%{:token => token})
+      {:error, _message} ->
+        conn
+        |> send_resp(400, "unauth")
+
+    end
+  end
+
+
   def delete(conn, _) do
     conn
     |> configure_session(drop: true)
