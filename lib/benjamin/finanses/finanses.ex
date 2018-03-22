@@ -390,15 +390,6 @@ defmodule Benjamin.Finanses do
     Income.changeset(income, attrs)
   end
 
-  @doc """
-  Returns the list of bills.
-
-  ## Examples
-
-      iex> list_bills_for_budget(id)
-      [%Bill{}, ...]
-
-  """
   defp list_bills_for_budget(id) do
     Bill
     |> where(budget_id: ^id)

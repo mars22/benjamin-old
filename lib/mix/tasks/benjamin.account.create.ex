@@ -3,7 +3,7 @@ defmodule Mix.Tasks.Benjamin.Account.Create do
 
   alias Benjamin.Repo
   alias Benjamin.Accounts
-  alias Benjamin.Accounts.{Account, Credential, User}
+  alias Benjamin.Accounts.{Account, User}
   alias Benjamin.Finanses.{BillCategory, ExpenseCategory}
 
   @shortdoc "Creates account in app"
