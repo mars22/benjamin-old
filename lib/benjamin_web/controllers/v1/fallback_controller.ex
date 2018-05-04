@@ -10,6 +10,6 @@ defmodule BenjaminWeb.V1.FallbackController do
   def call(conn, {:error, :not_found}) do
     conn
     |> put_status(:not_found)
-    |> render(BenjaminWeb.V1..ErrorView, :"404")
+    |> render(BenjaminWeb.ErrorView, :"404")
   end
 end
