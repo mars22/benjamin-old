@@ -210,7 +210,7 @@ defmodule Benjamin.Finanses.Factory do
 
   # Convenience API
   def build(factory_name, [{:account_id, account_id} | attributes]) do
-    build(factory_name, account_id: account_id) |> struct(attributes)
+    factory_name |> build(account_id: account_id) |> struct(attributes)
   end
 
   def build(factory_name, attributes) do
@@ -218,7 +218,8 @@ defmodule Benjamin.Finanses.Factory do
   end
 
   def insert!(factory_name, attributes \\ []) do
-    build(factory_name, attributes)
+    factory_name
+    |> build(attributes)
     |> Repo.insert!()
   end
 end
