@@ -37,3 +37,11 @@ def migrate():
         api.cd('%(project_src)s' % api.env),
     ):
         api.run('MIX_ENV=prod mix ecto.migrate')
+
+
+@api.roles('PROD')
+def rollback():
+    with contextlib.nested(
+        api.cd('%(project_src)s' % api.env),
+    ):
+        api.run('MIX_ENV=prod mix ecto.rollback')
