@@ -11,7 +11,7 @@ defmodule Benjamin.Repo.Migrations.AddBudgetExpensesDaterangeUniqueConstraint do
       constraint(
         :budgets,
         :no_overlap_expenses_daterange,
-        exclude: ~s|gist(account_id WITH =, daterange(begin_at, end_at) WITH &&)|
+        exclude: ~s|gist(account_id WITH =, daterange(begin_at, end_at, '[]') WITH &&)|
       )
     )
   end

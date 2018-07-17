@@ -30,6 +30,7 @@ defmodule Benjamin.Finanses do
     Budget
     |> order_by(desc: :year, desc: :month)
     |> where(account_id: ^account_id)
+    |> order_by(desc: :begin_at)
     |> Repo.all()
   end
 
