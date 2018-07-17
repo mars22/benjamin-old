@@ -33,21 +33,16 @@ defmodule Benjamin.Finanses do
     |> Repo.all()
   end
 
-  def get_previous_budget(%Budget{id: id, year: year, month: month, account_id: account_id}) do
-    {month, year} =
-      case month do
-        1 -> {12, year - 1}
-        _ -> {month, year}
-      end
-
+  def get_previous_budget(%{
+        begin_at: begin_at,
+        account_id: account_id
+      }) do
     query =
       from(
         b in Budget,
-        where: b.id != ^id,
-        where: b.year <= ^year,
-        where: b.month <= ^month,
-        where: b.account_id <= ^account_id,
-        order_by: [desc: :year, desc: :month],
+        where: b.begin_at < ^begin_at,
+        where: b.account_id == ^account_id,
+        order_by: [desc: :end_at],
         limit: 1
       )
 
@@ -140,43 +135,57 @@ defmodule Benjamin.Finanses do
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_budget(attrs \\ %{})
+  # def create_budget(attrs \\ %{})
 
-  def create_budget(%{copy_from: source_budget_id} = attrs) do
-    Multi.new()
-    |> Multi.insert(:budget, Budget.create_changeset(%Budget{}, attrs))
-    |> Multi.run(:update_prev, &update_prev_budget_end_at/1)
-    |> Multi.run(:bills, &copy_bills(source_budget_id, &1))
-    |> Multi.run(:expenses_budgets, &copy_expenses_budgets(source_budget_id, &1))
-    |> Repo.transaction()
-    |> handle_budget_creation
+  def create_budget(
+        %{copy_from: source_budget_id, begin_at: begin_at, account_id: account_id} = attrs
+      ) do
+    begin_at = Date.from_iso8601!(begin_at)
+    prev_budget = get_previous_budget(%{begin_at: begin_at, account_id: account_id})
+
+    if prev_budget != nil do
+      Multi.new()
+      |> Multi.update(
+        :update_prev,
+        Budget.update_changeset(prev_budget, %{end_at: Date.add(begin_at, -1)})
+      )
+      |> Multi.insert(:budget, Budget.create_changeset(%Budget{}, attrs))
+      |> Multi.run(:bills, &copy_bills(source_budget_id, &1))
+      |> Multi.run(:expenses_budgets, &copy_expenses_budgets(source_budget_id, &1))
+      |> Repo.transaction()
+      |> handle_budget_creation
+    else
+      Multi.new()
+      |> Multi.insert(:budget, Budget.create_changeset(%Budget{}, attrs))
+      |> Multi.run(:bills, &copy_bills(source_budget_id, &1))
+      |> Multi.run(:expenses_budgets, &copy_expenses_budgets(source_budget_id, &1))
+      |> Repo.transaction()
+      |> handle_budget_creation
+    end
   end
 
-  def create_budget(attrs) do
-    Multi.new()
-    |> Multi.insert(:budget, Budget.create_changeset(%Budget{}, attrs))
-    |> Multi.run(:update_prev, &update_prev_budget_end_at/1)
-    |> Repo.transaction()
-    |> handle_budget_creation
+  def create_budget(%{begin_at: begin_at, account_id: account_id} = attrs) do
+    begin_at = Date.from_iso8601!(begin_at)
+    prev_budget = get_previous_budget(%{begin_at: begin_at, account_id: account_id})
+
+    if prev_budget != nil do
+      Multi.new()
+      |> Multi.update(
+        :update_prev,
+        Budget.update_changeset(prev_budget, %{end_at: Date.add(begin_at, -1)})
+      )
+      |> Multi.insert(:budget, Budget.create_changeset(%Budget{}, attrs))
+      |> Repo.transaction()
+      |> handle_budget_creation
+    else
+      %Budget{} |> Budget.create_changeset(attrs) |> Repo.insert()
+    end
   end
 
   defp handle_budget_creation(results) do
     case results do
       {:ok, %{budget: budget}} -> {:ok, budget}
       {:error, :budget, %Ecto.Changeset{} = changeset, %{}} -> {:error, changeset}
-    end
-  end
-
-  defp update_prev_budget_end_at(%{budget: %Budget{} = current_budget}) do
-    case get_previous_budget(current_budget) do
-      %Budget{end_at: end_at} = budget ->
-        case Date.diff(end_at, current_budget.begin_at) do
-          diff when diff == -1 -> {:ok, :noop}
-          _ -> update_budget(budget, %{end_at: Date.add(current_budget.begin_at, -1)})
-        end
-
-      nil ->
-        {:ok, :noop}
     end
   end
 
@@ -227,11 +236,7 @@ defmodule Benjamin.Finanses do
 
   """
   def update_budget(%Budget{} = budget, attrs) do
-    Multi.new()
-    |> Multi.update(:budget, Budget.update_changeset(budget, attrs))
-    |> Multi.run(:update_prev, &update_prev_budget_end_at/1)
-    |> Repo.transaction()
-    |> handle_budget_creation
+    budget |> Budget.update_changeset(attrs) |> Repo.update()
   end
 
   @doc """

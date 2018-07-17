@@ -49,12 +49,11 @@ defmodule Benjamin.Finanses.Budget do
     |> validate_required([:month, :year, :begin_at, :end_at, :account_id])
     |> validate_inclusion(:month, 1..12)
     |> validate_inclusion(:year, year_range())
-    |> unique_constraint(
-      :month,
-      name: :budgets_month_year_account_id_index,
+    |> exclusion_constraint(
+      :begin_at,
+      name: :no_overlap_expenses_daterange,
       message: "budget for this time period already exist"
     )
-    |> update_date_range
   end
 
   def year_range() do
@@ -67,28 +66,6 @@ defmodule Benjamin.Finanses.Budget do
     {:ok, begin_at} = Date.new(year, month, 1)
     {:ok, end_at} = Date.new(year, month, last_day_of_month)
     {begin_at, end_at}
-  end
-
-  defp update_date_range(%Ecto.Changeset{changes: changes} = changeset) do
-    month_or_year_changed? = Map.has_key?(changes, :year) || Map.has_key?(changes, :month)
-
-    data_range_changed? = Map.has_key?(changes, :begin_at) || Map.has_key?(changes, :end_at)
-
-    if month_or_year_changed? and not data_range_changed? do
-      put_date_range(changeset)
-    else
-      changeset
-    end
-  end
-
-  defp put_date_range(changeset) do
-    year = get_field(changeset, :year)
-    month = get_field(changeset, :month)
-    {begin_at, end_at} = date_range(year, month)
-
-    changeset
-    |> put_change(:begin_at, begin_at)
-    |> put_change(:end_at, end_at)
   end
 
   def sum_incomes(%{incomes: incomes, transactions: transactions}) do

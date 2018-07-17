@@ -105,9 +105,10 @@ defmodule Benjamin.Finanses.SavingTest do
 
     test "create_transaction/1 with valid data creates a transaction", %{
       account: account,
-      saving: saving
+      saving: saving,
+      budget: budget
     } do
-      budget = Factory.insert!(:budget, account_id: account.id)
+      # budget = Factory.insert!(:budget, account_id: account.id)
       attrs = Map.put(@valid_attrs, :saving_id, saving.id)
       attrs = Map.put(attrs, :account_id, account.id)
       attrs = Map.put(attrs, :budget_id, budget.id)
