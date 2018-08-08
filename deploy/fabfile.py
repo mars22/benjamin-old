@@ -14,6 +14,7 @@ api.env.prompts = {
     'Are you sure you want to do this?': 'yes',
 }
 
+
 @api.roles('PROD')
 def update():
     with contextlib.nested(
