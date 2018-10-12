@@ -12,12 +12,12 @@
     <tr>
       <td><%= bill_category.name %></td>
       <td class="text-right">
-        <span><%= link "Edit", to: bill_category_path(@conn, :edit, bill_category), class: "btn btn-default btn-xs" %></span>
-        <span><%= link "Delete", to: bill_category_path(@conn, :delete, bill_category), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger btn-xs" %></span>
+        <span><%= link "Edit", to: Routes.bill_category_path(@conn, :edit, bill_category), class: "btn btn-default btn-xs" %></span>
+        <span><%= link "Delete", to: Routes.bill_category_path(@conn, :delete, bill_category), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger btn-xs" %></span>
       </td>
     </tr>
 <% end %>
   </tbody>
 </table>
 
-<span><%= link "New category", to: bill_category_path(@conn, :new) %></span>
+<span><%= link "New category", to: Routes.bill_category_path(@conn, :new) %></span>

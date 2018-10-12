@@ -92,8 +92,8 @@ defmodule BenjaminWeb.TransactionController do
 
   defp get_path(conn, budget_id, transaction_type) do
     case transaction_type do
-      "deposit" -> budget_path(conn, :show, budget_id, tab: "savings")
-      "withdraw" -> budget_path(conn, :show, budget_id, tab: "incomes")
+      "deposit" -> Routes.budget_path(conn, :show, budget_id, tab: "savings")
+      "withdraw" -> Routes.budget_path(conn, :show, budget_id, tab: "incomes")
     end
   end
 

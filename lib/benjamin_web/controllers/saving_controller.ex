@@ -23,7 +23,7 @@ defmodule BenjaminWeb.SavingController do
       {:ok, _saving} ->
         conn
         |> put_flash(:info, "Saving created successfully.")
-        |> redirect(to: saving_path(conn, :index))
+        |> redirect(to: Routes.saving_path(conn, :index))
 
       {:error, %Ecto.Changeset{} = changeset} ->
         render(conn, "new.html", changeset: changeset)
@@ -47,7 +47,7 @@ defmodule BenjaminWeb.SavingController do
       {:ok, saving} ->
         conn
         |> put_flash(:info, "Saving updated successfully.")
-        |> redirect(to: saving_path(conn, :show, saving))
+        |> redirect(to: Routes.saving_path(conn, :show, saving))
 
       {:error, %Ecto.Changeset{} = changeset} ->
         render(conn, "edit.html", saving: saving, changeset: changeset)
@@ -61,12 +61,12 @@ defmodule BenjaminWeb.SavingController do
       {:ok, _saving} ->
         conn
         |> put_flash(:info, "Saving deleted successfully.")
-        |> redirect(to: saving_path(conn, :index))
+        |> redirect(to: Routes.saving_path(conn, :index))
 
       {:error, _msg} ->
         conn
         |> put_flash(:error, "Saving contains transactions! It can't be deleted")
-        |> redirect(to: saving_path(conn, :index))
+        |> redirect(to: Routes.saving_path(conn, :index))
     end
   end
 

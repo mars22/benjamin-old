@@ -21,7 +21,7 @@ defmodule BenjaminWeb.BillCategoryController do
       {:ok, _} ->
         conn
         |> put_flash(:info, "Bill category created successfully.")
-        |> redirect(to: bill_category_path(conn, :index))
+        |> redirect(to: Routes.bill_category_path(conn, :index))
 
       {:error, %Ecto.Changeset{} = changeset} ->
         render(conn, "new.html", changeset: changeset)
@@ -41,7 +41,7 @@ defmodule BenjaminWeb.BillCategoryController do
       {:ok, _} ->
         conn
         |> put_flash(:info, "Bill category updated successfully.")
-        |> redirect(to: bill_category_path(conn, :index))
+        |> redirect(to: Routes.bill_category_path(conn, :index))
 
       {:error, %Ecto.Changeset{} = changeset} ->
         render(conn, "edit.html", bill_category: bill_category, changeset: changeset)
@@ -54,7 +54,7 @@ defmodule BenjaminWeb.BillCategoryController do
 
     conn
     |> put_flash(:info, "Bill category deleted successfully.")
-    |> redirect(to: bill_category_path(conn, :index))
+    |> redirect(to: Routes.bill_category_path(conn, :index))
   end
 
   defp get_bill_category(conn, id) do

@@ -23,7 +23,7 @@ defmodule BenjaminWeb.ExpenseController do
       {:ok, _} ->
         conn
         |> put_flash(:info, "Expense created successfully.")
-        |> redirect(to: expense_path(conn, :index))
+        |> redirect(to: Routes.expense_path(conn, :index))
 
       {:error, changeset} ->
         categories = get_expenses_categories(conn)
@@ -51,7 +51,7 @@ defmodule BenjaminWeb.ExpenseController do
       {:ok, _} ->
         conn
         |> put_flash(:info, "Expense updated successfully.")
-        |> redirect(to: expense_path(conn, :index))
+        |> redirect(to: Routes.expense_path(conn, :index))
 
       {:error, %Ecto.Changeset{} = changeset} ->
         categories = get_expenses_categories(conn)
@@ -65,7 +65,7 @@ defmodule BenjaminWeb.ExpenseController do
 
     conn
     |> put_flash(:info, "Expense deleted successfully.")
-    |> redirect(to: expense_path(conn, :index))
+    |> redirect(to: Routes.expense_path(conn, :index))
   end
 
   defp get_expense(conn, id) do

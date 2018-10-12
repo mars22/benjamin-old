@@ -6,27 +6,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="">
-    <link rel="apple-touch-icon" sizes="57x57" href="<%= static_path(@conn, "/images/apple-icon-57x57.png")%>">
-    <link rel="apple-touch-icon" sizes="60x60" href="<%= static_path(@conn, "/images/apple-icon-60x60.png")%>">
-    <link rel="apple-touch-icon" sizes="72x72" href="<%= static_path(@conn, "/images/apple-icon-72x72.png")%>">
-    <link rel="apple-touch-icon" sizes="76x76" href="<%= static_path(@conn, "/images/apple-icon-76x76.png")%>">
-    <link rel="apple-touch-icon" sizes="114x114" href="<%= static_path(@conn, "/images/apple-icon-114x114.png")%>">
-    <link rel="apple-touch-icon" sizes="120x120" href="<%= static_path(@conn, "/images/apple-icon-120x120.png")%>">
-    <link rel="apple-touch-icon" sizes="144x144" href="<%= static_path(@conn, "/images/apple-icon-144x144.png")%>">
-    <link rel="apple-touch-icon" sizes="152x152" href="<%= static_path(@conn, "/images/apple-icon-152x152.png")%>">
-    <link rel="apple-touch-icon" sizes="180x180" href="<%= static_path(@conn, "/images/apple-icon-180x180.png")%>">
-    <link rel="icon" type="image/png" sizes="192x192"  href="<%= static_path(@conn, "/images/android-icon-192x192.png")%>">
-    <link rel="icon" type="image/png" sizes="32x32" href="<%= static_path(@conn, "/images/favicon-32x32.png")%>">
-    <link rel="icon" type="image/png" sizes="96x96" href="<%= static_path(@conn, "/images/favicon-96x96.png")%>">
-    <link rel="icon" type="image/png" sizes="16x16" href="<%= static_path(@conn, "/images/favicon-16x16.png")%>">
-    <link rel="manifest" href="<%= static_path(@conn,"/images/manifest.json")%>">
+    <link rel="apple-touch-icon" sizes="57x57" href="<%= Routes.static_path(@conn, "/images/apple-icon-57x57.png")%>">
+    <link rel="apple-touch-icon" sizes="60x60" href="<%= Routes.static_path(@conn, "/images/apple-icon-60x60.png")%>">
+    <link rel="apple-touch-icon" sizes="72x72" href="<%= Routes.static_path(@conn, "/images/apple-icon-72x72.png")%>">
+    <link rel="apple-touch-icon" sizes="76x76" href="<%= Routes.static_path(@conn, "/images/apple-icon-76x76.png")%>">
+    <link rel="apple-touch-icon" sizes="114x114" href="<%= Routes.static_path(@conn, "/images/apple-icon-114x114.png")%>">
+    <link rel="apple-touch-icon" sizes="120x120" href="<%= Routes.static_path(@conn, "/images/apple-icon-120x120.png")%>">
+    <link rel="apple-touch-icon" sizes="144x144" href="<%= Routes.static_path(@conn, "/images/apple-icon-144x144.png")%>">
+    <link rel="apple-touch-icon" sizes="152x152" href="<%= Routes.static_path(@conn, "/images/apple-icon-152x152.png")%>">
+    <link rel="apple-touch-icon" sizes="180x180" href="<%= Routes.static_path(@conn, "/images/apple-icon-180x180.png")%>">
+    <link rel="icon" type="image/png" sizes="192x192"  href="<%= Routes.static_path(@conn, "/images/android-icon-192x192.png")%>">
+    <link rel="icon" type="image/png" sizes="32x32" href="<%= Routes.static_path(@conn, "/images/favicon-32x32.png")%>">
+    <link rel="icon" type="image/png" sizes="96x96" href="<%= Routes.static_path(@conn, "/images/favicon-96x96.png")%>">
+    <link rel="icon" type="image/png" sizes="16x16" href="<%= Routes.static_path(@conn, "/images/favicon-16x16.png")%>">
+    <link rel="manifest" href="<%= Routes.static_path(@conn,"/images/manifest.json")%>">
     <meta name="msapplication-TileColor" content="#ffffff">
-    <meta name="msapplication-TileImage" content="<%= static_path(@conn, "/images/ms-icon-144x144.png")%>">
+    <meta name="msapplication-TileImage" content="<%= Routes.static_path(@conn, "/images/ms-icon-144x144.png")%>">
     <meta name="theme-color" content="#ffffff">
     <title>Benjamin</title>
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
-    <link rel="stylesheet" href="<%= static_path(@conn, "/css/app.css") %>">
+    <link rel="stylesheet" href="<%= Routes.static_path(@conn, "/css/app.css") %>">
   </head>
 
   <body>
@@ -39,28 +39,28 @@
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
           <li class="nav-item <%= is_active(@conn, :budget_path, :current) %>">
-            <a class="nav-link" href="<%= budget_path @conn, :current %>">Current Budget</a>
+            <a class="nav-link" href="<%= Routes.budget_path @conn, :current %>">Current Budget</a>
           </li>
           <li class="nav-item <%= is_active(@conn, :budget_path, :index) %>">
-            <a class="nav-link" href="<%= budget_path @conn, :index %>">Budgets</a>
+            <a class="nav-link" href="<%= Routes.budget_path @conn, :index %>">Budgets</a>
           </li>
           <li class="nav-item <%= is_active(@conn, :expense_path, :index) %>">
-            <a class="nav-link" href="<%= expense_path @conn, :index %>">Expenses<span class="sr-only">(current)</span></a>
+            <a class="nav-link" href="<%= Routes.expense_path @conn, :index %>">Expenses<span class="sr-only">(current)</span></a>
           </li>
           <li class="nav-item <%= is_active(@conn, :saving_path, :index) %>">
-            <a class="nav-link" href="<%= saving_path @conn, :index %>">Savings<span class="sr-only">(current)</span></a>
+            <a class="nav-link" href="<%= Routes.saving_path @conn, :index %>">Savings<span class="sr-only">(current)</span></a>
           </li>
           <li class="nav-item dropdown <%= is_active(@conn, :bill_category_path, :index) %>">
             <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Settings</a>
             <div class="dropdown-menu">
-              <a class="dropdown-item" href="<%= bill_category_path @conn, :index %>">Bill Categories</a>
-              <a class="dropdown-item" href="<%= expense_category_path @conn, :index %>">Expense Categories</a>
+              <a class="dropdown-item" href="<%= Routes.bill_category_path @conn, :index %>">Bill Categories</a>
+              <a class="dropdown-item" href="<%= Routes.expense_category_path @conn, :index %>">Expense Categories</a>
             </div>
           </li>
 
         </ul>
         <div class="nav-item navbar-right">
-            <%= form_for @conn, session_path(@conn, :delete), [method: :delete, as: :user], fn _ -> %>
+            <%= form_for @conn, Routes.session_path(@conn, :delete), [method: :delete, as: :user], fn _ -> %>
               <div class="form-group">
                 <%= submit "logout" %>
               </div>
@@ -84,6 +84,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
 
-    <script src="<%= static_path(@conn, "/js/app.js") %>"></script>
+    <script src="<%= Routes.static_path(@conn, "/js/app.js") %>"></script>
   </body>
 </html>

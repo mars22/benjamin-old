@@ -19,7 +19,7 @@ defmodule BenjaminWeb.SessionController do
       {:error, _message} ->
         conn
         |> put_flash(:error, "Bad email/password combination")
-        |> redirect(to: session_path(conn, :new))
+        |> redirect(to: Routes.session_path(conn, :new))
 
     end
   end

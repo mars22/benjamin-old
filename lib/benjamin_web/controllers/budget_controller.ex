@@ -41,7 +41,7 @@ defmodule BenjaminWeb.BudgetController do
       {:ok, budget} ->
         conn
         |> put_flash(:info, "Budget created successfully.")
-        |> redirect(to: budget_path(conn, :show, budget))
+        |> redirect(to: Routes.budget_path(conn, :show, budget))
 
       {:error, %Ecto.Changeset{} = changeset} ->
         existing_budgets = get_budgets_for_account(conn)
@@ -58,7 +58,7 @@ defmodule BenjaminWeb.BudgetController do
 
     case budget do
       %Budget{id: id} -> show(conn, %{"id" => id})
-      nil -> redirect(conn, to: budget_path(conn, :index))
+      nil -> redirect(conn, to: Routes.budget_path(conn, :index))
     end
   end
 
@@ -96,7 +96,7 @@ defmodule BenjaminWeb.BudgetController do
       {:ok, budget} ->
         conn
         |> put_flash(:info, "Budget updated successfully.")
-        |> redirect(to: budget_path(conn, :show, budget))
+        |> redirect(to: Routes.budget_path(conn, :show, budget))
 
       {:error, %Ecto.Changeset{} = changeset} ->
         render(conn, "edit.html", budget: budget, changeset: changeset)
@@ -109,7 +109,7 @@ defmodule BenjaminWeb.BudgetController do
 
     conn
     |> put_flash(:info, "Budget deleted successfully.")
-    |> redirect(to: budget_path(conn, :index))
+    |> redirect(to: Routes.budget_path(conn, :index))
   end
 
   defp get_budgets_for_account(conn) do

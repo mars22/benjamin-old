@@ -1,5 +1,5 @@
 <h2>New Expense category budget</h2>
 
-<%= render "form.html", Map.put(assigns, :action, budget_expense_budget_path(@conn, :create, @budget)) %>
+<%= render "form.html", Map.put(assigns, :action, Routes.budget_expense_budget_path(@conn, :create, @budget)) %>
 
-<span><%= link "Back", to: budget_path(@conn, :show, @budget) %></span>
+<span><%= link "Back", to: Routes.budget_path(@conn, :show, @budget) %></span>

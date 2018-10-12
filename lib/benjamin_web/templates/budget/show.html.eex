@@ -7,8 +7,8 @@
       <p><strong>Expenses from: </strong><%= format_date @budget.begin_at %> <strong>to: </strong><%= format_date @budget.end_at %></p>
       <p><strong>Description: </strong><%= @budget.description %></p>
 
-      <%= link "Edit", to: budget_path(@conn, :edit, @budget), class: "btn btn-primary" %>
-      <%= link "Delete", to: budget_path(@conn, :delete, @budget), method: :delete, data: [confirm: "Are you sure? All data connected with budget will be deleted as well!"], class: "btn btn-danger btn-sm" %>
+      <%= link "Edit", to: Routes.budget_path(@conn, :edit, @budget), class: "btn btn-primary" %>
+      <%= link "Delete", to: Routes.budget_path(@conn, :delete, @budget), method: :delete, data: [confirm: "Are you sure? All data connected with budget will be deleted as well!"], class: "btn btn-danger btn-sm" %>
     </div>
   </div>
 
@@ -77,7 +77,7 @@
 <div class="card border">
   <div class="card-header">
     <strong>External sources</strong>
-    <%= link "Add Income", to: budget_income_path(@conn, :new, @budget), class: "btn btn-primary float-right"  %>
+    <%= link "Add Income", to: Routes.budget_income_path(@conn, :new, @budget), class: "btn btn-primary float-right"  %>
   </div>
   <div class="card-body">
 
@@ -105,8 +105,8 @@
             <td><%= income.description %></td>
 
             <td class="text-right">
-              <span><%= link "Edit", to: budget_income_path(@conn, :edit, @budget, income), class: "btn btn-default btn-sm" %></span>
-              <span><%= link "Delete", to: budget_income_path(@conn, :delete, @budget, income), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger btn-sm" %></span>
+              <span><%= link "Edit", to: Routes.budget_income_path(@conn, :edit, @budget, income), class: "btn btn-default btn-sm" %></span>
+              <span><%= link "Delete", to: Routes.budget_income_path(@conn, :delete, @budget, income), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger btn-sm" %></span>
             </td>
           </tr>
       <% end %>
@@ -117,7 +117,7 @@
 <div class="card border">
   <div class="card-header">
     <strong>Savings</strong>
-    <%= link "Withdraw", to: budget_transaction_path(@conn, :new, @budget,type: "withdraw"), class: "btn btn-primary float-right"  %>
+    <%= link "Withdraw", to: Routes.budget_transaction_path(@conn, :new, @budget,type: "withdraw"), class: "btn btn-primary float-right"  %>
   </div>
   <div class="card-body">
 
@@ -141,8 +141,8 @@
             <td><%= transaction.description %></td>
 
             <td class="text-right">
-              <span><%= link "Edit", to: budget_transaction_path(@conn, :edit, @budget, transaction), class: "btn btn-default btn-xs" %></span>
-              <span><%= link "Delete", to: budget_transaction_path(@conn, :delete, @budget, transaction), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger btn-sm" %></span>
+              <span><%= link "Edit", to: Routes.budget_transaction_path(@conn, :edit, @budget, transaction), class: "btn btn-default btn-xs" %></span>
+              <span><%= link "Delete", to: Routes.budget_transaction_path(@conn, :delete, @budget, transaction), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger btn-sm" %></span>
             </td>
           </tr>
       <% end %>
@@ -156,7 +156,7 @@
 <%= if is_active_tab(@conn, :bills) == "active" do %>
 <div class="card border">
   <div class="card-header">
-    <strong>Bills</strong> <%= link "New Bill", to: budget_bill_path(@conn, :new, @budget), class: "btn btn-primary float-right"  %>
+    <strong>Bills</strong> <%= link "New Bill", to: Routes.budget_bill_path(@conn, :new, @budget), class: "btn btn-primary float-right"  %>
   </div>
   <div class="card-body">
     <table class="table table-responsive">
@@ -177,8 +177,8 @@
           <td><%= format_amount bill.amount, @user_account.currency_name %></td>
           <td><%= bill.description %></td>
           <td class="text-right">
-            <span><%= link "Edit", to: budget_bill_path(@conn, :edit, @budget, bill), class: "btn btn-default btn-sm" %></span>
-            <span><%= link "Delete", to: budget_bill_path(@conn, :delete, @budget, bill), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger btn-sm" %></span>
+            <span><%= link "Edit", to: Routes.budget_bill_path(@conn, :edit, @budget, bill), class: "btn btn-default btn-sm" %></span>
+            <span><%= link "Delete", to: Routes.budget_bill_path(@conn, :delete, @budget, bill), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger btn-sm" %></span>
           </td>
         </tr>
     <% end %>
@@ -191,7 +191,7 @@
 <%= if is_active_tab(@conn, :expenses_budgets) == "active" do %>
 <div class="card border">
   <div class="card-header">
-    <strong>Expenses budgets</strong> <%= link "New Budget", to: budget_expense_budget_path(@conn, :new, @budget), class: "btn btn-primary float-right"  %>
+    <strong>Expenses budgets</strong> <%= link "New Budget", to: Routes.budget_expense_budget_path(@conn, :new, @budget), class: "btn btn-primary float-right"  %>
   </div>
   <div class="card-body">
     <table class="table table-responsive table-hover" id="expenses-budgets">
@@ -210,8 +210,8 @@
           <td class="clickable"><%= format_amount budget.planned_expenses, @user_account.currency_name %></td>
           <td class="clickable"><%= format_amount budget.real_expenses, @user_account.currency_name %></td>
           <td class="text-right">
-            <span><%= link "Edit", to: budget_expense_budget_path(@conn, :edit, @budget, budget), class: "btn btn-default btn-sm" %></span>
-            <span><%= link "Delete", to: budget_expense_budget_path(@conn, :delete, @budget, budget), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger btn-sm" %></span>
+            <span><%= link "Edit", to: Routes.budget_expense_budget_path(@conn, :edit, @budget, budget), class: "btn btn-default btn-sm" %></span>
+            <span><%= link "Delete", to: Routes.budget_expense_budget_path(@conn, :delete, @budget, budget), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger btn-sm" %></span>
           </td>
         </tr>
     <% end %>
@@ -225,7 +225,7 @@
 <%= if is_active_tab(@conn, :savings) == "active" do %>
 <div class="card border">
   <div class="card-header">
-    <strong>Savings</strong><%= link "Deposit", to: budget_transaction_path(@conn, :new, @budget, type: "deposit"), class: "btn btn-primary float-right"  %>
+    <strong>Savings</strong><%= link "Deposit", to: Routes.budget_transaction_path(@conn, :new, @budget, type: "deposit"), class: "btn btn-primary float-right"  %>
   </div>
   <div class="card-body">
     <table class="table">
@@ -248,7 +248,7 @@
           <td><%= transaction.description %></td>
 
           <td class="text-right">
-            <span><%= link "Edit", to: budget_transaction_path(@conn, :edit, @budget, transaction), class: "btn btn-default btn-xs" %></span>
+            <span><%= link "Edit", to: Routes.budget_transaction_path(@conn, :edit, @budget, transaction), class: "btn btn-default btn-xs" %></span>
           </td>
         </tr>
     <% end %>

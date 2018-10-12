@@ -23,7 +23,7 @@ defmodule BenjaminWeb.ExpenseBudgetController do
       {:ok, _} ->
         conn
         |> put_flash(:info, "Expense category budget created successfully.")
-        |> redirect(to: budget_path(conn, :show, budget_id, tab: :expenses_budgets))
+        |> redirect(to: Routes.budget_path(conn, :show, budget_id, tab: :expenses_budgets))
 
       {:error, %Ecto.Changeset{} = changeset} ->
         render(conn, "new.html", changeset: changeset)
@@ -44,7 +44,7 @@ defmodule BenjaminWeb.ExpenseBudgetController do
         conn
         |> put_flash(:info, "Expense category budget updated successfully.")
         |> redirect(
-          to: budget_path(conn, :show, expense_budget.budget_id, tab: :expenses_budgets)
+          to: Routes.budget_path(conn, :show, expense_budget.budget_id, tab: :expenses_budgets)
         )
 
       {:error, %Ecto.Changeset{} = changeset} ->
@@ -58,7 +58,7 @@ defmodule BenjaminWeb.ExpenseBudgetController do
 
     conn
     |> put_flash(:info, "Expense category budget deleted successfully.")
-    |> redirect(to: budget_path(conn, :show, expense_budget.budget_id, tab: :expenses_budgets))
+    |> redirect(to: Routes.budget_path(conn, :show, expense_budget.budget_id, tab: :expenses_budgets))
   end
 
   defp get_expense_budget(conn, id) do

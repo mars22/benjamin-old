@@ -21,7 +21,7 @@ defmodule BenjaminWeb do
     quote do
       use Phoenix.Controller, namespace: BenjaminWeb
       import Plug.Conn
-      import BenjaminWeb.Router.Helpers
+      alias BenjaminWeb.Router.Helpers, as: Routes
       import BenjaminWeb.Gettext
       import BenjaminWeb.Controller.Helpers
     end
@@ -29,8 +29,9 @@ defmodule BenjaminWeb do
 
   def view do
     quote do
-      use Phoenix.View, root: "lib/benjamin_web/templates",
-                        namespace: BenjaminWeb
+      use Phoenix.View,
+        root: "lib/benjamin_web/templates",
+        namespace: BenjaminWeb
 
       # Import convenience functions from controllers
       import Phoenix.Controller, only: [get_flash: 2, view_module: 1]
@@ -38,7 +39,7 @@ defmodule BenjaminWeb do
       # Use all HTML functionality (forms, tags, etc)
       use Phoenix.HTML
 
-      import BenjaminWeb.Router.Helpers
+      alias BenjaminWeb.Router.Helpers, as: Routes
       import BenjaminWeb.ErrorHelpers
       import BenjaminWeb.Gettext
       import BenjaminWeb.ViewHelpers

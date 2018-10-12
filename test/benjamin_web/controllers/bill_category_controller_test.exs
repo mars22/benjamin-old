@@ -11,36 +11,36 @@ defmodule BenjaminWeb.BillCategoryControllerTest do
 
   describe "index" do
     test "lists all bill_categories", %{conn: conn} do
-      conn = get conn, bill_category_path(conn, :index)
+      conn = get conn, Routes.bill_category_path(conn, :index)
       assert html_response(conn, 200) =~ "Listing Bill categories"
     end
   end
 
   describe "new bill_category" do
     test "renders form", %{conn: conn} do
-      conn = get conn, bill_category_path(conn, :new)
+      conn = get conn, Routes.bill_category_path(conn, :new)
       assert html_response(conn, 200) =~ "New Bill category"
     end
   end
 
   describe "create bill_category" do
     test "redirects to index when data is valid", %{conn: conn} do
-      conn = post conn, bill_category_path(conn, :create), bill_category: @create_attrs
+      conn = post conn, Routes.bill_category_path(conn, :create), bill_category: @create_attrs
 
-      assert redirected_to(conn) == bill_category_path(conn, :index)
+      assert redirected_to(conn) == Routes.bill_category_path(conn, :index)
 
-      conn = get conn, bill_category_path(conn, :index)
+      conn = get conn, Routes.bill_category_path(conn, :index)
       assert html_response(conn, 200) =~ @create_attrs.name
     end
 
     test "renders errors when name is no unique", %{conn: conn, user: user} do
       fixture(user)
-      conn = post conn, bill_category_path(conn, :create), bill_category: @create_attrs
+      conn = post conn, Routes.bill_category_path(conn, :create), bill_category: @create_attrs
       assert html_response(conn, 200) =~ "has already been taken"
     end
 
     test "renders errors when data is invalid", %{conn: conn} do
-      conn = post conn, bill_category_path(conn, :create), bill_category: @invalid_attrs
+      conn = post conn, Routes.bill_category_path(conn, :create), bill_category: @invalid_attrs
       assert html_response(conn, 200) =~ "New Bill category"
     end
   end
@@ -49,7 +49,7 @@ defmodule BenjaminWeb.BillCategoryControllerTest do
     setup [:create_bill_category]
 
     test "renders form for editing chosen bill_category", %{conn: conn, bill_category: bill_category} do
-      conn = get conn, bill_category_path(conn, :edit, bill_category)
+      conn = get conn, Routes.bill_category_path(conn, :edit, bill_category)
       assert html_response(conn, 200) =~ "Edit Bill category"
     end
   end
@@ -58,15 +58,15 @@ defmodule BenjaminWeb.BillCategoryControllerTest do
     setup [:create_bill_category]
 
     test "redirects when data is valid", %{conn: conn, bill_category: bill_category} do
-      conn = put conn, bill_category_path(conn, :update, bill_category), bill_category: @update_attrs
-      assert redirected_to(conn) == bill_category_path(conn, :index)
+      conn = put conn, Routes.bill_category_path(conn, :update, bill_category), bill_category: @update_attrs
+      assert redirected_to(conn) == Routes.bill_category_path(conn, :index)
 
-      conn = get conn, bill_category_path(conn, :index)
+      conn = get conn, Routes.bill_category_path(conn, :index)
       assert html_response(conn, 200) =~ @update_attrs.name
     end
 
     test "renders errors when data is invalid", %{conn: conn, bill_category: bill_category} do
-      conn = put conn, bill_category_path(conn, :update, bill_category), bill_category: @invalid_attrs
+      conn = put conn, Routes.bill_category_path(conn, :update, bill_category), bill_category: @invalid_attrs
       assert html_response(conn, 200) =~ "Edit Bill category"
     end
   end
@@ -75,10 +75,10 @@ defmodule BenjaminWeb.BillCategoryControllerTest do
     setup [:create_bill_category]
 
     test "deletes chosen bill_category", %{conn: conn, bill_category: bill_category} do
-      conn = delete conn, bill_category_path(conn, :delete, bill_category)
-      assert redirected_to(conn) == bill_category_path(conn, :index)
+      conn = delete conn, Routes.bill_category_path(conn, :delete, bill_category)
+      assert redirected_to(conn) == Routes.bill_category_path(conn, :index)
       assert_error_sent 404, fn ->
-        delete conn, bill_category_path(conn, :delete, bill_category)
+        delete conn, Routes.bill_category_path(conn, :delete, bill_category)
       end
     end
   end

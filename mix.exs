@@ -20,7 +20,7 @@ defmodule Benjamin.Mixfile do
   def application do
     [
       mod: {Benjamin.Application, []},
-      extra_applications: [:logger, :runtime_tools]
+      extra_applications: [:logger, :runtime_tools, :poison]
     ]
   end
 
@@ -33,18 +33,19 @@ defmodule Benjamin.Mixfile do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
-      {:phoenix, "~> 1.3"},
+      {:phoenix, "~> 1.4.0-rc", override: true},
       {:phoenix_pubsub, "~> 1.0"},
       {:phoenix_ecto, "~> 3.2"},
       {:postgrex, ">= 0.0.0"},
       {:phoenix_html, "~> 2.10"},
       {:phoenix_live_reload, "~> 1.0", only: :dev},
       {:gettext, "~> 0.11"},
-      {:cowboy, "~> 1.0"},
+      {:cowboy, "~> 2.3"},
       {:credo, "~> 0.9", only: [:dev, :test], runtime: false},
       {:number, "~> 0.5.4"},
       {:comeonin, "~> 4.0"},
-      {:argon2_elixir, "~> 1.2"}
+      {:argon2_elixir, "~> 1.2"},
+      {:poison, "~> 3.1"}
     ]
   end
 

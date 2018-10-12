@@ -1,4 +1,4 @@
-<%= link "Back", to: saving_path(@conn, :index), class: "btn btn-secondary" %>
+<%= link "Back", to: Routes.saving_path(@conn, :index), class: "btn btn-secondary" %>
 <div class="card">
     <div class="card-body">
       <h2>Saving: <%= @saving.name %></h2>
@@ -37,7 +37,7 @@
 <%= for transaction <- @saving.transactions do %>
     <tr>
       <td><%= transaction.date %></td>
-      <td> <%= link transaction.budget, to: budget_path(@conn, :show, transaction.budget)%></td>
+      <td> <%= link transaction.budget, to: Routes.budget_path(@conn, :show, transaction.budget)%></td>
       <td><%= transaction.amount %></td>
       <td><%= transaction.type %></td>
       <td><%= transaction.description %></td>

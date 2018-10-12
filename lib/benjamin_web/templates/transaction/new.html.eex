@@ -1,5 +1,5 @@
 <h2><%= @form_name%></h2>
 
-<%= render "form.html", Map.put(assigns, :action, budget_transaction_path(@conn, :create, @budget)) %>
+<%= render "form.html", Map.put(assigns, :action, Routes.budget_transaction_path(@conn, :create, @budget)) %>
 
 <span><%= link "Back", to: @back_path %></span>

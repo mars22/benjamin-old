@@ -1,5 +1,5 @@
 <h2>Edit Saving</h2>
 
-<%= render "form.html", Map.put(assigns, :action, saving_path(@conn, :update, @saving)) %>
+<%= render "form.html", Map.put(assigns, :action, Routes.saving_path(@conn, :update, @saving)) %>
 
-<span><%= link "Back", to: saving_path(@conn, :index) %></span>
+<span><%= link "Back", to: Routes.saving_path(@conn, :index) %></span>

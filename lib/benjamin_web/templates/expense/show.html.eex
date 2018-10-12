@@ -7,8 +7,8 @@
       <p><strong>Amount: </strong><%= format_amount @expense.amount, @user_account.currency_name %></p>
       <p><strong>Category: </strong><%= selected_value @categories, @expense.category_id %></p>
 
-      <%= link "Edit", to: expense_path(@conn, :edit, @expense), class: "btn btn-primary" %>
-      <%= link "Delete", to: expense_path(@conn, :delete, @expense), method: :delete, data: [confirm: "Are you sure? All data connected with this expense will be deleted as well!"], class: "btn btn-danger btn-xs" %>
+      <%= link "Edit", to: Routes.expense_path(@conn, :edit, @expense), class: "btn btn-primary" %>
+      <%= link "Delete", to: Routes.expense_path(@conn, :delete, @expense), method: :delete, data: [confirm: "Are you sure? All data connected with this expense will be deleted as well!"], class: "btn btn-danger btn-xs" %>
     </div>
   </div>
 </div>

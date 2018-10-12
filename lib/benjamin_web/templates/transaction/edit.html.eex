@@ -1,6 +1,6 @@
 <h2>Edit <%= @form_name%></h2>
 
-<%= render "form.html", Map.put(assigns, :action, budget_transaction_path(@conn, :update, @budget, @transaction)) %>
+<%= render "form.html", Map.put(assigns, :action, Routes.budget_transaction_path(@conn, :update, @budget, @transaction)) %>
 
 <span><%= link "Back", to: @back_path %></span>
 

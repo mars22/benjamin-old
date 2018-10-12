@@ -21,7 +21,7 @@ defmodule BenjaminWeb.ExpenseCategoryController do
       {:ok, _} ->
         conn
         |> put_flash(:info, "Expense category created successfully.")
-        |> redirect(to: expense_category_path(conn, :index))
+        |> redirect(to: Routes.expense_category_path(conn, :index))
 
       {:error, %Ecto.Changeset{} = changeset} ->
         render(conn, "new.html", changeset: changeset)
@@ -41,7 +41,7 @@ defmodule BenjaminWeb.ExpenseCategoryController do
       {:ok, _} ->
         conn
         |> put_flash(:info, "Expense category updated successfully.")
-        |> redirect(to: expense_category_path(conn, :index))
+        |> redirect(to: Routes.expense_category_path(conn, :index))
 
       {:error, %Ecto.Changeset{} = changeset} ->
         render(conn, "edit.html", expense_category: expense_category, changeset: changeset)
@@ -54,7 +54,7 @@ defmodule BenjaminWeb.ExpenseCategoryController do
 
     conn
     |> put_flash(:info, "Expense category deleted successfully.")
-    |> redirect(to: expense_category_path(conn, :index))
+    |> redirect(to: Routes.expense_category_path(conn, :index))
   end
 
   defp get_expenses_category(conn, id) do

@@ -15,7 +15,7 @@ defmodule BenjaminWeb.ExpenseControllerTest do
       expense1 = create_expense(:expense_with_parts, user)
       expense2 = create_expense(:expense_with_parts, user)
       expense3 = create_expense(:expense, user)
-      conn = get conn, expense_path(conn, :index)
+      conn = get conn, Routes.expense_path(conn, :index)
       html = html_response(conn, 200)
       assert html =~ "Expenses"
       assert html =~ expense1.category.name
@@ -27,7 +27,7 @@ defmodule BenjaminWeb.ExpenseControllerTest do
 
   describe "new expense" do
     test "render form", %{conn: conn, category: category} do
-      conn = get conn, expense_path(conn, :new)
+      conn = get conn, Routes.expense_path(conn, :new)
       response = html_response(conn, 200)
       assert response =~ "New Expense"
       assert response =~ Date.to_string Date.utc_today
@@ -39,11 +39,11 @@ defmodule BenjaminWeb.ExpenseControllerTest do
   describe "create expense" do
     test "redirects to index when data are valid", %{conn: conn, category: category} do
       attrs = %{amount: "12.5", date: ~D[2017-09-09], category_id: category.id}
-      conn = post conn, expense_path(conn, :create), expense: attrs
+      conn = post conn, Routes.expense_path(conn, :create), expense: attrs
 
-      assert redirected_to(conn) == expense_path(conn, :index)
+      assert redirected_to(conn) == Routes.expense_path(conn, :index)
 
-      conn = get conn, expense_path(conn, :index, %{"tab" => "all"})
+      conn = get conn, Routes.expense_path(conn, :index, %{"tab" => "all"})
       html = html_response(conn, 200)
       assert html =~ "Expense"
       assert html =~ "12,50 zl"
@@ -53,7 +53,7 @@ defmodule BenjaminWeb.ExpenseControllerTest do
 
     test "render form when data are invalid", %{conn: conn, category: category} do
       attrs = %{amount: "12.5", category_id: category.id}
-      conn = post conn, expense_path(conn, :create), expense: attrs
+      conn = post conn, Routes.expense_path(conn, :create), expense: attrs
       assert html_response(conn, 200) =~ "Oops, something went wrong! Please check the errors below."
     end
   end
@@ -61,7 +61,7 @@ defmodule BenjaminWeb.ExpenseControllerTest do
   describe "update expense" do
     test "render edit form", %{conn: conn, user: user} do
       expense = Factory.insert!(:expense, account_id: user.account_id, amount: Decimal.new(30))
-      conn = get conn, expense_path(conn, :edit, expense.id)
+      conn = get conn, Routes.expense_path(conn, :edit, expense.id)
       response = html_response(conn, 200)
       assert response =~ "Edit Expense"
       assert response =~ "30"
@@ -72,11 +72,11 @@ defmodule BenjaminWeb.ExpenseControllerTest do
     test "redirects to index when update succesfuly", %{conn: conn, user: user,category: category} do
       expense = create_expense(:expense, user)
       attrs = %{amount: "20.5", date: ~D[2017-09-09], category_id: category.id}
-      conn = put conn, expense_path(conn, :update, expense.id), expense: attrs
+      conn = put conn, Routes.expense_path(conn, :update, expense.id), expense: attrs
 
-      assert redirected_to(conn) == expense_path(conn, :index)
+      assert redirected_to(conn) == Routes.expense_path(conn, :index)
 
-      conn = get conn, expense_path(conn, :index, %{"tab" => "all"})
+      conn = get conn, Routes.expense_path(conn, :index, %{"tab" => "all"})
       html = html_response(conn, 200)
       assert html =~ "Expense"
       assert html =~ "20,50 zl"
@@ -87,7 +87,7 @@ defmodule BenjaminWeb.ExpenseControllerTest do
     test "render form when data are invalid", %{conn: conn, user: user, category: category} do
       expense = create_expense(:expense, user)
       attrs = %{amount: "", category_id: category.id}
-      conn = put conn, expense_path(conn, :update, expense.id), expense: attrs
+      conn = put conn, Routes.expense_path(conn, :update, expense.id), expense: attrs
       assert html_response(conn, 200) =~ "Oops, something went wrong! Please check the errors below."
     end
   end
@@ -95,10 +95,10 @@ defmodule BenjaminWeb.ExpenseControllerTest do
   describe "delete expense" do
     test "redirects to index when delete succesfuly", %{conn: conn, user: user} do
       expense = create_expense(:expense, user)
-      conn = delete conn, expense_path(conn, :delete, expense.id)
-      assert redirected_to(conn) == expense_path(conn, :index)
+      conn = delete conn, Routes.expense_path(conn, :delete, expense.id)
+      assert redirected_to(conn) == Routes.expense_path(conn, :index)
       assert_error_sent 404, fn ->
-        delete conn, expense_path(conn, :delete, expense)
+        delete conn, Routes.expense_path(conn, :delete, expense)
       end
 
     end

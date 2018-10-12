@@ -1,5 +1,5 @@
 <h2>New Expense</h2>
 
-<%= render "form.html", Map.put(assigns, :action, expense_path(@conn, :create)) %>
+<%= render "form.html", Map.put(assigns, :action, Routes.expense_path(@conn, :create)) %>
 
-<%= link "Back", to: expense_path(@conn, :index), class: "btn btn-secondary btn-sm" %>
+<%= link "Back", to: Routes.expense_path(@conn, :index), class: "btn btn-secondary btn-sm" %>

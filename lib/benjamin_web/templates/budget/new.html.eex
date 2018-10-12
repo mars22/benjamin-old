@@ -1,5 +1,5 @@
 <h2>New Budget</h2>
 
-<%= render "form.html", Map.put(assigns, :action, budget_path(@conn, :create)) %>
+<%= render "form.html", Map.put(assigns, :action, Routes.budget_path(@conn, :create)) %>
 
-<%= link "Back", to: budget_path(@conn, :index), class: "btn btn-secondary btn-sm" %>
+<%= link "Back", to: Routes.budget_path(@conn, :index), class: "btn btn-secondary btn-sm" %>

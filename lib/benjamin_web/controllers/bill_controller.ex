@@ -22,7 +22,7 @@ defmodule BenjaminWeb.BillController do
       {:ok, bill} ->
         conn
         |> put_flash(:info, "Bill created successfully.")
-        |> redirect(to: budget_path(conn, :show, bill.budget_id, tab: :bills))
+        |> redirect(to: Routes.budget_path(conn, :show, bill.budget_id, tab: :bills))
 
       {:error, %Ecto.Changeset{} = changeset} ->
         render(conn, "new.html", changeset: changeset)
@@ -42,7 +42,7 @@ defmodule BenjaminWeb.BillController do
       {:ok, bill} ->
         conn
         |> put_flash(:info, "Bill updated successfully.")
-        |> redirect(to: budget_path(conn, :show, bill.budget_id, tab: :bills))
+        |> redirect(to: Routes.budget_path(conn, :show, bill.budget_id, tab: :bills))
 
       {:error, %Ecto.Changeset{} = changeset} ->
         render(conn, "edit.html", bill: bill, changeset: changeset)
@@ -55,7 +55,7 @@ defmodule BenjaminWeb.BillController do
 
     conn
     |> put_flash(:info, "Bill deleted successfully.")
-    |> redirect(to: budget_path(conn, :show, bill.budget_id, tab: :bills))
+    |> redirect(to: Routes.budget_path(conn, :show, bill.budget_id, tab: :bills))
   end
 
   defp get_bill(conn, id) do

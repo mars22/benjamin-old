@@ -15,7 +15,7 @@ defmodule BenjaminWeb.TransactionControllerTest do
 
   describe "new transaction" do
     test "renders form", %{conn: conn, budget: budget} do
-      conn = get(conn, budget_transaction_path(conn, :new, budget, type: "deposit"))
+      conn = get(conn, Routes.budget_transaction_path(conn, :new, budget, type: "deposit"))
       assert html_response(conn, 200) =~ "Deposit"
     end
   end
@@ -39,19 +39,19 @@ defmodule BenjaminWeb.TransactionControllerTest do
       conn =
         post(
           conn,
-          budget_transaction_path(conn, :create, budget),
+          Routes.budget_transaction_path(conn, :create, budget),
           transaction: get_transaction_attrs(saving)
         )
 
-      assert redirected_to(conn) == budget_path(conn, :show, budget, tab: "savings")
+      assert redirected_to(conn) == Routes.budget_path(conn, :show, budget, tab: "savings")
 
-      conn = get(conn, saving_path(conn, :show, saving.id))
+      conn = get(conn, Routes.saving_path(conn, :show, saving.id))
       assert html_response(conn, 200) =~ "Transaction created successfully."
     end
 
     test "renders errors when data is invalid", %{conn: conn, budget: budget} do
       conn =
-        post(conn, budget_transaction_path(conn, :create, budget), transaction: @invalid_attrs)
+        post(conn, Routes.budget_transaction_path(conn, :create, budget), transaction: @invalid_attrs)
 
       assert html_response(conn, 200) =~ "Deposit"
     end
@@ -65,7 +65,7 @@ defmodule BenjaminWeb.TransactionControllerTest do
       budget: budget,
       transaction: transaction
     } do
-      conn = get(conn, budget_transaction_path(conn, :edit, budget, transaction))
+      conn = get(conn, Routes.budget_transaction_path(conn, :edit, budget, transaction))
       assert html_response(conn, 200) =~ "Edit Deposit"
     end
   end
@@ -81,7 +81,7 @@ defmodule BenjaminWeb.TransactionControllerTest do
       conn =
         put(
           conn,
-          budget_transaction_path(conn, :update, budget.id, transaction.id),
+          Routes.budget_transaction_path(conn, :update, budget.id, transaction.id),
           transaction: @invalid_attrs
         )
 
@@ -97,12 +97,12 @@ defmodule BenjaminWeb.TransactionControllerTest do
       budget: budget,
       transaction: transaction
     } do
-      conn = delete(conn, budget_transaction_path(conn, :delete, budget, transaction))
+      conn = delete(conn, Routes.budget_transaction_path(conn, :delete, budget, transaction))
 
-      assert redirected_to(conn) == budget_path(conn, :show, budget.id, tab: "savings")
+      assert redirected_to(conn) == Routes.budget_path(conn, :show, budget.id, tab: "savings")
 
       assert_error_sent(404, fn ->
-        delete(conn, budget_transaction_path(conn, :delete, budget, transaction))
+        delete(conn, Routes.budget_transaction_path(conn, :delete, budget, transaction))
       end)
     end
   end

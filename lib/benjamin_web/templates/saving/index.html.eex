@@ -1,6 +1,6 @@
 <h2>Savings Goals</h2>
 <strong class="float-right">Total of all savings: <%= format_amount @saved, @user_account.currency_name %></strong>
-<span><%= link "Add Goal", to: saving_path(@conn, :new), class: "btn btn-primary btn-xs" %></span>
+<span><%= link "Add Goal", to: Routes.saving_path(@conn, :new), class: "btn btn-primary btn-xs" %></span>
 <table class="table table-responsive">
   <thead class="thead-inverse">
     <tr>
@@ -21,9 +21,9 @@
       <td><%= saving.end_at %></td>
 
       <td class="text-right">
-        <span><%= link "History", to: saving_path(@conn, :show, saving), class: "btn btn-default btn-xs" %></span>
-        <span><%= link "Edit", to: saving_path(@conn, :edit, saving), class: "btn btn-default btn-xs" %></span>
-        <span><%= link "Delete", to: saving_path(@conn, :delete, saving), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger btn-xs" %></span>
+        <span><%= link "History", to: Routes.saving_path(@conn, :show, saving), class: "btn btn-default btn-xs" %></span>
+        <span><%= link "Edit", to: Routes.saving_path(@conn, :edit, saving), class: "btn btn-default btn-xs" %></span>
+        <span><%= link "Delete", to: Routes.saving_path(@conn, :delete, saving), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger btn-xs" %></span>
       </td>
     </tr>
 <% end %>
