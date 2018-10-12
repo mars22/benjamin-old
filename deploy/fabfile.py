@@ -25,7 +25,7 @@ def update():
         with contextlib.nested(
             api.cd('%(project_src)s/assets' % api.env),
         ):
-          api.run('npm run build')
+          api.run('npm run deploy')
 
         api.run('MIX_ENV=prod mix compile --force')
         api.run('MIX_ENV=prod mix phx.digest')
