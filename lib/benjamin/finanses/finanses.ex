@@ -717,11 +717,17 @@ defmodule Benjamin.Finanses do
 
   def expenses_for_period(account_id, period) do
     today = Date.utc_today()
-    {begin_at, end_at} = Budget.date_range(today.year, today.month)
+
+    {begin_at, end_at} =
+      case get_budget_by_date(today) do
+        nil -> {today, today}
+        %{begin_at: begin_at, end_at: end_at} -> {begin_at, end_at}
+      end
 
     query =
       case period do
-        "current_month" -> expenses_for_date_range(account_id, begin_at, end_at)
+        "current_budget" -> expenses_for_date_range(account_id, begin_at, end_at)
+        # "current_month" -> expenses_for_date_range(account_id, begin_at, end_at)
         "all" -> base_expenses_query(account_id)
         _ -> expenses_for_date_range(account_id, today, today)
       end

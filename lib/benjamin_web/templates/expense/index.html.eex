@@ -7,7 +7,7 @@
     <a class="nav-link <%= is_active_tab(@conn) %>" href="<%= Routes.expense_path(@conn, :index)%>">Today</a>
   </li>
   <li class="nav-item">
-    <a class="nav-link <%= is_active_tab(@conn, :current_month) %>" href="?tab=current_month">Current Month</a>
+    <a class="nav-link <%= is_active_tab(@conn, :current_budget) %>" href="?tab=current_budget">Current Budget</a>
   </li>
   <li class="nav-item">
     <a class="nav-link <%= is_active_tab(@conn, :all) %>" href="?tab=all">All</a>
